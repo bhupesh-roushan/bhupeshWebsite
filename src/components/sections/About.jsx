@@ -26,45 +26,46 @@ import {
   SiMongoose,
 } from "react-icons/si";
 import { DiVisualstudio } from "react-icons/di";
+import { TbApi } from "react-icons/tb";
 export const About = () => {
   const frontendSkills = [
-    { name: "HTML", icon: <FaHtml5 className="text-orange-400" /> },
-    { name: "CSS", icon: <FaCss3Alt className="text-blue-400" /> },
-    { name: "JavaScript", icon: <FaJs className="text-yellow-500" /> },
-    { name: "React.js", icon: <FaReact className="text-blue-500" /> },
-    { name: "Context API", icon: <SiRedux className="text-red-500" /> },
-    { name: "Redux", icon: <SiRedux className="text-red-500" /> },
-    { name: "Tailwind CSS", icon: <SiTailwindcss className="text-cyan-500" /> },
-    { name: "Bootstrap", icon: <SiBootstrap className="text-purple-500" /> },
-    { name: "Next.js", icon: <SiNextdotjs className="text-white" /> },
-    { name: "Framer Motion", icon: <SiFramer className="text-pink-500" /> },
+    { name: "HTML", icon: <FaHtml5 className="text-orange-400 text-2xl" /> },
+    { name: "CSS", icon: <FaCss3Alt className="text-blue-400 text-2xl" /> },
+    { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
+    { name: "React.js", icon: <FaReact className="text-blue-500 text-2xl" /> },
+    { name: "Context API", icon: <TbApi className="text-amber-400 text-2xl" /> },
+    { name: "Redux", icon: <SiRedux className="text-red-500 text-2xl" /> },
+    { name: "Tailwind CSS", icon: <SiTailwindcss className="text-cyan-500 text-2xl" /> },
+    { name: "Bootstrap", icon: <SiBootstrap className="text-purple-500 text-2xl" /> },
+    { name: "Next.js", icon: <SiNextdotjs className="text-white text-2xl" /> },
+    { name: "Framer Motion", icon: <SiFramer className="text-pink-500 text-2xl" /> },
   ];
 
   const backendSkills = [
-    { name: "Node.js", icon: <FaNodeJs className="text-green-500" /> },
-    { name: "Express.js", icon: <SiExpress className="text-yellow-400" /> },
-    { name: "REST APIs", icon: <SiExpress className="text-blue-500" /> },
+    { name: "Node.js", icon: <FaNodeJs className="text-green-500 text-2xl" /> },
+    { name: "Express.js", icon: <SiExpress className="text-yellow-400 text-2xl" /> },
+    { name: "REST APIs", icon: <TbApi className="text-blue-500 text-2xl" /> },
     {
       name: "Supabase (BaaS)",
-      icon: <SiSupabase className="text-green-500" />,
+      icon: <SiSupabase className="text-green-500 text-2xl" />,
     },
   ];
 
   const DbSkills = [
-    { name: "MongoDB", icon: <SiMongodb className="text-green-500" /> },
-    { name: "Mongoose", icon: <SiMongoose className="text-red-500" /> },
-    { name: "SQL", icon: <FaDatabase className="text-blue-500" /> },
+    { name: "MongoDB", icon: <SiMongodb className="text-green-500 text-2xl" /> },
+    { name: "Mongoose", icon: <SiMongoose className="text-red-500 text-2xl" /> },
+    { name: "SQL", icon: <FaDatabase className="text-blue-500 text-2xl" /> },
   ];
 
   const toolsSkills = [
-    { name: "Git", icon: <FaGitAlt className="text-red-500" /> },
-    { name: "GitHub", icon: <FaGithub className="text-white" /> },
-    { name: "Vercel", icon: <SiVercel className="text-white" /> },
-    { name: "Render", icon: <SiRender className="text-white" /> },
-    { name: "Netlify", icon: <SiNetlify className="text-white" /> },
-    { name: "VS Code", icon: <DiVisualstudio className="text-blue-500" /> },
-    { name: "Figma", icon: <FaFigma className="text-pink-500" /> },
-    { name: "Postman", icon: <SiPostman className="text-orange-500" /> },
+    { name: "Git", icon: <FaGitAlt className="text-red-500 text-2xl" /> },
+    { name: "GitHub", icon: <FaGithub className="text-white text-2xl" /> },
+    { name: "Vercel", icon: <SiVercel className="text-white text-2xl" /> },
+    { name: "Render", icon: <SiRender className="text-white text-2xl" /> },
+    { name: "Netlify", icon: <SiNetlify className="text-white text-2xl" /> },
+    { name: "VS Code", icon: <DiVisualstudio className="text-blue-500 text-2xl" /> },
+    { name: "Figma", icon: <FaFigma className="text-pink-500 text-2xl" /> },
+    { name: "Postman", icon: <SiPostman className="text-orange-500 text-2xl" /> },
   ];
 
   return (
@@ -95,7 +96,7 @@ export const About = () => {
                   {frontendSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-sm  hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -110,7 +111,7 @@ export const About = () => {
                   {backendSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-sm hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -125,7 +126,7 @@ export const About = () => {
                   {DbSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-sm hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -140,7 +141,7 @@ export const About = () => {
                   {toolsSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-sm 
+                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold
                       hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition 
                       bg-gradient-to-r from-orange-600 to-blue-600 
                       text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
