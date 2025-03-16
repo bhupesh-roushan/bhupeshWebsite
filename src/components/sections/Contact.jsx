@@ -94,7 +94,7 @@ export const Contact = () => {
         </div>
       </RevealOnScroll>
       <footer className="relative mt-20 bottom-0 w-full flex justify-center items-center p-4 bg-gradient-to-r from-blue-600 to-orange-600 bg-clip-text text-transparent">
-        <p>All rights reserved @ Bhupesh Roushan  © 2025</p>
+        <p className="text-xs sm:text-md ">All rights reserved @ Bhupesh Roushan  © 2025</p>
       </footer>
     </section>
   );
