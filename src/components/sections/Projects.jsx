@@ -58,14 +58,14 @@ export const Projects = () => {
                   increasing payment success rate by 25%, and hosted the
                   platform on a custom domain for better accessibility.
                 </li>
-                <li className="w-full">
+                <li >
       
                   <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials :
-                  </span>{" "}
-                  Student: student@gmail.com/student, Instructor:
-                   instructor@gmail.com/instructor, Payment:
-                   buildingblocks@business.com/buildingblocks
+                  </span>
+                  Student: student@gmail.com / student, Instructor:
+                   instructor@gmail.com / instructor, Payment:
+                   buildingblocks@business.com / buildingblocks
                 </li>
               </ul>
               <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
@@ -206,8 +206,8 @@ export const Projects = () => {
                   <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials :
                   </span>{" "}
-                  Recruiter:recruiter@gmail.com/12345678, Candidate:
-                  candidate@gmail.com/12345678
+                  Recruiter: recruiter@gmail.com / 12345678, Candidate:
+                   candidate@gmail.com / 12345678
                 </li>
               </ul>
               <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
