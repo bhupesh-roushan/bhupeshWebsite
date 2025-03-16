@@ -25,6 +25,7 @@ import {
   SiSupabase,
   SiMongoose,
 } from "react-icons/si";
+import { GrMysql } from "react-icons/gr";
 import { DiVisualstudio } from "react-icons/di";
 import { TbApi } from "react-icons/tb";
 export const About = () => {
@@ -54,7 +55,7 @@ export const About = () => {
   const DbSkills = [
     { name: "MongoDB", icon: <SiMongodb className="text-green-500 text-2xl" /> },
     { name: "Mongoose", icon: <SiMongoose className="text-red-500 text-2xl" /> },
-    { name: "MySQL", icon: <FaDatabase className="text-blue-500 text-2xl" /> },
+    { name: "MySQL", icon: <GrMysql  className="text-blue-500 text-2xl" /> },
   ];
 
   const toolsSkills = [
