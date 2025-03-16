@@ -43,7 +43,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col w-full">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
                 <li>
                   • Developed an LMS with role-based dashboards for instructors
                   and students, improving course management efficiency by 40%.
