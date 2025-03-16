@@ -43,7 +43,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col flex-wrap">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full">
                 <li>
                   • Developed an LMS with role-based dashboards for instructors
                   and students, improving course management efficiency by 40%.
@@ -59,7 +59,7 @@ export const Projects = () => {
                   platform on a custom domain for better accessibility.
                 </li>
                 <li>
-                  {" "}
+      
                   <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials :
                   </span>{" "}
@@ -116,7 +116,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col flex-wrap">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full">
                 <li>
                   • Developed Hourglass, a social media app with real-time
                   messaging, post creation, likes, comments, and bookmarks using
@@ -185,7 +185,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col flex-wrap">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full">
                 <li>
                   • Developed Cubekit, a hiring platform using React.js,
                   Supabase, and Clerk for secure authentication and role-based
@@ -256,7 +256,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col flex-wrap">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full">
                 <li>
                   • Developed an e-commerce prototype using React.js and Redux
                   Toolkit for dynamic state management and an interactive user
@@ -305,7 +305,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col flex-wrap">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full">
                 <li>
                   • Developed an AI-powered web app using React.js and
                   integrated the Google Gemini API for interactive content
