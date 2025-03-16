@@ -94,6 +94,37 @@ export const Contact = () => {
         </div>
       </RevealOnScroll>
       <footer className="relative mt-20 bottom-0 w-full flex justify-center items-center p-4 bg-gradient-to-r from-blue-600 to-orange-600 bg-clip-text text-transparent">
+         <div className="flex md:hidden items-center space-x-8">
+                    
+                    <a
+                      href="https://www.linkedin.com/in/roushanb"
+                      target="_blank"
+                      className="text-gray-300 hover:text-white transition-colors"
+                    >
+                      <FaLinkedin className="h-6 w-6"/>
+                    </a>
+                    <a
+                      href="https://github.com/bhupesh-roushan"
+                      target="_blank"
+                      className="text-gray-300 hover:text-white transition-colors"
+                    >
+                      <FaGithub className="h-6 w-6"/>
+                    </a>
+                    <a
+                      href="https://www.instagram.com/roushanwa"
+                      target="_blank"
+                      className="text-gray-300 hover:text-white transition-colors"
+                    >
+                      <FaInstagram className="h-6 w-6"/>
+                    </a>
+                    <a
+                      href="https://x.com/roushanwa"
+                      target="_blank"
+                      className="text-gray-300 hover:text-white transition-colors"
+                    >
+                      <FaTwitter className="h-6 w-6"/>
+                    </a>
+                  </div>
         <p className="text-xs sm:text-md ">All rights reserved @ Bhupesh Roushan  © 2025</p>
       </footer>
     </section>
