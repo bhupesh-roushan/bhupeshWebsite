@@ -72,7 +72,7 @@ export const About = () => {
   return (
     <section
       id="about"
-      className="min-h-screen flex items-center justify-center py-20"
+      className="min-h-screen flex items-center justify-center py-2 md:py-20"
     >
       <RevealOnScroll>
         <div className="max-w-5xl mx-auto px-4 ">
