@@ -176,7 +176,7 @@ export const About = () => {
                   * Achievements *
                 </h3>
 
-                <p className=" font-extralight text-md text-center">
+                <p className=" font-extralight text-md text-justify">
                   Secured Runner-up position for the project{" "}
                   <span
                     className="bg-gradient-to-r from-orange-600 to-blue-600 
@@ -206,7 +206,7 @@ export const About = () => {
                   <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text ">
                     Tech Stack - React.js, Node.js, Express, MongoDB
                   </p>
-                  <p className="text-white text-md text-center">
+                  <p className="text-white text-md  text-justify">
                     Developed a ”Coursezz” template for online course selling,
                     featuring user authentication, course listing, and database
                     integration, using React.js, Node.js, Express, and MongoDB.

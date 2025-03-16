@@ -17,7 +17,7 @@ export const Home = () => {
       const headingTimeout = setTimeout(() => {
         setHeadingDisplayText(headingText.slice(0, headingIndex + 1));
         setHeadingIndex(headingIndex + 1);
-      }, 100); // Adjust speed here
+      }, 230); // Adjust speed here
 
       return () => clearTimeout(headingTimeout);
     }
