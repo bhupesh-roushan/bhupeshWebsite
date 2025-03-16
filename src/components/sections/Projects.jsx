@@ -61,11 +61,14 @@ export const Projects = () => {
                 <li >
       
                   <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
-                    • Demo Credentials :
+                    • Demo Credentials : <span></span> 
                   </span>
-                  Student: student@gmail.com / student, Instructor:
-                   instructor@gmail.com / instructor, Payment:
-                   buildingblocks@business.com / buildingblocks
+                  <ul>
+                    <li> <span className="text-blue-500">Student: </span> student@gmail.com/ student</li>
+                    <li> <span className="text-blue-500">Instructor: </span> instructor@gmail.com/ instructor</li>
+                    <li> <span className="text-blue-500">Payment: </span> buildingblocks@business.com/ buildingblocks</li>
+                  </ul>
+                
                 </li>
               </ul>
               <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
@@ -74,7 +77,8 @@ export const Projects = () => {
 
               <div className="flex justify-between items-center">
                 <a
-                  href="#"
+                  href="https://buildingblocks.cloud"
+                  target="_blank"
                   className="text-blue-400 hover:text-blue-300 transition-colors my-4"
                 >
                   View Project →
@@ -116,7 +120,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col w-full">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
                 <li>
                   • Developed Hourglass, a social media app with real-time
                   messaging, post creation, likes, comments, and bookmarks using
@@ -136,7 +140,10 @@ export const Projects = () => {
                   <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials :
                   </span>{" "}
-                  hourglass@user.com
+                  <ul>
+                    <li> <span className="text-blue-500">Username: </span> hourglass@user.com</li>
+                    <li> <span className="text-blue-500">Password: </span> admin@user.com</li>
+                  </ul>
                 </li>
               </ul>
               <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
@@ -144,7 +151,8 @@ export const Projects = () => {
               </div>
               <div className="flex justify-between items-center">
                 <a
-                  href="#"
+                  href="https://hourglass-0e3w.onrender.com/"
+                  target="_blank"
                   className="text-blue-400 hover:text-blue-300 transition-colors my-4"
                 >
                   View Project →
@@ -185,7 +193,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col w-full">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
                 <li>
                   • Developed Cubekit, a hiring platform using React.js,
                   Supabase, and Clerk for secure authentication and role-based
@@ -206,8 +214,10 @@ export const Projects = () => {
                   <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials :
                   </span>{" "}
-                  Recruiter: recruiter@gmail.com / 12345678, Candidate:
-                   candidate@gmail.com / 12345678
+                  <ul>
+                    <li> <span className="text-blue-500">Recruiter: </span> recruiter@gmail.com/ 12345678</li>
+                    <li> <span className="text-blue-500">Candidate: </span> candidate@gmail.com/ 12345678</li>
+                  </ul>
                 </li>
               </ul>
               <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
@@ -256,7 +266,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col w-full">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
                 <li>
                   • Developed an e-commerce prototype using React.js and Redux
                   Toolkit for dynamic state management and an interactive user
@@ -276,7 +286,8 @@ export const Projects = () => {
               </div>
               <div className="flex justify-between items-center ">
                 <a
-                  href="#"
+                  href="https://frequencii.vercel.app"
+                  target="_blank"
                   className="text-blue-400 hover:text-blue-300 transition-colors my-4"
                 >
                   View Project →
@@ -305,7 +316,7 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
-              <ul className="text-white my-4 flex gap-2 flex-col w-full">
+              <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
                 <li>
                   • Developed an AI-powered web app using React.js and
                   integrated the Google Gemini API for interactive content
@@ -326,7 +337,8 @@ export const Projects = () => {
 
               <div className="flex justify-between items-center">
                 <a
-                  href="#"
+                  href="https://pictelai.vercel.app/"
+                  target="_blank"
                   className="text-blue-400 hover:text-blue-300 transition-colors my-4"
                 >
                   View Project →
