@@ -54,7 +54,7 @@ export const About = () => {
   const DbSkills = [
     { name: "MongoDB", icon: <SiMongodb className="text-green-500 text-2xl" /> },
     { name: "Mongoose", icon: <SiMongoose className="text-red-500 text-2xl" /> },
-    { name: "SQL", icon: <FaDatabase className="text-blue-500 text-2xl" /> },
+    { name: "MySQL", icon: <FaDatabase className="text-blue-500 text-2xl" /> },
   ];
 
   const toolsSkills = [
