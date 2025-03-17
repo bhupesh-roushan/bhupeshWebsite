@@ -81,7 +81,7 @@ export const Home = () => {
           </div>
           <div className="my-10 flex justify-center">
             <a
-              href="https://drive.google.com/file/d/1YDgn3ZE4bqJOK7A7GO5zOtsYTwjeOtgE/view?usp=sharing"
+              href="https://drive.google.com/file/d/1cUN5Wx9D5gYFp_m0zqRIb-3Y1UvigD2e/view?usp=drive_link"
               target="_blank"
             >
               <button className="rounded-md bg-white/10 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500">
