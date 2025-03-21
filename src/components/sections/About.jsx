@@ -67,7 +67,7 @@ export const About = () => {
     { name: "Java", icon: <FaJava className="text-red-500 text-2xl" /> },
     { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
     { name: "Python", icon: <SiPython className="text-blue-500 text-2xl" /> },
-    { name: "C Programming", icon: <LiaLaptopCodeSolid className="text-blue-500 text-2xl" /> },
+    { name: "C Programming", icon: <LiaLaptopCodeSolid className="text-green-500 text-2xl" /> },
   ];
 
   const Concepts = [
@@ -79,7 +79,7 @@ export const About = () => {
 
   const DbSkills = [
     { name: "MongoDB", icon: <SiMongodb className="text-green-500 text-2xl" /> },
-    { name: "Mongoose", icon: <SiMongoose className="text-white text-2xl" /> },
+    { name: "Mongoose", icon: <SiMongoose className="text-red-500 text-3xl" /> },
     { name: "MySQL", icon: <GrMysql  className="text-blue-500 text-2xl" /> },
   ];
 
