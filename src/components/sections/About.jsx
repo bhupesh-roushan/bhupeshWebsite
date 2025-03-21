@@ -38,7 +38,7 @@ export const About = () => {
     { name: "HTML", icon: <FaHtml5 className="text-orange-400 text-2xl" /> },
     { name: "CSS", icon: <FaCss3Alt className="text-blue-400 text-2xl" /> },
     { name: "React.js", icon: <FaReact className="text-blue-500 text-2xl" /> },
-    { name: "Context API", icon: <TbApi className="text-amber-400 text-2xl" /> },
+    { name: "Context API", icon: <TbApi className="text-blue-500 text-2xl" /> },
     { name: "Redux", icon: <SiRedux className="text-red-500 text-2xl" /> },
     { name: "Tailwind CSS", icon: <SiTailwindcss className="text-cyan-500 text-2xl" /> },
     { name: "Bootstrap", icon: <SiBootstrap className="text-purple-500 text-2xl" /> },
@@ -58,7 +58,7 @@ export const About = () => {
   const ProgrammingSkills = [
     { name: "Java", icon: <FaJava className="text-red-500 text-2xl" /> },
     { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
-    { name: "Python", icon: <SiPython className="text-blue-400 text-2xl" /> },
+    { name: "Python", icon: <SiPython className="text-blue-500 text-2xl" /> },
     { name: "C Programming", icon: <LiaLaptopCodeSolid className="text-blue-500 text-2xl" /> },
   ];
 
