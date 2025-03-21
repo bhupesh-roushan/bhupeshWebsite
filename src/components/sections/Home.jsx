@@ -165,7 +165,7 @@ export const Home = () => {
             </span>
           </motion.p>
 
-          <div className="rounded-full overflow-hidden max-w-40 max-h-40 mx-auto bg-transparent shadow-2xl backdrop-blur-3xl">
+          <div className="rounded-full overflow-hidden max-w-40 max-h-40 mx-auto bg-transparent shadow-xl backdrop-blur-3xl shadow-blue-500 ">
             <img src={bhupesh} alt="" className="rounded-full h-40 w-40 object-cover" />
           </div>
 
