@@ -34,6 +34,9 @@ import { TbApi } from "react-icons/tb";
 import { FaJava } from "react-icons/fa6";
 import { LiaLaptopCodeSolid } from "react-icons/lia";
 import { PiSpinner } from "react-icons/pi";
+import { MdDataObject, MdOutlineSecurity } from "react-icons/md";
+import { LuComputer } from "react-icons/lu";
+import { CgWebsite } from "react-icons/cg";
 export const About = () => {
   const frontendSkills = [
     { name: "HTML", icon: <FaHtml5 className="text-orange-500 text-2xl" /> },
@@ -65,6 +68,13 @@ export const About = () => {
     { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
     { name: "Python", icon: <SiPython className="text-blue-500 text-2xl" /> },
     { name: "C Programming", icon: <LiaLaptopCodeSolid className="text-blue-500 text-2xl" /> },
+  ];
+
+  const Concepts = [
+    { name: "OOPs", icon: <MdDataObject className="text-green-500 text-2xl" /> },
+    { name: "Computer Networks", icon: <LuComputer className="text-white text-2xl" /> },
+    { name: "Network Security", icon: <MdOutlineSecurity  className="text-blue-500 text-2xl" /> },
+    { name: "Software Engineering", icon: <CgWebsite  className="text-blue-500 text-2xl" /> },
   ];
 
   const DbSkills = [
