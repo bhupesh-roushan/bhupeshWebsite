@@ -130,7 +130,7 @@ export const Home = () => {
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden "
     >
       {/* Background Video */}
       <video
@@ -140,12 +140,11 @@ export const Home = () => {
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
       >
         <source src={video} type="video/mp4" />
-        Your browser does not support the video tag.
       </video>
 
       {/* Content */}
       <RevealOnScroll>
-        <div className="text-center z-10 px-4 bg-black/50 backdrop-blur-md p-10 rounded-lg">
+        <div className="text-center z-10 px-4 bg-transparent backdrop-blur-xs p-10 rounded-lg">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight tracking-wide">
             {headingDisplayText}
             <span className="animate-pulse">
