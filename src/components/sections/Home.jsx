@@ -138,7 +138,7 @@ export const Home = () => {
         autoPlay
         loop
         muted
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        className="absolute top-0 left-0 w-full h-full object-cover z-0 "
       >
         <source src={video} type="video/mp4" />
       </video>
@@ -172,15 +172,14 @@ export const Home = () => {
           <div className="flex justify-center space-x-4 my-5">
             <a
               href="#projects"
-              className="rounded-md bg-white/10 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500"
+              className="rounded-md bg-white/10  text-white bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-blue-500"
             >
               View Projects
             </a>
 
             <a
               href="#contact"
-              className="border border-orange-500/50 text-orange-600 py-3 px-6 rounded font-medium transition-all duration-200 
-             hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.2)] hover:bg-orange-500/10 hover:shadow-orange-500/50 shadow-md"
+              className="rounded-md bg-white/10  text-white bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-blue-500"
             >
               Contact Me
             </a>
@@ -188,7 +187,7 @@ export const Home = () => {
               href="https://drive.google.com/file/d/1TkejpQsJXM_KmNIUX8ApXAiApA03Mdta/view?usp=sharing"
               target="_blank"
             >
-              <button className="rounded-md bg-white/10 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500">
+              <button className="rounded-md bg-white/10  text-white bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-blue-500">
                 Download Resume
               </button>
             </a>
