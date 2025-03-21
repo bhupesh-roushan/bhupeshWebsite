@@ -67,7 +67,7 @@ export const About = () => {
   ];
 
   const toolsSkills = [
-    { name: "Git", icon: <FaGitAlt className="text-red-400 text-2xl" /> },
+    { name: "Git", icon: <FaGitAlt className="text-red-500 text-2xl" /> },
     { name: "GitHub", icon: <FaGithub className="text-white text-2xl" /> },
     { name: "Vercel", icon: <SiVercel className="text-white text-2xl" /> },
     { name: "Render", icon: <SiRender className="text-white text-2xl" /> },
