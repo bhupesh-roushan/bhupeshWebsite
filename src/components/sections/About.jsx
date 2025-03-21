@@ -35,7 +35,7 @@ import { FaJava } from "react-icons/fa6";
 import { LiaLaptopCodeSolid } from "react-icons/lia";
 export const About = () => {
   const frontendSkills = [
-    { name: "HTML", icon: <FaHtml5 className="text-orange-400 text-2xl" /> },
+    { name: "HTML", icon: <FaHtml5 className="text-orange-500 text-2xl" /> },
     { name: "CSS", icon: <FaCss3Alt className="text-blue-400 text-2xl" /> },
     { name: "React.js", icon: <FaReact className="text-blue-500 text-2xl" /> },
     { name: "Context API", icon: <TbApi className="text-blue-500 text-2xl" /> },
