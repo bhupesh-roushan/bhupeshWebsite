@@ -74,7 +74,7 @@ export const About = () => {
     { name: "OOPs", icon: <MdDataObject className="text-green-500 text-2xl" /> },
     { name: "Computer Networks", icon: <LuComputer className="text-white text-2xl" /> },
     { name: "Network Security", icon: <MdOutlineSecurity  className="text-blue-500 text-2xl" /> },
-    { name: "Software Engineering", icon: <CgWebsite  className="text-blue-500 text-2xl" /> },
+    { name: "Software Engineering", icon: <CgWebsite  className="text-yellow-500 text-2xl" /> },
   ];
 
   const DbSkills = [
@@ -179,7 +179,7 @@ export const About = () => {
               </div>
 
               <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4">Databases</h3>
+                <h3 className="text-xl font-bold mb-4">Concepts</h3>
                 <div className="flex flex-wrap gap-2">
                   {Concepts.map((tech, key) => (
                     <span
