@@ -25,6 +25,8 @@ import {
   SiSupabase,
   SiMongoose,
   SiPython,
+  SiMysql,
+  SiIntellijidea,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
 import { DiVisualstudio } from "react-icons/di";
@@ -75,8 +77,8 @@ export const About = () => {
     { name: "VS Code", icon: <DiVisualstudio className="text-blue-500 text-2xl" /> },
     { name: "Figma", icon: <FaFigma className="text-pink-500 text-2xl" /> },
     { name: "Postman", icon: <SiPostman className="text-orange-500 text-2xl" /> },
-    { name: "MySQl Workbench", icon: <GrMysql className="text-blue-500 text-2xl" /> },
-    { name: "IntelliJ IDEA", icon: <FaJava className="text-red-500 text-2xl" /> },
+    { name: "MySQl Workbench", icon: <SiMysql className="text-blue-500 text-2xl" /> },
+    { name: "IntelliJ IDEA", icon: <SiIntellijidea className="text-red-500 text-2xl" /> },
   ];
 
   return (
