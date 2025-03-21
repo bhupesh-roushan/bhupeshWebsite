@@ -24,15 +24,17 @@ import {
   SiNetlify,
   SiSupabase,
   SiMongoose,
+  SiPython,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
 import { DiVisualstudio } from "react-icons/di";
 import { TbApi } from "react-icons/tb";
+import { FaJava } from "react-icons/fa6";
+import { LiaLaptopCodeSolid } from "react-icons/lia";
 export const About = () => {
   const frontendSkills = [
     { name: "HTML", icon: <FaHtml5 className="text-orange-400 text-2xl" /> },
     { name: "CSS", icon: <FaCss3Alt className="text-blue-400 text-2xl" /> },
-    { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
     { name: "React.js", icon: <FaReact className="text-blue-500 text-2xl" /> },
     { name: "Context API", icon: <TbApi className="text-amber-400 text-2xl" /> },
     { name: "Redux", icon: <SiRedux className="text-red-500 text-2xl" /> },
@@ -50,6 +52,12 @@ export const About = () => {
       name: "Supabase (BaaS)",
       icon: <SiSupabase className="text-green-500 text-2xl" />,
     },
+  ];
+  const ProgrammingSkills = [
+    { name: "Java", icon: <FaJava className="text-green-500 text-2xl" /> },
+    { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
+    { name: "Python", icon: <SiPython className="text-yellow-400 text-2xl" /> },
+    { name: "C Programming", icon: <LiaLaptopCodeSolid className="text-blue-500 text-2xl" /> },
   ];
 
   const DbSkills = [
@@ -110,6 +118,21 @@ export const About = () => {
                 <h3 className="text-xl font-bold mb-4"> Backend</h3>
                 <div className="flex flex-wrap gap-2">
                   {backendSkills.map((tech, key) => (
+                    <span
+                      key={key}
+                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                    >
+                      {tech.icon}
+                      {tech.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
+                <h3 className="text-xl font-bold mb-4"> Backend</h3>
+                <div className="flex flex-wrap gap-2">
+                  {ProgrammingSkills.map((tech, key) => (
                     <span
                       key={key}
                       className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
