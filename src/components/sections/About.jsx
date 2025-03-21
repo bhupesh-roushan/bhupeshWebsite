@@ -33,6 +33,7 @@ import { DiVisualstudio } from "react-icons/di";
 import { TbApi } from "react-icons/tb";
 import { FaJava } from "react-icons/fa6";
 import { LiaLaptopCodeSolid } from "react-icons/lia";
+import { PiSpinner } from "react-icons/pi";
 export const About = () => {
   const frontendSkills = [
     { name: "HTML", icon: <FaHtml5 className="text-orange-500 text-2xl" /> },
@@ -53,6 +54,10 @@ export const About = () => {
     {
       name: "Supabase (BaaS)",
       icon: <SiSupabase className="text-green-500 text-2xl" />,
+    },
+    {
+      name: "JWT Authentication",
+      icon: <PiSpinner className="text-pink-500 text-2xl" />,
     },
   ];
   const ProgrammingSkills = [
