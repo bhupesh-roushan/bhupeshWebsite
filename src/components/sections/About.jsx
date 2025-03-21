@@ -79,7 +79,7 @@ export const About = () => {
 
   const DbSkills = [
     { name: "MongoDB", icon: <SiMongodb className="text-green-500 text-2xl" /> },
-    { name: "Mongoose", icon: <SiMongoose className="text-red-500 text-3xl" /> },
+    { name: "Mongoose", icon: <SiMongoose className="text-white text-4xl" /> },
     { name: "MySQL", icon: <GrMysql  className="text-blue-500 text-2xl" /> },
   ];
 
