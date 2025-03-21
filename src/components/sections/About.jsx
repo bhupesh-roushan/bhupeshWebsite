@@ -130,7 +130,7 @@ export const About = () => {
               </div>
 
               <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4"> Backend</h3>
+                <h3 className="text-xl font-bold mb-4"> Programming Languages</h3>
                 <div className="flex flex-wrap gap-2">
                   {ProgrammingSkills.map((tech, key) => (
                     <span
