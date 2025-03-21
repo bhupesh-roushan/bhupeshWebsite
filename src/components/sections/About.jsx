@@ -64,7 +64,7 @@ export const About = () => {
     },
   ];
   const ProgrammingSkills = [
-    { name: "Java", icon: <FaJava className="text-red-500 text-2xl" /> },
+    { name: "Java", icon: <FaJava className="text-red-500 text-3xl" /> },
     { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
     { name: "Python", icon: <SiPython className="text-blue-500 text-2xl" /> },
     { name: "C Programming", icon: <LiaLaptopCodeSolid className="text-green-500 text-2xl" /> },
