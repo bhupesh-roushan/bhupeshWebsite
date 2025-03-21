@@ -75,6 +75,8 @@ export const About = () => {
     { name: "VS Code", icon: <DiVisualstudio className="text-blue-500 text-2xl" /> },
     { name: "Figma", icon: <FaFigma className="text-pink-500 text-2xl" /> },
     { name: "Postman", icon: <SiPostman className="text-orange-500 text-2xl" /> },
+    { name: "MySQl Workbench", icon: <GrMysql className="text-blue-500 text-2xl" /> },
+    { name: "IntelliJ IDEA", icon: <FaJava className="text-red-500 text-2xl" /> },
   ];
 
   return (
