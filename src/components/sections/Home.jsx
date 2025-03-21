@@ -2,6 +2,7 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import video from "../../assets/video.mp4";
+import bhupesh from "../../assets/bhupesh.jpg";
 
 // export const Home = () => {
 //   const headingText = "Hi, I'm Bhupesh Roushan";
@@ -144,7 +145,7 @@ export const Home = () => {
 
       {/* Content */}
       <RevealOnScroll>
-        <div className="text-center z-10 px-4 bg-transparent backdrop-blur-xs p-10 rounded-lg">
+        <div className="text-center z-10 px-4 bg-transparent  p-10 rounded-lg mt-20">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight tracking-wide">
             {headingDisplayText}
             <span className="animate-pulse">
@@ -164,10 +165,14 @@ export const Home = () => {
             </span>
           </motion.p>
 
+          <div className="rounded-full overflow-hidden max-w-40 max-h-40 mx-auto bg-transparent shadow-2xl backdrop-blur-3xl">
+            <img src={bhupesh} alt="" className="rounded-full h-40 w-40 object-cover" />
+          </div>
+
           <div className="flex justify-center space-x-4 my-5">
             <a
               href="#projects"
-              className="bg-orange-500 text-white py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59, 130, 246, 0.4)] shadow-md hover:shadow-orange-500/50"
+              className="rounded-md bg-white/10 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500"
             >
               View Projects
             </a>
@@ -179,8 +184,6 @@ export const Home = () => {
             >
               Contact Me
             </a>
-          </div>
-          <div className="my-10 flex justify-center">
             <a
               href="https://drive.google.com/file/d/1TkejpQsJXM_KmNIUX8ApXAiApA03Mdta/view?usp=sharing"
               target="_blank"
@@ -189,6 +192,9 @@ export const Home = () => {
                 Download Resume
               </button>
             </a>
+          </div>
+          <div className="my-10 flex justify-center">
+            
           </div>
         </div>
       </RevealOnScroll>
