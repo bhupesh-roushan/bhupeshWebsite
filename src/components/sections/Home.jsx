@@ -156,7 +156,7 @@ export const Home = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
-            className="text-white text-md mb-8 max-w-3xl mx-auto text-justify font-bold tracking-widest"
+            className="text-white text-md mb-8 max-w-4xl mx-auto text-justify font-bold tracking-widest"
           >
             {paragraphDisplayText}
             <span className="animate-pulse">
