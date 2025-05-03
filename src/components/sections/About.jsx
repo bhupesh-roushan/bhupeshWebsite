@@ -282,6 +282,9 @@ export const About = () => {
                 <h2 className="font-extrabold text-lg text-center">
                   Executive - Audit and Assessment
                 </h2>
+                <h2 className="font-extrabold text-lg text-center text-blue-500">
+                    ( April 2025 - Present )
+                  </h2>
               </div>
               <p className="text-center font-semibold text-md my-2 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text"></p>
               <div className="my-5 ">
@@ -326,7 +329,11 @@ export const About = () => {
 
               <h2 className="font-extrabold text-lg text-center">
                 BMS Institute of Technology and Management, Bangalore
-                (2018-2023)
+                
+              </h2>
+              <h2 className="font-extrabold text-lg text-center text-blue-500">
+                (2018 - 2023)
+                
               </h2>
               <p className="text-center font-semibold text-md my-2 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
                 B.E. in Electronics and Communication Engineering
@@ -354,7 +361,7 @@ export const About = () => {
               <h3 className="text-2xl font-bold mb-4 text-orange-500 text-center">
                 Internship{" "}
               </h3>
-              <div className="space-y-4 text-gray-300">
+              <div className="space-y-2 text-gray-300">
                 <div>
                   <h3 className="font-extrabold text-center text-lg text-white my-4">
                     {" "}
@@ -362,6 +369,9 @@ export const About = () => {
                     <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
                       Varcons Technologies
                     </span>
+                  </h3>
+                  <h3 className="font-extrabold text-lg text-center text-blue-500">
+                    ( Feb 2023 - March 2023 )
                   </h3>
                   <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text ">
                     Tech Stack - React.js, Node.js, Express, MongoDB, JWT, REST
