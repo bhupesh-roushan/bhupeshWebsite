@@ -146,7 +146,7 @@ export const Home = () => {
       {/* Content */}
       <RevealOnScroll>
         <div className="text-center z-10 px-4 bg-transparent  p-10 rounded-lg mt-20">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight tracking-wide">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight tracking-wide">
             {headingDisplayText}
             <span className="animate-pulse">
               {headingIndex < headingText.length ? "|" : ""}
@@ -165,29 +165,30 @@ export const Home = () => {
             </span>
           </motion.p>
 
-          <div className="rounded-full overflow-hidden max-w-50 max-h-50 mx-auto bg-transparent shadow-md backdrop-blur-3xl shadow-orange-500 ">
+          <div className="rounded-full overflow-hidden max-w-50 max-h-50 mx-auto bg-transparent shadow-sm backdrop-blur-3xl shadow-blue-500 hover:shadow-blue-500 hover:shadow-md transition-all hover:scale-105">
             <img src={bhupesh} alt="" className="rounded-full h-50 w-50 object-cover" />
           </div>
 
           <div className="flex justify-center space-x-4 my-5">
             <a
               href="#projects"
-              className="rounded-md bg-white/10  text-white bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-blue-500"
+              className="rounded-md bg-white/10 font-medium text-white bg-clip-text border-1 border-orange-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500 sm:hidden flex"
             >
               View Projects
             </a>
 
             <a
               href="#contact"
-              className="rounded-md bg-white/10  text-white bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-blue-500"
+              className="rounded-md bg-white/10 font-medium text-white bg-clip-text border-1 border-orange-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500 sm:hidden flex"
             >
               Contact Me
             </a>
             <a
               href="https://drive.google.com/file/d/1X5ZK3XYr8Gf1a9bMGI0z0eefHWZrUg0_/view?usp=sharing"
               target="_blank"
+              className="sm:bg-black/60"
             >
-              <button className="rounded-md bg-white/10  text-white bg-clip-text border-1 border-blue-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-blue-500">
+              <button className="rounded-md bg-transparent font-medium border-orange-500/60  border-1 sm:border-blue-500/60 p-3 hover:scale-105 transition-all text-white bg-clip-text hover:shadow-sm shadow-blue-500 sm:bg-gradient-to-r from-blue-600 to-orange-500 sm:bg-clip-text sm:text-transparent  sm:bg-black/20">
                 Download Resume
               </button>
             </a>
