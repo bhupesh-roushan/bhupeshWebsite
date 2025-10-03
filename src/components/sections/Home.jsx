@@ -2,7 +2,7 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import video from "../../assets/video.mp4";
-import bhupesh from "../../assets/bhupesh.jpg";
+import bhupesh from "../../assets/bhupesh.png";
 
 // export const Home = () => {
 //   const headingText = "Hi, I'm Bhupesh Roushan";
@@ -165,8 +165,8 @@ export const Home = () => {
             </span>
           </motion.p>
 
-          <div className="rounded-full overflow-hidden max-w-40 max-h-40 mx-auto bg-transparent shadow-xl backdrop-blur-3xl shadow-blue-500 ">
-            <img src={bhupesh} alt="" className="rounded-full h-40 w-40 object-cover" />
+          <div className="rounded-full overflow-hidden max-w-50 max-h-50 mx-auto bg-transparent shadow-md backdrop-blur-3xl shadow-orange-500 ">
+            <img src={bhupesh} alt="" className="rounded-full h-50 w-50 object-cover" />
           </div>
 
           <div className="flex justify-center space-x-4 my-5">
