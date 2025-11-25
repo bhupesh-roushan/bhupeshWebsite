@@ -294,17 +294,15 @@ export const About = () => {
                 </p>
 
                 <p className=" font-extralight text-md text-justify">
-                  1. Developed full-stack assessment platforms using
+                  1. Built an AI-powered assessment evaluation tool 
                   <span
                     className="bg-gradient-to-r from-orange-600 to-blue-600 
                       text-transparent bg-clip-text"
                   >
                     {" "}
-                    React, Node.js, and MongoDB, creating dynamic UIs and
-                    scalable backends; designed coding challenges and assessment
-                    questions,
+                    using MERN and Gemini 2.5 Flash Pro, automating rubric-based evaluation with 
                   </span>{" "}
-                  improving evaluation quality and diversity by 30%.
+                  80% higher accuracy and 70% less manual effort.,
                 </p>
 
                 <p className="mt-5 font-extralight text-md text-justify">
@@ -320,6 +318,35 @@ export const About = () => {
                   resulting in a 10% improvement in real-world problem-solving
                   relevance.
                 </p>
+
+                  <p className=" mt-5 font-extralight text-md text-justify">
+                  3. Collaborated with the development team to build Optimus  
+                  <span
+                    className="bg-gradient-to-r from-orange-600 to-blue-600 
+                      text-transparent bg-clip-text"
+                  >
+                    {" "}
+                    end-to-end Web Development assessment platform using React, Node.js, and MongoDB,
+                  </span>{" "}
+                  improving evaluation quality and learner insights by 30%.
+                </p>
+
+
+                 <p className=" mt-5 font-extralight text-md text-justify">
+                  4. Created end-to-end MERN-focused assessments    
+                  <span
+                    className="bg-gradient-to-r from-orange-600 to-blue-600 
+                      text-transparent bg-clip-text"
+                  >
+                    {" "}
+                    and resolved learners’technical doubts,
+                  </span>{" "}
+                  improving question relevance and learning outcomes by 20%.
+                </p>
+
+
+
+
               </div>
             </div>
             <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40">
