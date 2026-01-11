@@ -127,7 +127,7 @@ export const Contact = () => {
         </div>
 
         <p className="text-xs sm:text-md ">
-          All rights reserved @ Bhupesh Roushan © 2025
+          All rights reserved @ Bhupesh Roushan © 2026
         </p>
       </footer>
     </section>
