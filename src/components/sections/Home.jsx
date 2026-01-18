@@ -184,7 +184,7 @@ export const Home = () => {
               Contact Me
             </a>
             <a
-              href="https://drive.google.com/file/d/1X5ZK3XYr8Gf1a9bMGI0z0eefHWZrUg0_/view?usp=sharing"
+              href="https://drive.google.com/file/d/1GKE5rVGd8st09lnHEX6zztguKoJBaOfw/view?usp=sharing"
               target="_blank"
               className="sm:bg-black/60"
             >
