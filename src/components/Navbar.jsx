@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import icon from "../assets/icon.svg";
 
 import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
   useEffect(() => {
@@ -84,7 +85,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               target="_blank"
               className="text-gray-300 hover:text-white transition-colors"
             >
-              <FaTwitter className="h-6 w-6"/>
+              <FaXTwitter className="h-6 w-6"/>
             </a>
           </div>
         </div>
