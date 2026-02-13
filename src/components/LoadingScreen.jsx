@@ -15,7 +15,7 @@ export const LoadingScreen = ({ onComplete }) => {
 
         setTimeout(() => {
           onComplete();
-        }, 100);
+        }, 200);
       }
     }, 100);
 
@@ -27,7 +27,7 @@ export const LoadingScreen = ({ onComplete }) => {
       <div className="my-10  ">
         <img src={icon} alt="" />
       </div>
-      <div className="mb-4 text-4xl font-mono font-bold bg-gradient-to-r from-blue-600 to-white bg-clip-text text-transparent">
+      <div className="mb-4 sm:text-4xl text-md font-mono font-bold bg-gradient-to-r from-blue-600 to-white bg-clip-text text-transparent">
         {text} <span className="animate-blink ml-1"> | </span>
       </div>
 
