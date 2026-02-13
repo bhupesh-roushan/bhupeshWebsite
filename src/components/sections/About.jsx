@@ -27,6 +27,7 @@ import {
   SiPython,
   SiMysql,
   SiIntellijidea,
+  SiTypescript,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
 import { DiVisualstudio } from "react-icons/di";
@@ -80,6 +81,7 @@ export const About = () => {
   const ProgrammingSkills = [
     { name: "Java", icon: <FaJava className="text-red-500 text-3xl" /> },
     { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
+    { name: "Typescript", icon: <SiTypescript className="text-blue-500 text-2xl" /> },
     { name: "Python", icon: <SiPython className="text-blue-500 text-2xl" /> },
     {
       name: "C Programming",
@@ -143,23 +145,20 @@ export const About = () => {
   return (
     <section
       id="about"
-      className="min-h-screen flex items-center justify-center py-2 md:py-20"
+      className="min-h-screen flex items-center justify-center py-2 md:py-20 "
     >
       <RevealOnScroll>
         <div className="max-w-5xl mx-auto px-4 ">
-          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent text-center">
+          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r bg-white bg-clip-text text-transparent text-center">
             {" "}
             About Me
           </h2>
 
-          <div className="rounded-xl p-8 border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40">
-            <h1 className="text-center font-extrabold text-orange-500 text-2xl my-2">
+          <div className="rounded-xl p-8 border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40  shadow-md shadow-indigo-500">
+            <h1 className="text-center font-extrabold text-indigo-500 text-2xl my-2">
               Technical Skills
             </h1>
-            <p className="text-white text-center mb-6">
-              Passionate developer with expertise in building scalable web
-              applications and creating innovative solutions.
-            </p>
+           
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
@@ -168,7 +167,7 @@ export const About = () => {
                   {frontendSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -183,7 +182,7 @@ export const About = () => {
                   {backendSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-blue-600 to-white text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -201,7 +200,7 @@ export const About = () => {
                   {ProgrammingSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -216,7 +215,7 @@ export const About = () => {
                   {DbSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-blue-600 to-white text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -231,7 +230,7 @@ export const About = () => {
                   {Concepts.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition  bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -246,9 +245,9 @@ export const About = () => {
                   {toolsSkills.map((tech, key) => (
                     <span
                       key={key}
-                      className="bg-orange-500/10 mx-1 my-1 py-2 px-3  rounded-full text-md font-bold
-                      hover:bg-orange-500 shadow-[0_2px_8px_rgba(59,130,246,0.4)] transition 
-                      bg-gradient-to-r from-orange-600 to-blue-600 
+                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold
+                      shadow-blue-500 shadow-sm transition 
+                      bg-gradient-to-r from-blue-600 to-white 
                       text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
@@ -264,8 +263,8 @@ export const About = () => {
 
           <div className="grid grid-cols-1  gap-6 mt-8">
             {/* experience */}
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40">
-              <h3 className="text-2xl font-bold mb-4 text-orange-500 text-center">
+            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
+              <h3 className="text-2xl font-bold mb-4 text-white text-center">
                 Work Experience
               </h3>
 
@@ -286,61 +285,32 @@ export const About = () => {
                     ( April 2025 - Present )
                   </h2>
               </div>
-              <p className="text-center font-semibold text-md my-2 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text"></p>
+           
               <div className="my-5 ">
-                <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text ">
+                <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-indigo-500 to-white text-transparent bg-clip-text ">
                   Tech Stack : Web Development, Java, Aptitude, DSA, Computer
                   Networks, Operating Systems.
                 </p>
 
                 <p className=" font-extralight text-md text-justify">
-                  1. Built an AI-powered assessment evaluation tool 
-                  <span
-                    className="bg-gradient-to-r from-orange-600 to-blue-600 
-                      text-transparent bg-clip-text"
-                  >
-                    {" "}
-                    using MERN and Gemini 2.5 Flash Pro, automating rubric-based evaluation with 
-                  </span>{" "}
-                  80% higher accuracy and 70% less manual effort.,
+                  1. Built an AI-powered assessment evaluation tool using MERN and Gemini 2.5 Flash Pro, automating rubric-based evaluation with 80% higher accuracy and 70% less manual effort.,
                 </p>
 
                 <p className="mt-5 font-extralight text-md text-justify">
-                  2. Curated and evaluated student assessments
-                  <span
-                    className="bg-gradient-to-r from-orange-600 to-blue-600 
-                      text-transparent bg-clip-text"
-                  >
-                    {" "}
-                    focused on Operating Systems and Computer Networks,
-                    enhancing question quality and accuracy,
-                  </span>{" "}
+                  2. Curated and evaluated student assessmentsfocused on Operating Systems and Computer Networks, enhancing question quality and accuracy,
+
                   resulting in a 10% improvement in real-world problem-solving
                   relevance.
                 </p>
 
                   <p className=" mt-5 font-extralight text-md text-justify">
-                  3. Collaborated with the development team to build Optimus  
-                  <span
-                    className="bg-gradient-to-r from-orange-600 to-blue-600 
-                      text-transparent bg-clip-text"
-                  >
-                    {" "}
-                    end-to-end Web Development assessment platform using React, Node.js, and MongoDB,
-                  </span>{" "}
-                  improving evaluation quality and learner insights by 30%.
+                  3. Collaborated with the development team to build Optimus end-to-end Web Development assessment platform using React, Node.js, and MongoDB, improving evaluation quality and learner insights by 30%.
                 </p>
 
 
                  <p className=" mt-5 font-extralight text-md text-justify">
-                  4. Created end-to-end MERN-focused assessments    
-                  <span
-                    className="bg-gradient-to-r from-orange-600 to-blue-600 
-                      text-transparent bg-clip-text"
-                  >
-                    {" "}
-                    and resolved learners’technical doubts,
-                  </span>{" "}
+                  4. Created end-to-end MERN-focused assessments and resolved learners’ technical doubts,
+             
                   improving question relevance and learning outcomes by 20%.
                 </p>
 
@@ -349,8 +319,8 @@ export const About = () => {
 
               </div>
             </div>
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40">
-              <h3 className="text-2xl font-bold mb-4 text-orange-500 text-center">
+            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
+              <h3 className="text-2xl font-bold mb-4 text-white text-center">
                 Education
               </h3>
 
@@ -362,7 +332,7 @@ export const About = () => {
                 (2018 - 2023)
                 
               </h2>
-              <p className="text-center font-semibold text-md my-2 bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
+              <p className="text-center font-semibold text-md my-2 bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
                 B.E. in Electronics and Communication Engineering
               </p>
               <div className="my-5 ">
@@ -371,21 +341,16 @@ export const About = () => {
                 </h3>
 
                 <p className=" font-extralight text-md text-justify">
-                  Secured Runner-up position for the project{" "}
-                  <span
-                    className="bg-gradient-to-r from-orange-600 to-blue-600 
-                      text-transparent bg-clip-text"
-                  >
-                    ` Reconfiguration of Micro-strip Patch Antenna `{" "}
-                  </span>{" "}
+                  Secured Runner-up position for the project ` Reconfiguration of Micro-strip Patch Antenna `{" "}
+
                   in the department-level ’Project-Based Learning’ competition
                   during the 6th semester.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40">
-              <h3 className="text-2xl font-bold mb-4 text-orange-500 text-center">
+            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
+              <h3 className="text-2xl font-bold mb-4 text-white text-center">
                 Internship{" "}
               </h3>
               <div className="space-y-2 text-gray-300">
@@ -393,14 +358,14 @@ export const About = () => {
                   <h3 className="font-extrabold text-center text-lg text-white my-4">
                     {" "}
                     Full Stack Developer Intern -{" "}
-                    <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
+                    <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
                       Varcons Technologies
                     </span>
                   </h3>
                   <h3 className="font-extrabold text-lg text-center text-blue-500">
                     ( Feb 2023 - March 2023 )
                   </h3>
-                  <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text ">
+                  <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-blue-500 to-white text-transparent bg-clip-text ">
                     Tech Stack - React.js, Node.js, Express, MongoDB, JWT, REST
                     APIs.
                   </p>
@@ -408,31 +373,13 @@ export const About = () => {
                   <div className="my-5 ">
                     <p className=" font-extralight text-md text-justify">
                       1. Developed ”Coursezz”, an online course-selling
-                      platform, implementing
-                      <span
-                        className="bg-gradient-to-r from-orange-600 to-blue-600 
-                      text-transparent bg-clip-text"
-                      >
-                        {" "}
-                        JWT-based authentication, role-based access control
-                        (RBAC), and MongoDB Atlas
-                      </span>{" "}
-                      to support secure multi-user access, reducing unauthorized
+                      platform, implementing JWT-based authentication, role-based access control (RBAC), and MongoDB Atlas to support secure multi-user access, reducing unauthorized
                       access incidents.
                     </p>
 
                     <p className="mt-5 font-extralight text-md text-justify">
                       2. Optimized API performance, reducing response times by
-                      40% through efficient
-                      <span
-                        className="bg-gradient-to-r from-orange-600 to-blue-600 
-                      text-transparent bg-clip-text"
-                      >
-                        {" "}
-                        Express middleware, caching strategies, and request
-                        validation,
-                      </span>{" "}
-                      enhancing scalability and system throughput.
+                      40% through efficient Express middleware, caching strategies, and request validation, enhancing scalability and system throughput.
                     </p>
                   </div>
                   <a
@@ -440,7 +387,7 @@ export const About = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <p className="text-md text-center text-blue-500 hover:text-blue-300 my-4">
+                    <p className="text-md text-center bg-gradient-to-r from-blue-500 to-white text-transparent bg-clip-text hover:text-blue-300 my-4">
                       View Certificate →
                     </p>
                   </a>

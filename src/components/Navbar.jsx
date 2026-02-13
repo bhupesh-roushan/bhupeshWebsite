@@ -1,9 +1,6 @@
 import { useEffect } from "react";
 import icon from "../assets/icon.svg";
 
-import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -15,7 +12,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           <div className="flex flex-row items-center justify-center gap-3">
             <img src={icon} alt="logo" className="w-10 h-10 " />
             <a href="#home" className="font-mono text-xl font-bold text-white">
-              Bhupesh<span className="text-orange-500">.website</span>{" "}
+              Bhupesh<span className="text-indigo-500">.website</span>{" "}
             </a>
           </div>
 
@@ -23,34 +20,33 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             className="w-7 h-5 relative cursor-pointer z-40 md:hidden"
             onClick={() => setMenuOpen((prev) => !prev)}
           >
-            &#9776;
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
             <a
               href="#home"
-              className="text-gray-300 hove:text-white transition-colors"
+              className="text-white  hover:scale-110  transition-all"
             >
               {" "}
               Home
             </a>
             <a
               href="#about"
-              className="text-gray-300 hove:text-white transition-colors"
+              className="text-white  hover:scale-110  transition-all"
             >
               {" "}
               About{" "}
             </a>
             <a
               href="#projects"
-              className="text-gray-300 hove:text-white transition-colors"
+              className="text-white  hover:scale-110  transition-all"
             >
               {" "}
               Projects{" "}
             </a>
             <a
               href="#contact"
-              className="text-gray-300 hove:text-white transition-colors"
+              className="text-white  hover:scale-110  transition-all"
             >
               {" "}
               Contact{" "}
@@ -62,28 +58,28 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             <a
               href="https://www.linkedin.com/in/roushanb"
               target="_blank"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-blue-500  hover:scale-110  transition-all"
             >
-              <FaLinkedin className="h-6 w-6"/>
+              <LuLinkedin className="h-6 w-6"/>
             </a>
             <a
               href="https://github.com/bhupesh-roushan"
               target="_blank"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-white  hover:scale-110  transition-all"
             >
               <FaGithub className="h-6 w-6"/>
             </a>
             <a
               href="https://www.instagram.com/roushanwa"
               target="_blank"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-white  hover:scale-110  transition-all "
             >
               <FaInstagram className="h-6 w-6"/>
             </a>
             <a
               href="https://x.com/roushanwa"
               target="_blank"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-white  hover:scale-110  transition-all"
             >
               <FaXTwitter className="h-6 w-6"/>
             </a>
