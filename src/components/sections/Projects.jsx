@@ -12,13 +12,13 @@ export const Projects = () => {
     >
 
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent text-center">
+          <h2 className="text-3xl font-bold mb-8  text-white bg-clip-text  text-center">
             {" "}
             Featured Projects
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-            <div className="p-6 rounded-xl border border-white/10 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-[0_2px_8px_rgba(59,130,246,0.2)] transition">
-              <h3 className="text-xl font-bold mb-2 text-orange-500">
+            <div className="p-6 rounded-xl border border-white/10  hover:border-blue-500/30 hover:shadow-[0_2px_8px_rgba(59,130,246,0.2)] transition shadow-md shadow-indigo-500">
+              <h3 className="text-xl font-bold text-pink-500 text-center mb-5">
                 Building Blocks - LMS Software{" "}
               </h3>
 
@@ -37,7 +37,7 @@ export const Projects = () => {
                 ].map((tech, key) => (
                   <span
                     key={key}
-                    className="bg-blue-500/10 py-1 px-4  mx-2 rounded-full text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-sm shadow-blue-600/40"
+                    className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
                   >
                     {tech}
                   </span>
@@ -60,13 +60,13 @@ export const Projects = () => {
                 </li>
                 <li >
       
-                  <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
+                  <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials : <span></span> 
                   </span>
                   <ul>
-                    <li> <span className="text-blue-500">Student: </span> student@gmail.com/ student</li>
-                    <li> <span className="text-blue-500">Instructor: </span> instructor@gmail.com/ instructor</li>
-                    <li> <span className="text-blue-500">Payment: </span> buildingblocks@business.com/ buildingblocks</li>
+                    <li> <span className="text-pink-500">Student: </span> student@gmail.com/ student</li>
+                    <li> <span className="text-pink-500">Instructor: </span> instructor@gmail.com/ instructor</li>
+                    <li> <span className="text-pink-500">Payment: </span> buildingblocks@business.com/ buildingblocks</li>
                   </ul>
                 
                 </li>
@@ -90,10 +90,10 @@ export const Projects = () => {
               glass p-6 rounded-xl border border-white/10 
               hover:-translate-y-1 hover:border-blue-500/30
               hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all
+              transition-all shadow-md shadow-indigo-500
             "
             >
-              <h3 className="text-xl font-bold mb-2 text-orange-500">
+              <h3 className="text-xl font-bold text-pink-500 text-center mb-5">
                 Hourglass - Social Media
               </h3>
 
@@ -106,15 +106,13 @@ export const Projects = () => {
                   "Redux",
                   "Socket.io",
                   "Cloudinary",
-                  "Tailwind CSS",
                   "Shadcn",
+                  "Tailwind CSS",
                   "Render",
                 ].map((tech, key) => (
                   <span
                     key={key}
-                    className="
-                      bg-blue-500/10 py-1 px-4  mx-2
-                      rounded-full text-sm transition hover:bg-blue-500/20 hover:-translate-y-0.5 hover:shadow-[0_2px_8px_rgba(59,130,246,0.2)] bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text text-md font-bold shadow-sm shadow-blue-600/40"
+                    className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
                   >
                     {tech}
                   </span>
@@ -137,12 +135,12 @@ export const Projects = () => {
                 </li>
                 <li>
                   {" "}
-                  <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
+                  <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials :
                   </span>{" "}
                   <ul>
-                    <li> <span className="text-blue-500">Username: </span> hourglass@user.com</li>
-                    <li> <span className="text-blue-500">Password: </span> admin@user.com</li>
+                    <li> <span className="text-pink-500">Username: </span> hourglass@user.com</li>
+                    <li> <span className="text-pink-500">Password: </span> admin@user.com</li>
                   </ul>
                 </li>
               </ul>
@@ -165,10 +163,10 @@ export const Projects = () => {
               glass p-6 rounded-xl border border-white/10 
               hover:-translate-y-1 hover:border-blue-500/30
               hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all
+              transition-all shadow-md shadow-indigo-500
             "
             >
-              <h3 className="text-xl font-bold mb-2 text-orange-500">
+              <h3 className="text-xl font-bold text-pink-500 mb-5 text-center">
                 Cubekit - Hiring Platform
               </h3>
 
@@ -178,16 +176,15 @@ export const Projects = () => {
                   "Tailwind CSS",
                   "Shadcn UI",
                   "Supabase",
-                  "Clerk",
                   "React Hook Form",
+                  "Clerk",
                   "Zod",
                   "Email JS",
                   "Vercel",
                 ].map((tech) => (
                   <span
                     key={tech}
-                    className="
-                      bg-blue-500/10 py-1 px-4  mx-2 rounded-full text-sm transition hover:bg-blue-500/20 hover:-translate-y-0.5 hover:shadow-[0_2px_8px_rgba(59,130,246,0.2)] bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text text-md font-bold shadow-sm shadow-blue-600/40"
+                    className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
                   >
                     {tech}
                   </span>
@@ -211,12 +208,12 @@ export const Projects = () => {
                 </li>
                 <li>
                   {" "}
-                  <span className="bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text">
+                  <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
                     • Demo Credentials :
                   </span>{" "}
                   <ul>
-                    <li> <span className="text-blue-500">Recruiter: </span> recruiter@gmail.com/ 12345678</li>
-                    <li> <span className="text-blue-500">Candidate: </span> candidate@gmail.com/ 12345678</li>
+                    <li> <span className="text-pink-500">Recruiter: </span> recruiter@gmail.com/ 12345678</li>
+                    <li> <span className="text-pink-500">Candidate: </span> candidate@gmail.com/ 12345678</li>
                   </ul>
                 </li>
               </ul>
@@ -239,10 +236,10 @@ export const Projects = () => {
               glass p-6 rounded-xl border border-white/10 
               hover:-translate-y-1 hover:border-blue-500/30
               hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all
+              transition-all shadow-md shadow-indigo-500
             "
             >
-              <h3 className="text-xl font-bold mb-2 text-orange-500">
+              <h3 className="text-xl font-bold mb-5 text-pink-500 text-center">
                 Frequencii - E Commerce
               </h3>
 
@@ -258,9 +255,7 @@ export const Projects = () => {
                 ].map((tech, key) => (
                   <span
                     key={key}
-                    className="
-                      bg-blue-500/10 py-1 px-4  mx-2
-                      rounded-full text-sm transition hover:bg-blue-500/20 hover:-translate-y-0.5 hover:shadow-[0_2px_8px_rgba(59,130,246,0.2)] bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text text-md font-bold shadow-sm shadow-blue-600/40"
+                    className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
                   >
                     {tech}
                   </span>
@@ -295,8 +290,8 @@ export const Projects = () => {
               </div>
             </div>
 
-            <div className="p-6 rounded-xl border border-white/10 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-[0_2px_8px_rgba(59,130,246,0.2)] transition">
-              <h3 className="text-xl font-bold mb-2 text-orange-500">
+            <div className="p-6 rounded-xl border border-white/10 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-[0_2px_8px_rgba(59,130,246,0.2)] transition shadow-md shadow-indigo-500">
+              <h3 className="text-xl font-bold mb-5 text-pink-500 text-center">
                 PictelAI - Powered by Gemini
               </h3>
 
@@ -310,7 +305,7 @@ export const Projects = () => {
                 ].map((tech, key) => (
                   <span
                     key={key}
-                    className="bg-blue-500/10  py-1 px-4  mx-2  rounded-full text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-orange-600 to-blue-600 text-transparent bg-clip-text text-md font-bold p-3 border-blue-500/50 border-2 shadow-sm shadow-blue-600/40"
+                    className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
                   >
                     {tech}
                   </span>

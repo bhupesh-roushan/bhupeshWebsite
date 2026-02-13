@@ -35,7 +35,7 @@ export const Contact = () => {
     >
       <RevealOnScroll>
         <div className="px-4 w-full min-w-[300px] md:w-[500px] sm:w-2/3 p-6">
-          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-orange-600 bg-clip-text text-transparent text-center">
+          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-white bg-clip-text text-transparent text-center">
             {" "}
             Get In Touch
           </h2>
@@ -87,7 +87,7 @@ export const Contact = () => {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white  py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]"
+              className="w-full bg-gradient-to-r from-indigo-600 to-white text-white  py-3 px-6 rounded font-medium transition relative overflow-hidden hover:-translate-y-0.5 hover:shadow-green-500 shadow-md shadow-white"
             >
               Send Message
             </button>
@@ -126,8 +126,8 @@ export const Contact = () => {
           </a>
         </div>
 
-        <p className="text-xs sm:text-md ">
-          All rights reserved @ Bhupesh Roushan © 2026
+        <p className="text-xs sm:text-md md:text-lg bg-gradient-to-r from-white to-indigo-500 text-transparent bg-clip-text">
+          All rights reserved @ Bhupesh Roushan © {new Date().getFullYear()}
         </p>
       </footer>
     </section>
