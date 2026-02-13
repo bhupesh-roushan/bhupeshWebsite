@@ -76,7 +76,7 @@ export const Home = () => {
           <div className="flex justify-center space-x-4 my-5">
             <a
               href="#projects"
-              className=" bg-white/10 font-medium text-white bg-clip-text border-1 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-md shadow-indigo-500 rounded-full sm:hidden flex"
+              className=" bg-white/10 font-medium text-white bg-clip-text border-1 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-md shadow-indigo-500 rounded-full sm:hidden flex text-sm sm:text-md"
             >
               View Projects
             </a>
@@ -92,7 +92,7 @@ export const Home = () => {
               target="_blank"
               className="hover:scale-105 rounded-full shadow-md shadow-indigo-500"
             >
-              <button className="rounded-full bg-transparent font-medium border-white border-1 sm:border-blue-500/60 p-3 hover:scale-105 transition-all text-white bg-clip-text hover:shadow-sm shadow-blue-500 sm:bg-gradient-to-r from-blue-600 to-white sm:bg-clip-text sm:text-transparent ">
+              <button className="rounded-full bg-transparent font-medium border-white border-1 sm:border-blue-500/60 p-3 hover:scale-105 transition-all text-white bg-clip-text hover:shadow-sm shadow-blue-500 sm:bg-gradient-to-r from-blue-600 to-white sm:bg-clip-text sm:text-transparent text-sm sm:text-md">
                 Download Resume
               </button>
             </a>
