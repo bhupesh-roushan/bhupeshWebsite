@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import icon from "../assets/icon.svg";
 import { LuLinkedin } from "react-icons/lu";
+import { FaGithub, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
   useEffect(() => {
