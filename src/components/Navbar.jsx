@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import icon from "../assets/icon.svg";
 import { LuLinkedin } from "react-icons/lu";
 import { FaGithub, FaInstagram } from "react-icons/fa";
@@ -8,6 +8,26 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
   }, [menuOpen]);
+const [indiaTime, setIndiaTime] = useState("");
+
+  useEffect(() => {
+  const updateTime = () => {
+    const time = new Date().toLocaleTimeString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+
+    setIndiaTime(time);
+  };
+
+  updateTime(); // run immediately
+  const interval = setInterval(updateTime, 1000);
+
+  return () => clearInterval(interval); // cleanup
+}, []);
   return (
     <nav className="fixed top-0 w-full z-40 bg-[rgba(10, 10, 10, 0.8)] backdrop-blur-xs border-b border-white/10 shadow-lg">
       <div className="max-w-7xl mx-auto px-4">
@@ -86,6 +106,8 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             >
               <FaXTwitter className="h-6 w-6"/>
             </a>
+            <p>{indiaTime}</p>
+
           </div>
         </div>
       </div>
