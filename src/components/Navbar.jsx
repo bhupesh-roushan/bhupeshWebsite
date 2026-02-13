@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import icon from "../assets/icon.svg";
+import { LuLinkedin } from "react-icons/lu";
 
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
   useEffect(() => {
