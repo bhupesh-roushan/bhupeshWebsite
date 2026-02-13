@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import icon from "./../assets/icon.svg";
 export const LoadingScreen = ({ onComplete }) => {
   const [text, setText] = useState("");
-  const fullText = "<Hi,There!🤖 I'm Bhupesh/>";
+  const fullText = "<Hi,There! I'm Bhupesh/>";
 
   useEffect(() => {
     let index = 0;
