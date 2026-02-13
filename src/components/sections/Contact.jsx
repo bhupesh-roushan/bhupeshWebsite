@@ -3,6 +3,7 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -200,7 +201,7 @@ export const Contact = () => {
             <FaInstagram className="h-6 w-6 text-gray-300 hover:text-white" />
           </a>
           <a href="https://x.com/roushanwa" target="_blank">
-            <FaTwitter className="h-6 w-6 text-gray-300 hover:text-white" />
+            <FaXTwitter className="h-6 w-6 text-gray-300 hover:text-white" />
           </a>
         </div>
 
