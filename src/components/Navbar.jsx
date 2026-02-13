@@ -34,8 +34,8 @@ const [indiaTime, setIndiaTime] = useState("");
         <div className="flex justify-between  items-center h-16">
           <div className="flex flex-row items-center justify-center gap-3">
             <img src={icon} alt="logo" className="w-10 h-10 " />
-            <a href="#home" className="font-mono text-xl font-bold text-white">
-              Bhupesh<span className="text-indigo-500">.website</span>{" "}
+            <a href="#home" className="font-mono  font-bold text-white sm:text-xl text-sm">
+              Bhupesh<span className="text-indigo-500 ">.website</span>{" "}
             </a>
           </div>
 
@@ -106,9 +106,14 @@ const [indiaTime, setIndiaTime] = useState("");
             >
               <FaXTwitter className="h-6 w-6"/>
             </a>
+            <div className="items-center space-x-8">
             <p>{indiaTime}</p>
+            </div>
 
           </div>
+          <div className="sm:hidden items-center space-x-8">
+            <p>{indiaTime}</p>
+            </div>
         </div>
       </div>
     </nav>

@@ -83,7 +83,7 @@ export const Home = () => {
 
             <a
               href="#contact"
-              className=" bg-white/10 font-medium text-white bg-clip-text border-1 border-white p-3 hover:scale-105 transition-all hover:shadow-sm  sm:hidden flex shadow-indigo-500 rounded-full shadow-md"
+              className=" bg-white/10 font-medium text-white bg-clip-text border-1 border-white p-3 hover:scale-105 transition-all hover:shadow-sm text-sm sm:text-md sm:hidden flex shadow-indigo-500 rounded-full shadow-md"
             >
               Contact Me
             </a>
