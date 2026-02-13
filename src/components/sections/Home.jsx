@@ -76,14 +76,14 @@ export const Home = () => {
           <div className="flex justify-center space-x-4 my-5">
             <a
               href="#projects"
-              className="rounded-md bg-white/10 font-medium text-white bg-clip-text border-1 border-orange-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500 sm:hidden flex"
+              className=" bg-white/10 font-medium text-white bg-clip-text border-1 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-md shadow-indigo-500 rounded-full sm:hidden flex"
             >
               View Projects
             </a>
 
             <a
               href="#contact"
-              className="rounded-md bg-white/10 font-medium text-white bg-clip-text border-1 border-orange-500/60 p-3 hover:scale-105 transition-all hover:shadow-sm shadow-orange-500 sm:hidden flex"
+              className=" bg-white/10 font-medium text-white bg-clip-text border-1 border-white p-3 hover:scale-105 transition-all hover:shadow-sm  sm:hidden flex shadow-indigo-500 rounded-full shadow-md"
             >
               Contact Me
             </a>
