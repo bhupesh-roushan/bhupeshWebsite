@@ -28,6 +28,9 @@ import {
   SiMysql,
   SiIntellijidea,
   SiTypescript,
+  SiDocker,
+  SiBlackmagicdesign,
+  SiLinux,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
 import { DiVisualstudio } from "react-icons/di";
@@ -94,18 +97,28 @@ export const About = () => {
       name: "OOPs",
       icon: <MdDataObject className="text-green-500 text-2xl" />,
     },
+      {
+      name: "System Design",
+      icon: <SiBlackmagicdesign className="text-red-500 text-2xl" />,
+    },
     {
       name: "Computer Networks",
       icon: <LuComputer className="text-white text-2xl" />,
     },
     {
       name: "Network Security",
-      icon: <MdOutlineSecurity className="text-blue-500 text-2xl" />,
+      icon: <MdOutlineSecurity className="text-orange-500 text-2xl" />,
+    },
+       {
+      name: "Operating System",
+      icon: <SiLinux className="text-blue-500 text-2xl" />,
     },
     {
       name: "Software Engineering",
       icon: <CgWebsite className="text-yellow-500 text-2xl" />,
     },
+  
+    
   ];
 
   const DbSkills = [
@@ -120,13 +133,15 @@ export const About = () => {
   const toolsSkills = [
     { name: "Git", icon: <FaGitAlt className="text-red-500 text-2xl" /> },
     { name: "GitHub", icon: <FaGithub className="text-white text-2xl" /> },
-    { name: "Vercel", icon: <SiVercel className="text-white text-2xl" /> },
-    { name: "Render", icon: <SiRender className="text-white text-2xl" /> },
-    { name: "Netlify", icon: <SiNetlify className="text-white text-2xl" /> },
+       {
+      name: "Docker",
+      icon: <SiDocker className="text-blue-500 text-2xl" />,
+    },
     {
       name: "VS Code",
       icon: <DiVisualstudio className="text-blue-500 text-2xl" />,
     },
+  
     { name: "Figma", icon: <FaFigma className="text-pink-500 text-2xl" /> },
     {
       name: "Postman",
@@ -140,6 +155,9 @@ export const About = () => {
       name: "IntelliJ IDEA",
       icon: <SiIntellijidea className="text-pink-500 text-2xl" />,
     },
+    { name: "Vercel", icon: <SiVercel className="text-white text-2xl" /> },
+    { name: "Render", icon: <SiRender className="text-white text-2xl" /> },
+    { name: "Netlify", icon: <SiNetlify className="text-white text-2xl" /> },
   ];
 
   return (
