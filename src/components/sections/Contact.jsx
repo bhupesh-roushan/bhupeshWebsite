@@ -179,7 +179,7 @@ export const Contact = () => {
               className={`w-full py-3 px-6 rounded font-medium transition ${
                 loading
                   ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-600 to-white text-white hover:-translate-y-0.5 hover:shadow-md"
+                  : "bg-gradient-to-r from-indigo-600 to-white text-white hover:-translate-y-0.5 hover:shadow-md cursor-pointer"
               }`}
             >
               {loading ? "Sending..." : "Send Message"}
