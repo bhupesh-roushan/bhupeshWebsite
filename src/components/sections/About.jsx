@@ -31,6 +31,8 @@ import {
   SiDocker,
   SiBlackmagicdesign,
   SiLinux,
+  SiCplusplus,
+  SiThealgorithms,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
 import { DiVisualstudio } from "react-icons/di";
@@ -116,6 +118,10 @@ export const About = () => {
     {
       name: "Software Engineering",
       icon: <CgWebsite className="text-yellow-500 text-2xl" />,
+    },
+     {
+      name: "Data Structures and Algorithms",
+      icon: <SiThealgorithms className="text-cyan-500 text-2xl" />,
     },
   
     
