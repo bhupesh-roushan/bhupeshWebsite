@@ -3,151 +3,8 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
 import { journey } from "../../data/portfolio";
-import {
-  FaHtml5,
-  FaCss3Alt,
-  FaJs,
-  FaReact,
-  FaNodeJs,
-  FaGitAlt,
-  FaGithub,
-  FaFigma,
-} from "react-icons/fa";
-import {
-  SiRedux,
-  SiTailwindcss,
-  SiBootstrap,
-  SiNextdotjs,
-  SiFramer,
-  SiExpress,
-  SiMongodb,
-  SiPostman,
-  SiVercel,
-  SiRender,
-  SiNetlify,
-  SiSupabase,
-  SiMongoose,
-  SiPython,
-  SiMysql,
-  SiIntellijidea,
-  SiTypescript,
-  SiDocker,
-  SiBlackmagicdesign,
-  SiLinux,
-  SiThealgorithms,
-  SiLangchain,
-} from "react-icons/si";
-import { GrMysql } from "react-icons/gr";
-import { DiVisualstudio } from "react-icons/di";
-import { TbApi, TbDatabaseSearch, TbDatabase, TbRobot } from "react-icons/tb";
-import { FaJava } from "react-icons/fa6";
-import { LiaLaptopCodeSolid } from "react-icons/lia";
-import { PiSpinner, PiMagicWandFill } from "react-icons/pi";
-import { MdDataObject, MdOutlineSecurity } from "react-icons/md";
-import { LuComputer, LuChartNetwork, LuArrowUpRight } from "react-icons/lu";
-import { CgWebsite } from "react-icons/cg";
-
-const iconClass = "text-lg shrink-0";
-
-const skillGroups = [
-  {
-    title: "Frontend",
-    span: "lg:col-span-3",
-    accent: "56,189,248",
-    items: [
-      { name: "HTML", icon: <FaHtml5 className={`${iconClass} text-orange-500`} /> },
-      { name: "CSS", icon: <FaCss3Alt className={`${iconClass} text-blue-400`} /> },
-      { name: "React.js", icon: <FaReact className={`${iconClass} text-blue-500`} /> },
-      { name: "Context API", icon: <TbApi className={`${iconClass} text-blue-500`} /> },
-      { name: "Redux", icon: <SiRedux className={`${iconClass} text-red-500`} /> },
-      { name: "Tailwind CSS", icon: <SiTailwindcss className={`${iconClass} text-cyan-500`} /> },
-      { name: "Bootstrap", icon: <SiBootstrap className={`${iconClass} text-purple-500`} /> },
-      { name: "Next.js", icon: <SiNextdotjs className={`${iconClass} text-white`} /> },
-      { name: "Framer Motion", icon: <SiFramer className={`${iconClass} text-pink-500`} /> },
-    ],
-  },
-  {
-    title: "Backend",
-    span: "lg:col-span-3",
-    accent: "34,197,94",
-    items: [
-      { name: "Node.js", icon: <FaNodeJs className={`${iconClass} text-green-500`} /> },
-      { name: "Express.js", icon: <SiExpress className={`${iconClass} text-yellow-400`} /> },
-      { name: "REST APIs", icon: <TbApi className={`${iconClass} text-blue-500`} /> },
-      { name: "Supabase (BaaS)", icon: <SiSupabase className={`${iconClass} text-green-500`} /> },
-      { name: "JWT Auth", icon: <PiSpinner className={`${iconClass} text-pink-500`} /> },
-    ],
-  },
-  {
-    title: "GenAI",
-    span: "lg:col-span-4",
-    accent: "168,85,247",
-    highlight: true,
-    items: [
-      { name: "LangChain", icon: <SiLangchain className={`${iconClass} text-green-500`} /> },
-      { name: "RAG", icon: <TbDatabaseSearch className={`${iconClass} text-cyan-500`} /> },
-      { name: "ChromaDB", icon: <TbDatabase className={`${iconClass} text-orange-500`} /> },
-      { name: "Embeddings", icon: <LuChartNetwork className={`${iconClass} text-purple-500`} /> },
-      { name: "LLM APIs", icon: <TbApi className={`${iconClass} text-blue-500`} /> },
-      { name: "Prompt Engineering", icon: <PiMagicWandFill className={`${iconClass} text-pink-500`} /> },
-      { name: "AI Agents", icon: <TbRobot className={`${iconClass} text-yellow-500`} /> },
-    ],
-  },
-  {
-    title: "Languages",
-    span: "lg:col-span-2",
-    accent: "249,115,22",
-    items: [
-      { name: "Java", icon: <FaJava className={`${iconClass} text-red-500`} /> },
-      { name: "JavaScript", icon: <FaJs className={`${iconClass} text-yellow-500`} /> },
-      { name: "TypeScript", icon: <SiTypescript className={`${iconClass} text-blue-500`} /> },
-      { name: "Python", icon: <SiPython className={`${iconClass} text-blue-500`} /> },
-      { name: "C", icon: <LiaLaptopCodeSolid className={`${iconClass} text-green-500`} /> },
-    ],
-  },
-  {
-    title: "Concepts",
-    span: "lg:col-span-4",
-    accent: "99,102,241",
-    items: [
-      { name: "OOPs", icon: <MdDataObject className={`${iconClass} text-green-500`} /> },
-      { name: "System Design", icon: <SiBlackmagicdesign className={`${iconClass} text-red-500`} /> },
-      { name: "Computer Networks", icon: <LuComputer className={`${iconClass} text-white`} /> },
-      { name: "Network Security", icon: <MdOutlineSecurity className={`${iconClass} text-orange-500`} /> },
-      { name: "Operating Systems", icon: <SiLinux className={`${iconClass} text-blue-500`} /> },
-      { name: "Software Engineering", icon: <CgWebsite className={`${iconClass} text-yellow-500`} /> },
-      { name: "DSA", icon: <SiThealgorithms className={`${iconClass} text-cyan-500`} /> },
-    ],
-  },
-  {
-    title: "Databases",
-    span: "lg:col-span-2",
-    accent: "16,185,129",
-    items: [
-      { name: "MongoDB", icon: <SiMongodb className={`${iconClass} text-green-500`} /> },
-      { name: "Mongoose", icon: <SiMongoose className={`${iconClass} text-white`} /> },
-      { name: "MySQL", icon: <GrMysql className={`${iconClass} text-blue-500`} /> },
-    ],
-  },
-  {
-    title: "Tools & Others",
-    span: "lg:col-span-6",
-    accent: "236,72,153",
-    items: [
-      { name: "Git", icon: <FaGitAlt className={`${iconClass} text-red-500`} /> },
-      { name: "GitHub", icon: <FaGithub className={`${iconClass} text-white`} /> },
-      { name: "Docker", icon: <SiDocker className={`${iconClass} text-blue-500`} /> },
-      { name: "VS Code", icon: <DiVisualstudio className={`${iconClass} text-blue-500`} /> },
-      { name: "Figma", icon: <FaFigma className={`${iconClass} text-pink-500`} /> },
-      { name: "Postman", icon: <SiPostman className={`${iconClass} text-orange-500`} /> },
-      { name: "MySQL Workbench", icon: <SiMysql className={`${iconClass} text-blue-500`} /> },
-      { name: "IntelliJ IDEA", icon: <SiIntellijidea className={`${iconClass} text-pink-500`} /> },
-      { name: "Vercel", icon: <SiVercel className={`${iconClass} text-white`} /> },
-      { name: "Render", icon: <SiRender className={`${iconClass} text-white`} /> },
-      { name: "Netlify", icon: <SiNetlify className={`${iconClass} text-white`} /> },
-    ],
-  },
-];
+import { LuArrowUpRight } from "react-icons/lu";
+import { skillGroups } from "../../data/skills";
 
 /** Inclusive month span, the way LinkedIn counts it: Apr 2025–May 2026 = 1y 2mo. */
 function durationLabel(start, end) {
@@ -267,7 +124,10 @@ export const About = () => {
                   <div className="flex flex-wrap gap-2">
                     {group.items.map((item) => (
                       <Chip key={item.name}>
-                        {item.icon}
+                        <item.Icon
+                          className="text-lg shrink-0"
+                          style={{ color: item.color }}
+                        />
                         {item.name}
                       </Chip>
                     ))}
