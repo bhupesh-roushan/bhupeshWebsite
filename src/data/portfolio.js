@@ -171,10 +171,15 @@ export const journey = [
 export const projects = [
   {
     id: "cloudwatch",
+    hasDiagram: true,
+    codeLinks: [
+      { label: "Gemini listing generation", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/ai-intelligence.ts" },
+      { label: "Firecrawl competitor scraping", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/firecrawl.ts" },
+      { label: "Razorpay checkout", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/razorpay.ts" },
+      { label: "Role-based auth middleware", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/middleware/requireAuth.ts" },
+    ],
     repo: "https://github.com/bhupesh-roushan/cloudwatch-digital",
-    // PLACEHOLDER — correct this. Reviewers read impact numbers very
-    // differently depending on whether you owned all of it or part of it.
-    role: "Solo build — design, frontend, backend and deployment",
+    role: "Solo build — frontend, backend and deployment",
     title: "CloudWatch",
     tagline: "AI-Powered Digital Marketplace",
     period: "February 2026",
@@ -207,10 +212,14 @@ export const projects = [
   },
   {
     id: "buildingblocks",
+    codeLinks: [
+      { label: "PayPal integration", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/helpers/paypal.js" },
+      { label: "Auth middleware", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/middleware/auth-middleware.js" },
+      { label: "Course progress tracking", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/controllers/student-controller/course-progress-controller.js" },
+      { label: "Role-based route guard", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/client/src/components/route-guard/index.jsx" },
+    ],
     repo: "https://github.com/bhupesh-roushan/BuildingBlocks",
-    // PLACEHOLDER — correct this. Reviewers read impact numbers very
-    // differently depending on whether you owned all of it or part of it.
-    role: "Solo build — design, frontend, backend and deployment",
+    role: "Solo build — frontend, backend and deployment",
     title: "BuildingBlocks",
     tagline: "Learning Management System",
     period: "January 2025",
@@ -243,10 +252,13 @@ export const projects = [
   },
   {
     id: "hourglass",
+    codeLinks: [
+      { label: "Socket.io server", href: "https://github.com/bhupesh-roushan/hourglass/blob/main/backend/socket/socket.js" },
+      { label: "Real-time message hook", href: "https://github.com/bhupesh-roushan/hourglass/blob/main/frontend/src/hooks/useGetRTM.jsx" },
+      { label: "Auth slice (Redux)", href: "https://github.com/bhupesh-roushan/hourglass/blob/main/frontend/src/redux/authSlice.js" },
+    ],
     repo: "https://github.com/bhupesh-roushan/hourglass",
-    // PLACEHOLDER — correct this. Reviewers read impact numbers very
-    // differently depending on whether you owned all of it or part of it.
-    role: "Solo build — design, frontend, backend and deployment",
+    role: "Solo build — frontend, backend and deployment",
     title: "Hourglass",
     tagline: "Real-Time Social Media",
     image: hourglass,
@@ -277,10 +289,13 @@ export const projects = [
   },
   {
     id: "cubekit",
+    codeLinks: [
+      { label: "Jobs API + filtering", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/api/apijobs.js" },
+      { label: "Job posting form", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/pages/PostJobs.jsx" },
+      { label: "Application drawer", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/components/ApplyJobDrawer.jsx" },
+    ],
     repo: "https://github.com/bhupesh-roushan/cubekit-hiring",
-    // PLACEHOLDER — correct this. Reviewers read impact numbers very
-    // differently depending on whether you owned all of it or part of it.
-    role: "Solo build — design, frontend, backend and deployment",
+    role: "Solo build — frontend, backend and deployment",
     title: "Cubekit",
     tagline: "Hiring Platform",
     period: "August 2024",
@@ -311,10 +326,12 @@ export const projects = [
   },
   {
     id: "frequencii",
+    codeLinks: [
+      { label: "Cart slice", href: "https://github.com/bhupesh-roushan/frequencii/blob/master/src/redux/CartSlice.jsx" },
+      { label: "Store setup", href: "https://github.com/bhupesh-roushan/frequencii/blob/master/src/redux/Store.jsx" },
+    ],
     repo: "https://github.com/bhupesh-roushan/frequencii",
-    // PLACEHOLDER — correct this. Reviewers read impact numbers very
-    // differently depending on whether you owned all of it or part of it.
-    role: "Solo build — design, frontend, backend and deployment",
+    role: "Solo build — frontend, backend and deployment",
     title: "Frequencii",
     tagline: "E-Commerce Prototype",
     image: frequencii,
@@ -338,10 +355,12 @@ export const projects = [
   },
   {
     id: "pictelai",
+    codeLinks: [
+      { label: "Gemini API config", href: "https://github.com/bhupesh-roushan/PictelAI-Powered-by-Gemini/blob/master/src/config/gemini.js" },
+      { label: "Context provider", href: "https://github.com/bhupesh-roushan/PictelAI-Powered-by-Gemini/blob/master/src/context/Context.jsx" },
+    ],
     repo: "https://github.com/bhupesh-roushan/PictelAI-Powered-by-Gemini",
-    // PLACEHOLDER — correct this. Reviewers read impact numbers very
-    // differently depending on whether you owned all of it or part of it.
-    role: "Solo build — design, frontend, backend and deployment",
+    role: "Solo build — frontend, backend and deployment",
     title: "PictelAI",
     tagline: "Powered by Gemini",
     image: pictelAi,
