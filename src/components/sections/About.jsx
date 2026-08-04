@@ -47,6 +47,9 @@ import { CgWebsite } from "react-icons/cg";
 import adda from "../../assets/adda.png";
 import prep from "../../assets/prep.png";
 import masai from "../../assets/masai.jpg";
+import varcons from "../../assets/varcons.png";
+import bms from "../../assets/bms.png";
+import hudl from "../../assets/hudl.png";
 export const About = () => {
   const frontendSkills = [
     { name: "HTML", icon: <FaHtml5 className="text-orange-500 text-2xl" /> },
@@ -418,14 +421,66 @@ export const About = () => {
 
               </div>
             </div>
+
+            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
+              <div className="flex flex-col items-center space-y-2">
+                <div className="flex items-center space-x-2">
+                  <img
+                    src={hudl}
+                    alt=""
+                    className="items-center h-10 w-32 object-contain"
+                  />
+                </div>
+
+                <h2 className="font-extrabold text-lg text-center">Hudl</h2>
+                <h2 className="font-extrabold text-lg text-center">
+                  Sports Analyst
+                </h2>
+                <h2 className="font-extrabold text-lg text-center text-blue-500">
+                  ( June 2023 - November 2023 )
+                </h2>
+              </div>
+
+              <div className="my-5 ">
+                <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-indigo-500 to-white text-transparent bg-clip-text ">
+                  Tech Stack : SQL, Excel, Google Sheets, Hudl Platform, Data
+                  Cleaning, Data Validation, Data QA, Sports Analytics.
+                </p>
+
+                <p className=" font-extralight text-md text-justify">
+                  1. Processed and analyzed high-volume sports video datasets
+                  using Hudl tools, converting match events, player actions,
+                  tactical sequences, and performance indicators into
+                  structured analytical data for reporting and performance
+                  insights.
+                </p>
+
+                <p className="mt-5 font-extralight text-md text-justify">
+                  2. Cleaned, transformed, and validated match-event datasets
+                  using SQL, Excel, and Google Sheets, performing data
+                  quality checks to identify tagging inconsistencies, correct
+                  classification errors, and maintain reliable datasets for
+                  downstream sports analytics.
+                </p>
+              </div>
+            </div>
+
             <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
               <h3 className="text-2xl font-bold mb-4 text-white text-center">
                 Education
               </h3>
 
+              <div className="flex justify-center mb-2">
+                <img
+                  src={bms}
+                  alt=""
+                  className="h-14 w-14 object-contain"
+                />
+              </div>
+
               <h2 className="font-extrabold text-lg text-center">
                 BMS Institute of Technology and Management, Bangalore
-                
+
               </h2>
               <h2 className="font-extrabold text-lg text-center text-blue-500">
                 (2018 - 2023)
@@ -454,6 +509,14 @@ export const About = () => {
               </h3>
               <div className="space-y-2 text-gray-300">
                 <div>
+                  <div className="flex justify-center pt-2">
+                    <img
+                      src={varcons}
+                      alt=""
+                      className="h-10 w-32 object-contain rounded-md"
+                    />
+                  </div>
+
                   <h3 className="font-extrabold text-center text-lg text-white my-4">
                     {" "}
                     Full Stack Developer Intern -{" "}
