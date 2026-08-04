@@ -4,6 +4,7 @@ import { allSkills } from "../data/skills";
 const COLS = 12;
 const ROWS = 8;
 const REVEAL_RADIUS = 170;
+const TOUCH_RADIUS = 120;
 
 // Applied inline so the layer is masked from the very first paint. Waiting for
 // the effect left a frame where every icon was visible, and on touch devices —
@@ -46,11 +47,6 @@ export const TechBackdrop = () => {
     const el = layerRef.current;
     if (!el) return;
 
-    // No hover on coarse pointers, so nothing can drive the reveal — leave the
-    // element on its initial zero-radius mask rather than bailing before one is
-    // applied, which is what made every icon show up on touch devices.
-    if (window.matchMedia("(hover: none)").matches) return;
-
     const section = el.closest("section");
     if (!section) return;
 
@@ -64,21 +60,35 @@ export const TechBackdrop = () => {
       const rect = section.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
+      // A finger needs a tighter circle: 170px on a 390px-wide screen would
+      // light up most of the hero at once.
+      const radius = e.pointerType === "mouse" ? REVEAL_RADIUS : TOUCH_RADIUS;
       frame.current = requestAnimationFrame(() => {
-        const mask = `radial-gradient(${REVEAL_RADIUS}px circle at ${x}px ${y}px, #000 0%, rgba(0,0,0,0.6) 50%, transparent 75%)`;
+        const mask = `radial-gradient(${radius}px circle at ${x}px ${y}px, #000 0%, rgba(0,0,0,0.6) 50%, transparent 75%)`;
         el.style.maskImage = mask;
         el.style.webkitMaskImage = mask;
       });
     };
 
+    // Pointer events rather than mouse events, so a finger drives the reveal
+    // too. On touch, pointermove only fires while the screen is being touched,
+    // which is exactly the behaviour we want — nothing shows at rest.
+    const onRelease = (e) => {
+      if (e.pointerType !== "mouse") hide();
+    };
+
     hide();
-    section.addEventListener("mousemove", onMove);
-    section.addEventListener("mouseleave", hide);
+    section.addEventListener("pointermove", onMove, { passive: true });
+    section.addEventListener("pointerleave", hide);
+    section.addEventListener("pointercancel", hide);
+    section.addEventListener("pointerup", onRelease);
 
     return () => {
       cancelAnimationFrame(frame.current);
-      section.removeEventListener("mousemove", onMove);
-      section.removeEventListener("mouseleave", hide);
+      section.removeEventListener("pointermove", onMove);
+      section.removeEventListener("pointerleave", hide);
+      section.removeEventListener("pointercancel", hide);
+      section.removeEventListener("pointerup", onRelease);
     };
   }, []);
 

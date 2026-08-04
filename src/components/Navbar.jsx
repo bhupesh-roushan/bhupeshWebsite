@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import icon from "../assets/icon.svg";
+import icon from "../assets/logo.svg";
 import { LuLinkedin, LuMenu, LuX } from "react-icons/lu";
 import { FaGithub, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -86,7 +86,8 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
         <div className="flex h-16 items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr]">
           {/* Brand */}
           <a href="#home" className="flex w-fit items-center gap-2 justify-self-start">
-            <img src={icon} alt="" className="h-8 w-8 sm:h-9 sm:w-9" />
+            {/* w-auto, not a square box — the mark is 32x48 and would squash */}
+            <img src={icon} alt="" className="h-7 w-auto sm:h-8" />
             <span className="font-mono text-sm font-bold text-white sm:text-base">
               Bhupesh<span className="text-indigo-500">.website</span>
             </span>
