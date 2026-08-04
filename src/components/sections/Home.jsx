@@ -7,6 +7,7 @@ import {
   LuChevronDown,
   LuMapPin,
 } from "react-icons/lu";
+import { TechBackdrop } from "../TechBackdrop";
 import video from "../../assets/video.mp4";
 import bhupesh from "../../assets/bhupesh.png";
 
@@ -79,6 +80,9 @@ export const Home = () => {
           WebkitMaskImage: "radial-gradient(ellipse at center, black 10%, transparent 72%)",
         }}
       />
+
+      {/* Tech logos behind the copy, lit up around the cursor */}
+      <TechBackdrop />
 
       <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
         {/* Avatar */}
