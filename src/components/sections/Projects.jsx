@@ -1,471 +1,193 @@
+import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
-import cubekit from "./../../assets/cubekit.png";
-import buildingBlocks from "./../../assets/buildingBlocks.png";
-import cloudwatch from "./../../assets/cloudwatch.png";
-import hourglass from "./../../assets/hourglass.png";
-import frequencii from "./../../assets/frequencii.png";
-import pictelAi from "./../../assets/pictelAi.png";
+import { BentoGrid, BentoCard } from "../ui/BentoGrid";
+import { Modal } from "../ui/Modal";
+import { projects } from "../../data/portfolio";
+import { LuArrowUpRight, LuKeyRound } from "react-icons/lu";
+
 export const Projects = () => {
+  const [activeId, setActiveId] = useState(null);
+  const active = projects.find((p) => p.id === activeId) ?? null;
+
   return (
-    <section
-      id="projects"
-      className="min-h-screen flex items-center justify-center py-20"
-    >
-      <div className="max-w-5xl mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8  text-white bg-clip-text  text-center">
-          {" "}
-          Featured Projects
-        </h2>
-        {/* Cloudwatch.in */}
+    <section id="projects" className="min-h-screen py-20">
+      <RevealOnScroll>
+        <div className="mx-auto max-w-6xl px-4">
+          <h2 className="mb-2 text-center text-3xl font-bold text-white">
+            Featured Projects
+          </h2>
+          <p className="mb-10 text-center text-sm text-gray-400">
+            Tap a project for the full breakdown and demo credentials.
+          </p>
 
-        {/* Hourglass.in */}
-
-        <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-          <div
-            className="
-              glass p-6 rounded-xl border border-white/10 
-              hover:-translate-y-1 hover:border-blue-500/30
-              hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all shadow-md shadow-indigo-500
-            "
-          >
-            <h3 className="text-xl font-bold text-pink-500 mb-5 text-center">
-              CloudWatch - AI Powered Digital Marketplace
-            </h3>
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {[
-                "Next.js 16",
-                "TypeScript",
-                "Node.js",
-                "Express",
-                "MongoDB",
-                "Razorpay",
-                "Gemini API",
-                "Cloudinary",
-                "StackBlitz",
-                "Aceternity UI",
-              ].map((tech) => (
-                <span
-                  key={tech}
-                  className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
-              <li>
-                • Built an AI-powered digital marketplace enabling creators to
-                sell products using Next.js 16, TypeScript, Tailwind CSS, and
-                Aceternity UI on the frontend and Express.js, MongoDB, and
-                Mongoose on the backend with role-based authentication.
-              </li>
-              <li>
-                • Integrated Gemini 2.0 Flash AI, Firecrawl, and SerpAPI to
-                automate product listing generation, competitor analysis,
-                pricing insights, and SEO optimization, reducing manual listing
-                effort by 60% and improving SEO efficiency by 40%.
-              </li>
-              <li>
-                • Implemented Razorpay checkout, StackBlitz live previews, and
-                Cloudinary media management with features like search filters,
-                digital purchase library, analytics dashboard, bulk imports,
-                admin moderation, and real-time sales tracking, reducing product
-                upload time by 45% and improving workflow efficiency by 30%.
-              </li>
-
-              <li>
-                {" "}
-                <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
-                  • Demo Credentials :
-                </span>{" "}
-                <ul>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Login: </span>{" "}
-                    user@gmail.com / user1
-                  </li>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Payment: </span> Use Card
-                    with number 16 0’s
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
-              <img src={cloudwatch} alt="" className="rounded-lg p-2" />
-            </div>
-            <div className="flex justify-between items-center">
-              <a
-                href="https://www.cloudwatch.in/"
-                target="_blank"
-                className="text-blue-400 hover:text-blue-300 transition-colors my-4"
+          <BentoGrid className="lg:auto-rows-[15rem]">
+            {projects.map((project) => (
+              <BentoCard
+                key={project.id}
+                className={project.span}
+                accent={project.accent}
+                onClick={() => setActiveId(project.id)}
               >
-                View Project →
-              </a>
-            </div>
-          </div>
+                <div className="relative flex h-full min-h-[15rem] flex-col justify-end lg:min-h-0">
+                  {/* preview */}
+                  <img
+                    src={project.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* soft wash so the screenshot sits back from the UI */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgba(11,11,18,0.85) 0%, rgba(11,11,18,0.35) 55%, rgba(11,11,18,0.05) 100%)",
+                    }}
+                  />
 
+                  {/* label — carries its own scrim, so legibility never depends
+                      on how tall the card happens to be */}
+                  <div
+                    className="relative px-5 pb-5 pt-14"
+                    style={{
+                      background:
+                        "linear-gradient(to top, #0b0b12 0%, #0b0b12 62%, rgba(11,11,18,0) 100%)",
+                    }}
+                  >
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg font-bold text-white">{project.title}</h3>
+                      {project.period && (
+                        <span className="text-[11px] font-medium text-gray-400">
+                          {project.period}
+                        </span>
+                      )}
+                    </div>
+                    <p
+                      className="mb-3 text-xs font-semibold"
+                      style={{ color: `rgb(${project.accent})` }}
+                    >
+                      {project.tagline}
+                    </p>
 
-          <div className="glass p-6 rounded-xl border border-white/10 
-              hover:-translate-y-1 hover:border-blue-500/30
-              hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all shadow-md shadow-indigo-500
-            ">
-            <h3 className="text-xl font-bold text-pink-500 text-center mb-5">
-              Building Blocks - LMS Software{" "}
-            </h3>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {project.stack.slice(0, project.featured ? 6 : 3).map((tech) => (
+                        <span
+                          key={tech}
+                          className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-gray-300"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                      {project.stack.length > (project.featured ? 6 : 3) && (
+                        <span className="text-[11px] text-gray-500">
+                          +{project.stack.length - (project.featured ? 6 : 3)}
+                        </span>
+                      )}
+                    </div>
 
-            <div className="flex flex-wrap gap-2 mb-4">
-              {[
-                "Node.js",
-                "Express.js",
-                "MongoDB",
-                "React.js",
-                "PayPal",
-                "Cloudinary",
-                "Shadcn",
-                "Tailwind CSS",
-                "Vercel",
-                "Hostinger",
-              ].map((tech, key) => (
-                <span
-                  key={key}
-                  className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
-              <li>
-                • Developed an LMS with role-based dashboards for instructors
-                and students, improving course management efficiency by 40%.
-              </li>
-              <li>
-                • Implemented course creation and management with bulk video
-                uploads, real-time tracking, and interactive controls, reducing
-                upload time by 60% and boosting engagement.
-              </li>
-              <li>
-                • Integrated PayPal payment gateway for secure transactions,
-                increasing payment success rate by 25%, and hosted the platform
-                on a custom domain for better accessibility.
-              </li>
-              <li>
-                <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
-                  • Demo Credentials : <span></span>
-                </span>
-                <ul>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Student: </span>{" "}
-                    student@gmail.com/ student
-                  </li>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Instructor: </span>{" "}
-                    instructor@gmail.com/ instructor
-                  </li>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Payment: </span>{" "}
-                    buildingblocks@business.com/ buildingblocks
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
-              <img src={buildingBlocks} alt="" className="rounded-lg p-2" />
-            </div>
-
-            <div className="flex justify-between items-center">
-              <a
-                href="https://buildingblocks.cloud"
-                target="_blank"
-                className="text-blue-400 hover:text-blue-300 transition-colors my-4"
-              >
-                View Project →
-              </a>
-            </div>
-          </div>
-          <div
-            className="
-              glass p-6 rounded-xl border border-white/10 
-              hover:-translate-y-1 hover:border-blue-500/30
-              hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all shadow-md shadow-indigo-500
-            "
-          >
-            <h3 className="text-xl font-bold text-pink-500 text-center mb-5">
-              Hourglass - Social Media
-            </h3>
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {[
-                "React.js",
-                "Node.js",
-                "Express.js",
-                "MongoDB",
-                "Redux",
-                "Socket.io",
-                "Cloudinary",
-                "Shadcn",
-                "Tailwind CSS",
-                "Render",
-              ].map((tech, key) => (
-                <span
-                  key={key}
-                  className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
-              <li>
-                • Developed Hourglass, a social media app with real-time
-                messaging, post creation, likes, comments, and bookmarks using
-                React.js, Node.js, Express.js, and MongoDB.
-              </li>
-              <li>
-                • Integrated Cloudinary for image uploads, Redux Toolkit for
-                state management, and Socket.io for real-time messaging and
-                notifications, enhancing user engagement.
-              </li>
-              <li>
-                • Styled with Tailwind CSS and Shadcn, deployed on Render for
-                seamless scalability and reliable hosting.
-              </li>
-              <li>
-                {" "}
-                <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
-                  • Demo Credentials :
-                </span>{" "}
-                <ul>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Username: </span>{" "}
-                    hourglass@user.com
-                  </li>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Password: </span>{" "}
-                    admin@user.com
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
-              <img src={hourglass} alt="" className="rounded-lg p-2" />
-            </div>
-            <div className="flex justify-between items-center">
-              <a
-                href="https://hourglass-0e3w.onrender.com/"
-                target="_blank"
-                className="text-blue-400 hover:text-blue-300 transition-colors my-4"
-              >
-                View Project →
-              </a>
-            </div>
-          </div>
-
-          <div
-            className="
-              glass p-6 rounded-xl border border-white/10 
-              hover:-translate-y-1 hover:border-blue-500/30
-              hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all shadow-md shadow-indigo-500
-            "
-          >
-            <h3 className="text-xl font-bold text-pink-500 mb-5 text-center">
-              Cubekit - Hiring Platform
-            </h3>
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {[
-                "React.js",
-                "Tailwind CSS",
-                "Shadcn UI",
-                "Supabase",
-                "React Hook Form",
-                "Clerk",
-                "Zod",
-                "Email JS",
-                "Vercel",
-              ].map((tech) => (
-                <span
-                  key={tech}
-                  className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
-              <li>
-                • Developed Cubekit, a hiring platform using React.js, Supabase,
-                and Clerk for secure authentication and role-based dashboards.
-              </li>
-              <li>
-                • Implemented an advanced job posting system with React Hook
-                Form, Zod, and location-based filtering, reducing job posting
-                time by 40%.
-              </li>
-              <li>
-                • Streamlined job applications with resume uploads, status
-                tracking, and a responsive UI using Tailwind CSS, Shadcn, and
-                EmailJS for automated newsletters.
-              </li>
-              <li>
-                {" "}
-                <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
-                  • Demo Credentials :
-                </span>{" "}
-                <ul>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Recruiter: </span>{" "}
-                    recruiter@gmail.com/ 12345678
-                  </li>
-                  <li>
-                    {" "}
-                    <span className="text-pink-500">Candidate: </span>{" "}
-                    candidate@gmail.com/ 12345678
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
-              <img src={cubekit} alt="" className="rounded-lg p-2" />
-            </div>
-            <div className="flex justify-between items-center">
-              <a
-                href="https://cubekit.vercel.app/"
-                target="_blank"
-                className="text-blue-400 hover:text-blue-300 transition-colors my-4"
-              >
-                View Project →
-              </a>
-            </div>
-          </div>
-
-          <div
-            className="
-              glass p-6 rounded-xl border border-white/10 
-              hover:-translate-y-1 hover:border-blue-500/30
-              hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all shadow-md shadow-indigo-500
-            "
-          >
-            <h3 className="text-xl font-bold mb-5 text-pink-500 text-center">
-              Frequencii - E Commerce
-            </h3>
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {[
-                "ReactJs",
-                "Redux",
-                "Redux Toolkit",
-                "EmailJs",
-                "ShadCn",
-                "Tailwind CSS",
-                "Vercel",
-              ].map((tech, key) => (
-                <span
-                  key={key}
-                  className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
-              <li>
-                • Developed an e-commerce prototype using React.js and Redux
-                Toolkit for dynamic state management and an interactive user
-                experience.
-              </li>
-              <li>
-                • Styled with Tailwind CSS and ShadCn, ensuring a fully
-                responsive and visually appealing interface.
-              </li>
-              <li>
-                • Integrated EmailJS for automated customer communication,
-                enhancing user engagement.
-              </li>
-            </ul>
-            <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
-              <img src={frequencii} alt="" className="rounded-lg p-2" />
-            </div>
-            <div className="flex justify-between items-center ">
-              <a
-                href="https://frequencii.vercel.app"
-                target="_blank"
-                className="text-blue-400 hover:text-blue-300 transition-colors my-4"
-              >
-                View Project →
-              </a>
-            </div>
-          </div>
-
-          <div className="glass p-6 rounded-xl border border-white/10 
-              hover:-translate-y-1 hover:border-blue-500/30
-              hover:shadow-[0_4px_20px_rgba(59,130,246,0.1)]
-              transition-all shadow-md shadow-indigo-500
-            ">
-            <h3 className="text-xl font-bold mb-5 text-pink-500 text-center">
-              PictelAI - Powered by Gemini
-            </h3>
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {[
-                "ReactJs",
-                "Context API",
-                "Tailwind CSS",
-                "Google Gemini API",
-                "Vercel",
-              ].map((tech, key) => (
-                <span
-                  key={key}
-                  className="bg-blue-500/10 py-1 px-4  mx-2 rounded-md text-sm hover:bg-blue-500/20 hover:shadow-[0_2px_8px_rgba(59,130,246,0.1)] transition-all bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text  sm:text-md font-bold shadow-md shadow-blue-600"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <ul className="text-white my-4 flex gap-2 flex-col w-full text-justify">
-              <li>
-                • Developed an AI-powered web app using React.js and integrated
-                the Google Gemini API for interactive content generation.
-              </li>
-              <li>
-                • Utilized Context API for efficient and scalable state
-                management.
-              </li>
-              <li>
-                • Designed a responsive UI with Tailwind CSS, ensuring a
-                seamless experience across all devices.
-              </li>
-            </ul>
-            <div className="flex justify-center items-center border-2 rounded-lg border-blue-600/40 my-4">
-              <img src={pictelAi} alt="" className="rounded-lg p-2" />
-            </div>
-
-            <div className="flex justify-between items-center">
-              <a
-                href="https://pictelai.vercel.app/"
-                target="_blank"
-                className="text-blue-400 hover:text-blue-300 transition-colors my-4"
-              >
-                View Project →
-              </a>
-            </div>
-          </div>
+                    <div className="mt-4 flex items-center gap-1 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
+                      View details
+                      <LuArrowUpRight className="h-3.5 w-3.5" />
+                    </div>
+                  </div>
+                </div>
+              </BentoCard>
+            ))}
+          </BentoGrid>
         </div>
-      </div>
+      </RevealOnScroll>
+
+      {/* ── Detail modal ──────────────────────────────────────── */}
+      <Modal
+        open={Boolean(active)}
+        onClose={() => setActiveId(null)}
+        label={active ? `${active.title} details` : undefined}
+      >
+        {active && (
+          <div>
+            <div className="relative overflow-hidden rounded-t-2xl">
+              <img src={active.image} alt="" className="max-h-72 w-full object-cover object-top" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b12] to-transparent" />
+            </div>
+
+            <div className="p-6 sm:p-8">
+              <div className="mb-1 flex flex-wrap items-baseline gap-3">
+                <h3 className="text-2xl font-bold text-white">{active.title}</h3>
+                {active.period && (
+                  <span className="text-xs text-gray-400">{active.period}</span>
+                )}
+              </div>
+              <p
+                className="mb-5 text-sm font-semibold"
+                style={{ color: `rgb(${active.accent})` }}
+              >
+                {active.tagline}
+              </p>
+
+              <div className="mb-6 flex flex-wrap gap-2">
+                {active.stack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="rounded-lg border px-2.5 py-1 text-xs font-medium"
+                    style={{
+                      color: `rgb(${active.accent})`,
+                      borderColor: `rgba(${active.accent},0.3)`,
+                      backgroundColor: `rgba(${active.accent},0.08)`,
+                    }}
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              <ul className="space-y-4">
+                {active.bullets.map((bullet, i) => (
+                  <li key={i} className="flex gap-3 text-sm leading-relaxed text-gray-300">
+                    <span
+                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: `rgb(${active.accent})` }}
+                    />
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+
+              {active.credentials && (
+                <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-300">
+                    <LuKeyRound className="h-3.5 w-3.5" />
+                    Demo Credentials
+                  </div>
+                  <dl className="space-y-1.5">
+                    {active.credentials.map((cred) => (
+                      <div key={cred.label} className="flex flex-wrap gap-2 text-sm">
+                        <dt className="font-semibold text-pink-400">{cred.label}:</dt>
+                        <dd className="font-mono text-xs text-gray-300 sm:text-sm">
+                          {cred.value}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              )}
+
+              <a
+                href={active.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold
+                  text-white transition-transform hover:scale-[1.03]"
+                style={{
+                  backgroundColor: `rgba(${active.accent},0.18)`,
+                  border: `1px solid rgba(${active.accent},0.4)`,
+                }}
+              >
+                Visit live site
+                <LuArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        )}
+      </Modal>
     </section>
   );
 };
