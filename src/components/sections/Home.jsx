@@ -152,9 +152,9 @@ export const Home = () => {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="mx-auto mb-7 max-w-2xl text-sm leading-relaxed text-gray-300 sm:text-base"
         >
-          I build scalable web applications and AI-assisted workflows — from
-          rubric-based evaluation engines to full-stack products used by
-          thousands of learners.
+          I build scalable web applications and AI-powered workflows — turning
+          complex, manual processes into fast, reliable products people
+          actually enjoy using.
         </motion.p>
 
         {/* CTAs — visible at every breakpoint */}
