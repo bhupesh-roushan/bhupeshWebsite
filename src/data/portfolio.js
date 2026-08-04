@@ -18,6 +18,8 @@ import pictelAi from "../assets/pictelAi.png";
 export const journey = [
   {
     id: "masai",
+    start: "2026-05",
+    end: null,
     kind: "Work",
     company: "Masai",
     location: "Bangalore",
@@ -49,6 +51,8 @@ export const journey = [
   },
   {
     id: "adda247",
+    start: "2025-04",
+    end: "2026-05",
     kind: "Work",
     company: "Adda247",
     location: "Bangalore",
@@ -79,6 +83,8 @@ export const journey = [
   },
   {
     id: "hudl",
+    start: "2023-06",
+    end: "2023-11",
     kind: "Work",
     company: "Hudl",
     location: "Bangalore",
@@ -109,6 +115,8 @@ export const journey = [
   },
   {
     id: "varcons",
+    start: "2023-02",
+    end: "2023-03",
     kind: "Internship",
     company: "Varcons Technologies",
     location: "Bangalore",
@@ -130,6 +138,8 @@ export const journey = [
   },
   {
     id: "bms",
+    start: "2018-10",
+    end: "2023-05",
     kind: "Education",
     company: "BMS Institute of Technology and Management",
     location: "Bangalore",
