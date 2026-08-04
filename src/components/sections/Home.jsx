@@ -121,18 +121,17 @@ export const Home = () => {
           </div>
         </motion.div>
 
-        {/* Availability */}
+        {/* Location, in the theme's own palette. This slot used to hold a
+            pulsing green "Open to new opportunities" pill, which read as
+            asking rather than stating. */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.5 }}
-          className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-medium text-emerald-300 sm:text-xs"
+          className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-medium text-gray-300 backdrop-blur-sm sm:text-xs"
         >
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-          </span>
-          Open to new opportunities
+          <LuMapPin className="h-3.5 w-3.5 text-indigo-400" />
+          Bangalore, India
         </motion.div>
 
         {/* Name */}
@@ -220,10 +219,6 @@ export const Home = () => {
           ))}
         </motion.div>
 
-        <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-gray-400">
-          <LuMapPin className="h-3.5 w-3.5" />
-          Bangalore, India
-        </p>
       </div>
 
       {/* Scroll cue */}

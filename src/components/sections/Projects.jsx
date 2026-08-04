@@ -13,12 +13,9 @@ export const Projects = () => {
     <section id="projects" className="min-h-screen py-20">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-bold text-white">
+          <h2 className="mb-10 text-center text-3xl font-bold text-white">
             Featured Projects
           </h2>
-          <p className="mb-10 text-center text-sm text-gray-400">
-            Tap a project for the full breakdown and demo credentials.
-          </p>
 
           <BentoGrid>
             {projects.map((project) => (

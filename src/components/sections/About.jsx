@@ -43,10 +43,7 @@ export const About = () => {
     <section id="about" className="min-h-screen py-20">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-bold text-white">About Me</h2>
-          <p className="mb-10 text-center text-sm text-gray-400">
-            Tap any card to see the full story.
-          </p>
+          <h2 className="mb-10 text-center text-3xl font-bold text-white">About Me</h2>
 
           {/* ── Journey ─────────────────────────────────────────── */}
           <BentoGrid className="mb-14">

@@ -98,83 +98,76 @@ export const Contact = () => {
     <section id="contact" className="py-20">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-bold text-white">
+          <h2 className="mb-10 text-center text-3xl font-bold text-white">
             Get In Touch
           </h2>
-          <p className="mb-10 text-center text-sm text-gray-400">
-            Have a role, a project, or a question? I usually reply within a day.
-          </p>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             {/* ── Reach me directly ─────────────────────────── */}
             {/* Pairs up between sm and lg so the cards don't stretch on tablets. */}
             {/* content-start stops the rows stretching to match the taller
                 form column, which left the cards tall and half-empty. */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-1 lg:content-start">
-              <div className="flex flex-col gap-3">
-                <a
-                  href={`mailto:${EMAIL}`}
-                  className="group flex-1 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-indigo-500/40"
-                >
-                  <div className="mb-2 flex items-center gap-3">
-                    <span className="rounded-lg bg-indigo-500/15 p-2 text-indigo-400">
-                      <LuMail className="h-4 w-4" />
-                    </span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            {/* One card, three rows. As separate cards each held a single line
+                of text in its own bordered box, so most of the column was
+                padding and repeated chrome. */}
+            <div className="lg:col-span-2 lg:self-start">
+              <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+                <a href={`mailto:${EMAIL}`} className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
+                  <span className="shrink-0 rounded-lg bg-indigo-500/10 p-2 text-indigo-300">
+                    <LuMail className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                       Email
-                    </span>
+                    </p>
+                    <p className="break-all text-sm text-white group-hover:text-indigo-300">
+                      {EMAIL}
+                    </p>
                   </div>
-                  <p className="break-all text-sm text-white group-hover:text-indigo-300">
-                    {EMAIL}
-                  </p>
                 </a>
 
-                <button
-                  type="button"
-                  onClick={copyEmail}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-medium text-gray-300 transition-colors hover:border-white/25 hover:text-white cursor-pointer"
-                >
-                  {copied ? (
-                    <>
-                      <LuCheck className="h-3.5 w-3.5 text-emerald-400" />
-                      Copied to clipboard
-                    </>
-                  ) : (
-                    <>
-                      <LuCopy className="h-3.5 w-3.5" />
-                      Copy email address
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <a
-                href={`tel:${PHONE.replace(/\s/g, "")}`}
-                className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-blue-500/40"
-              >
-                <div className="mb-2 flex items-center gap-3">
-                  <span className="rounded-lg bg-blue-500/15 p-2 text-blue-400">
+                <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
+                  <span className="shrink-0 rounded-lg bg-indigo-500/10 p-2 text-indigo-300">
                     <LuPhone className="h-4 w-4" />
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    Phone
-                  </span>
-                </div>
-                <p className="text-sm text-white group-hover:text-blue-300">{PHONE}</p>
-              </a>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                      Phone
+                    </p>
+                    <p className="text-sm text-white group-hover:text-indigo-300">{PHONE}</p>
+                  </div>
+                </a>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                <div className="mb-2 flex items-center gap-3">
-                  <span className="rounded-lg bg-emerald-500/15 p-2 text-emerald-400">
+                <div className="flex items-center gap-3.5 p-4">
+                  <span className="shrink-0 rounded-lg bg-indigo-500/10 p-2 text-indigo-300">
                     <LuMapPin className="h-4 w-4" />
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    Location
-                  </span>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                      Location
+                    </p>
+                    <p className="text-sm text-white">Bangalore, India</p>
+                  </div>
                 </div>
-                <p className="text-sm text-white">Bangalore, India</p>
               </div>
 
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-medium text-gray-300 transition-colors hover:border-white/25 hover:text-white cursor-pointer"
+              >
+                {copied ? (
+                  <>
+                    <LuCheck className="h-3.5 w-3.5 text-emerald-400" />
+                    Copied to clipboard
+                  </>
+                ) : (
+                  <>
+                    <LuCopy className="h-3.5 w-3.5" />
+                    Copy email address
+                  </>
+                )}
+              </button>
             </div>
 
             {/* ── Form ──────────────────────────────────────── */}
