@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import icon from "../assets/icon.svg";
 import { LuLinkedin, LuMenu, LuX } from "react-icons/lu";
 import { FaGithub, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 const LINKS = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "projects", label: "Projects" },
+  { id: "contact", label: "Contact" },
 ];
 
 const SOCIALS = [
-  { href: "https://www.linkedin.com/in/roushanb", Icon: LuLinkedin, label: "LinkedIn", className: "text-blue-500" },
+  { href: "https://www.linkedin.com/in/roushanb", Icon: LuLinkedin, label: "LinkedIn" },
   { href: "https://github.com/bhupesh-roushan", Icon: FaGithub, label: "GitHub" },
   { href: "https://www.instagram.com/roushanwa", Icon: FaInstagram, label: "Instagram" },
   { href: "https://x.com/roushanwa", Icon: FaXTwitter, label: "X" },
@@ -20,6 +21,8 @@ const SOCIALS = [
 
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
   const [indiaTime, setIndiaTime] = useState("");
+  const [active, setActive] = useState("home");
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -35,59 +38,107 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           hour12: true,
         })
       );
-
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
 
+  // Solid bar once we're off the hero, transparent while over it.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Scroll spy — the section crossing the upper-middle band wins.
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+    );
+
+    LINKS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-[#0a0a0a]/80 shadow-lg backdrop-blur-md">
+    <nav
+      className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
+        scrolled
+          ? "border-b border-white/10 bg-[#0a0a0a]/85 backdrop-blur-md"
+          : "border-b border-transparent bg-transparent"
+      }`}
+    >
       <div className="mx-auto max-w-7xl px-4">
-        <div className="flex h-16 items-center justify-between gap-3">
+        {/* Flex on mobile, grid from md. The links container is display:none
+            below md, which drops it out of grid flow entirely — as a grid the
+            actions would fall into the middle column and leave a dead 1fr on
+            the right. From md up, 1fr/auto/1fr keeps the links optically
+            centred however wide the brand or actions get. */}
+        <div className="flex h-16 items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr]">
           {/* Brand */}
-          <a href="#home" className="flex shrink-0 items-center gap-2">
-            <img src={icon} alt="" className="h-8 w-8 sm:h-10 sm:w-10" />
-            <span className="font-mono text-sm font-bold text-white sm:text-lg">
+          <a href="#home" className="flex w-fit items-center gap-2 justify-self-start">
+            <img src={icon} alt="" className="h-8 w-8 sm:h-9 sm:w-9" />
+            <span className="font-mono text-sm font-bold text-white sm:text-base">
               Bhupesh<span className="text-indigo-500">.website</span>
             </span>
           </a>
 
-          {/* Desktop nav */}
-          <div className="hidden items-center gap-6 md:flex lg:gap-8">
-            {LINKS.map((l) => (
+          {/* Links */}
+          <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm md:flex">
+            {LINKS.map((link) => (
               <a
-                key={l.href}
-                href={l.href}
-                className="text-sm text-white transition-colors hover:text-indigo-400 lg:text-base"
+                key={link.id}
+                href={`#${link.id}`}
+                className={`relative rounded-full px-3.5 py-1.5 text-sm transition-colors lg:px-4 ${
+                  active === link.id ? "text-white" : "text-gray-400 hover:text-white"
+                }`}
               >
-                {l.label}
+                {active === link.id && (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    className="absolute inset-0 rounded-full bg-indigo-500/25 ring-1 ring-indigo-400/40"
+                  />
+                )}
+                <span className="relative">{link.label}</span>
               </a>
             ))}
           </div>
 
-          <div className="flex items-center gap-3 lg:gap-5">
-            {/* Socials — only once there's room for them */}
+          {/* Actions */}
+          <div className="flex items-center gap-3 justify-self-end lg:gap-4">
             <div className="hidden items-center gap-4 lg:flex">
-              {SOCIALS.map(({ href, Icon, label, className }) => (
+              {SOCIALS.map(({ href, Icon, label }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className={`transition-all hover:scale-110 ${className ?? "text-white"}`}
+                  className="text-gray-400 transition-all hover:scale-110 hover:text-white"
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-[18px] w-[18px]" />
                 </a>
               ))}
+              <span className="h-5 w-px bg-white/15" />
             </div>
 
-            <p className="hidden text-xs tabular-nums text-gray-300 sm:block lg:text-sm">
-              {indiaTime}
-            </p>
+            {/* Clock */}
+            <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 sm:flex">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+              <span className="text-xs tabular-nums text-gray-300">{indiaTime}</span>
+              <span className="hidden text-[11px] text-gray-500 lg:inline">IST</span>
+            </div>
 
-            {/* Mobile menu trigger */}
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
