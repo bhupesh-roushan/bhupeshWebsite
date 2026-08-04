@@ -3,7 +3,8 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
 import { projects } from "../../data/portfolio";
-import { LuArrowUpRight, LuKeyRound, LuUser, LuCode } from "react-icons/lu";
+import { LuArrowUpRight, LuKeyRound, LuUser, LuCode, LuNetwork } from "react-icons/lu";
+import { ArchitectureDiagram } from "../ArchitectureDiagram";
 
 export const Projects = () => {
   const [activeId, setActiveId] = useState(null);
@@ -146,6 +147,41 @@ export const Projects = () => {
                   </li>
                 ))}
               </ul>
+
+              {active.hasDiagram && (
+                <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-300">
+                    <LuNetwork className="h-3.5 w-3.5" />
+                    Architecture
+                  </div>
+                  <ArchitectureDiagram />
+                </div>
+              )}
+
+              {/* Straight to the files that back up the claims above —
+                  reviewers rarely go hunting through a repo on their own. */}
+              {active.codeLinks?.length > 0 && (
+                <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-300">
+                    <LuCode className="h-3.5 w-3.5" />
+                    Read the code
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {active.codeLinks.map((c) => (
+                      <a
+                        key={c.href}
+                        href={c.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] text-gray-300 transition-colors hover:border-white/30 hover:text-white"
+                      >
+                        {c.label}
+                        <LuArrowUpRight className="h-3 w-3 opacity-60" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {active.credentials && (
                 <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
