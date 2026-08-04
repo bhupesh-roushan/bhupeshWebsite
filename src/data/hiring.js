@@ -14,8 +14,8 @@ export const hiring = {
 
   location: "Bangalore, India",
 
-  // PLACEHOLDER — trim to the ones you actually want to be pitched for.
   openTo: [
+    "Software Development Engineer",
     "Full Stack Developer",
     "Backend Engineer",
     "GenAI / AI Automation Engineer",

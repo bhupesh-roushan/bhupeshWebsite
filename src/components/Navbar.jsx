@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import icon from "../assets/logo.svg";
-import { LuLinkedin, LuMenu, LuX } from "react-icons/lu";
+import { LuLinkedin, LuMenu, LuX, LuCalendarCheck } from "react-icons/lu";
+import { hiring } from "../data/hiring";
 import { FaGithub, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -133,8 +134,23 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               <span className="h-5 w-px bg-white/15" />
             </div>
 
+            {/* Booking CTA. From md up — at 768 the bar is already tight, so
+                the clock steps aside for it there and returns at lg. Phones get
+                it in the menu instead. */}
+            {hiring.bookingUrl && (
+              <a
+                href={hiring.bookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden items-center gap-1.5 rounded-full bg-indigo-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-400 md:inline-flex"
+              >
+                <LuCalendarCheck className="h-3.5 w-3.5" />
+                Book a call
+              </a>
+            )}
+
             {/* Clock */}
-            <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 sm:flex">
+            <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 sm:flex md:hidden lg:flex">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               <span className="text-xs tabular-nums text-gray-300">{indiaTime}</span>
               <span className="hidden text-[11px] text-gray-500 lg:inline">IST</span>

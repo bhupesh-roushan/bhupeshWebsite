@@ -118,19 +118,37 @@ export const Contact = () => {
                 padding and repeated chrome. */}
             <div className="lg:col-span-2 lg:self-start">
               <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-                <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(MAIL_SUBJECT)}`} className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
+                {/* Copy sits on the row itself — as a separate button below the
+                    card it was detached from the thing it copies. */}
+                <div className="flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
                   <span className="shrink-0 rounded-lg bg-indigo-500/10 p-2 text-indigo-300">
                     <LuMail className="h-4 w-4" />
                   </span>
-                  <div className="min-w-0">
+                  <a
+                    href={`mailto:${EMAIL}?subject=${encodeURIComponent(MAIL_SUBJECT)}`}
+                    className="group min-w-0 flex-1"
+                  >
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                       Email
                     </p>
                     <p className="break-all text-sm text-white group-hover:text-indigo-300">
                       {EMAIL}
                     </p>
-                  </div>
-                </a>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={copyEmail}
+                    aria-label="Copy email address"
+                    title={copied ? "Copied" : "Copy email address"}
+                    className="shrink-0 cursor-pointer rounded-lg border border-white/10 bg-white/5 p-2 text-gray-300 transition-colors hover:border-white/30 hover:text-white"
+                  >
+                    {copied ? (
+                      <LuCheck className="h-3.5 w-3.5 text-emerald-400" />
+                    ) : (
+                      <LuCopy className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                </div>
 
                 <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
                   <span className="shrink-0 rounded-lg bg-indigo-500/10 p-2 text-indigo-300">
@@ -160,24 +178,6 @@ export const Contact = () => {
               <div className="mt-4">
                 <HiringFacts />
               </div>
-
-              <button
-                type="button"
-                onClick={copyEmail}
-                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-medium text-gray-300 transition-colors hover:border-white/25 hover:text-white cursor-pointer"
-              >
-                {copied ? (
-                  <>
-                    <LuCheck className="h-3.5 w-3.5 text-emerald-400" />
-                    Copied to clipboard
-                  </>
-                ) : (
-                  <>
-                    <LuCopy className="h-3.5 w-3.5" />
-                    Copy email address
-                  </>
-                )}
-              </button>
             </div>
 
             {/* ── Form ──────────────────────────────────────── */}

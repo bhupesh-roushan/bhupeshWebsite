@@ -1,5 +1,7 @@
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { LuCalendarCheck } from "react-icons/lu";
+import { hiring } from "../data/hiring";
 
 const LINKS = [
   { href: "#home", label: "Home" },
@@ -37,10 +39,26 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
         </a>
       ))}
 
+      {/* The navbar's booking button is hidden below md, so it lives here */}
+      {hiring.bookingUrl && (
+        <a
+          href={hiring.bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setMenuOpen(false)}
+          style={{ transitionDelay: menuOpen ? "220ms" : "0ms" }}
+          className={`mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300
+            ${menuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+        >
+          <LuCalendarCheck className="h-4 w-4" />
+          Book a call
+        </a>
+      )}
+
       <div
         className={`mt-8 flex items-center gap-6 transition-all duration-300
           ${menuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
-        style={{ transitionDelay: menuOpen ? "260ms" : "0ms" }}
+        style={{ transitionDelay: menuOpen ? "300ms" : "0ms" }}
       >
         {SOCIALS.map(({ href, Icon, label }) => (
           <a
