@@ -149,6 +149,26 @@ const skillGroups = [
   },
 ];
 
+/** Inclusive month span, the way LinkedIn counts it: Apr 2025–May 2026 = 1y 2mo. */
+function durationLabel(start, end) {
+  if (!start) return null;
+  const [sy, sm] = start.split("-").map(Number);
+  const now = new Date();
+  const [ey, em] = end
+    ? end.split("-").map(Number)
+    : [now.getFullYear(), now.getMonth() + 1];
+
+  const months = (ey - sy) * 12 + (em - sm) + 1;
+  if (months < 1) return null;
+
+  const years = Math.floor(months / 12);
+  const rest = months % 12;
+  const parts = [];
+  if (years) parts.push(`${years} yr${years > 1 ? "s" : ""}`);
+  if (rest) parts.push(`${rest} mo${rest > 1 ? "s" : ""}`);
+  return parts.join(" ");
+}
+
 const Chip = ({ children }) => (
   <span
     className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5
@@ -181,24 +201,35 @@ export const About = () => {
                 onClick={() => setActiveId(item.id)}
               >
                 <div className="flex h-full flex-col p-5">
+                  {/* Badge only where it tells you something. A job is the
+                      default case, so "Work" was just noise next to a role
+                      title that already says as much. */}
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <img src={item.logo} alt="" className={item.logoClass} />
-                    <span
-                      className="rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider"
-                      style={{
-                        color: `rgb(${item.accent})`,
-                        borderColor: `rgba(${item.accent},0.35)`,
-                        backgroundColor: `rgba(${item.accent},0.1)`,
-                      }}
-                    >
-                      {item.current ? "Current" : item.kind}
-                    </span>
+                    {(item.current || item.kind !== "Work") && (
+                      <span
+                        className="shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider"
+                        style={{
+                          color: `rgb(${item.accent})`,
+                          borderColor: `rgba(${item.accent},0.35)`,
+                          backgroundColor: `rgba(${item.accent},0.1)`,
+                        }}
+                      >
+                        {item.current ? "Current" : item.kind}
+                      </span>
+                    )}
                   </div>
 
                   <h3 className="text-base font-bold text-white">{item.company}</h3>
                   <p className="mt-0.5 text-sm font-medium text-gray-300">{item.role}</p>
                   <p className="mt-1 text-xs font-medium" style={{ color: `rgb(${item.accent})` }}>
                     {item.period}
+                    {durationLabel(item.start, item.end) && (
+                      <span className="text-gray-500">
+                        {" · "}
+                        {durationLabel(item.start, item.end)}
+                      </span>
+                    )}
                   </p>
 
                   <div className="mt-auto flex items-center gap-1 pt-5 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
