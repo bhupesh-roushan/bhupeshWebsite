@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import icon from "../assets/icon.svg";
+import icon from "../assets/logo.svg";
 import bhupesh from "../assets/bhupesh.webp";
 import masai from "../assets/masai.jpg";
 import adda from "../assets/adda.png";
@@ -86,7 +86,7 @@ export const LoadingScreen = ({ onComplete }) => {
         transition-opacity duration-500 ${exiting ? "opacity-0" : "opacity-100"}`}
     >
       <div className="flex w-full max-w-[220px] flex-col items-center">
-        <img src={icon} alt="" className="mb-5 h-11 w-11" />
+        <img src={icon} alt="" className="mb-5 h-12 w-auto" />
 
         <p className="mb-6 font-mono text-sm font-bold text-white">
           Bhupesh<span className="text-indigo-500">.website</span>
