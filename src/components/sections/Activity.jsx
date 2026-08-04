@@ -186,12 +186,9 @@ export const Activity = () => {
     <section id="activity" className="py-20">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-bold text-white">
+          <h2 className="mb-10 text-center text-3xl font-bold text-white">
             Profiles &amp; Activity
           </h2>
-          <p className="mb-10 text-center text-sm text-gray-400">
-            GitHub numbers are pulled live from my profile.
-          </p>
 
           {/* Stats */}
           <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
