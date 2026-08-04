@@ -25,7 +25,10 @@ export const journey = [
     period: "May 2026 - Present",
     current: true,
     logo: masai,
-    logoClass: "h-9 w-28 object-contain rounded-md",
+    // bg-white matches the artwork's own white plate, so the rounded corners
+    // clip something visible — object-contain letterboxes the image inside the
+    // box, leaving the artwork's square corners inset from the rounded edge.
+    logoClass: "h-9 w-28 object-contain rounded-md bg-white",
     accent: "99,102,241",
     span: "lg:col-span-3",
     stack: [
@@ -39,8 +42,6 @@ export const journey = [
       "Prompt Engineering",
       "Data Pipelines",
     ],
-    summary:
-      "Running AI-enabled curriculum and assessment workflows, and building the automation behind them.",
     bullets: [
       "Managed AI-enabled curriculum and assessment workflows across technical and non-technical programs, covering rubric-based evaluations, question validation, learner submission review, grading prompt refinement, evaluation quality checks, and learner support.",
       "Built MERN-based evaluation automation workflows and data pipelines using Claude, Codex, Gemini, and AI agents, collaborating with product, engineering, academic, and operations teams to track submissions, analyze grading issues, improve assessment delivery, maintain validation reports, prompt versions, and issue trackers, and ensure consistent AI-assisted evaluation outcomes.",
@@ -67,8 +68,6 @@ export const journey = [
       "Computer Networks",
       "Operating Systems",
     ],
-    summary:
-      "Built an AI-powered rubric evaluation system and the Optimus assessment platform.",
     bullets: [
       "Built and optimized an AI-powered rubric-based automated assessment evaluation system using MERN and Gemini 2.5 Flash Pro, along with the end-to-end assessment platform Optimus, improving evaluation accuracy by 80%, reducing manual effort by 70%, and enhancing learner insights by 30%.",
       "Designed, audited, and implemented end-to-end MERN-focused technical assessments while resolving learner doubts, increasing question relevance and improving overall learning outcomes by 20%.",
@@ -99,8 +98,6 @@ export const journey = [
       "Data QA",
       "Sports Analytics",
     ],
-    summary:
-      "Turned high-volume match footage into structured, validated analytics data.",
     bullets: [
       "Processed and analyzed high-volume sports video datasets using Hudl tools, converting match events, player actions, tactical sequences, and performance indicators into structured analytical data for reporting and performance insights.",
       "Cleaned, transformed, and validated match-event datasets using SQL, Excel, and Google Sheets, performing data quality checks to identify tagging inconsistencies, correct classification errors, and maintain reliable datasets for downstream sports analytics.",
@@ -122,8 +119,6 @@ export const journey = [
     accent: "56,189,248",
     span: "lg:col-span-2",
     stack: ["React.js", "Node.js", "Express", "MongoDB", "JWT", "REST API"],
-    summary:
-      "Shipped Coursezz, a secure course-selling platform, and tuned its API layer.",
     bullets: [
       "Developed “Coursezz”, an online course-selling platform, implementing JWT-based authentication and Role-Based Access Control (RBAC) to support secure multi-user access, reducing unauthorized access incidents.",
       "Optimized API performance by 40% through efficient Express middleware, caching strategies, and robust request validation, significantly enhancing system scalability and throughput.",
@@ -150,8 +145,6 @@ export const journey = [
       "Operating Systems",
       "Computer Networks",
     ],
-    summary:
-      "B.E. in Electronics & Communication, with a runner-up project in antenna design.",
     bullets: [
       "Relevant coursework: Data Structures and Algorithms, Database Management System, Operating System, and Computer Networks.",
       "Secured Runner-up position for the project “Reconfiguration of Micro-strip Patch Antenna” in the department-level Project-Based Learning competition during the 6th semester.",
@@ -173,7 +166,7 @@ export const projects = [
     href: "https://www.cloudwatch.in/",
     accent: "99,102,241",
     featured: true,
-    span: "lg:col-span-4 lg:row-span-2",
+    span: "lg:col-span-4",
     stack: [
       "Next.js 16",
       "TypeScript",
@@ -204,7 +197,7 @@ export const projects = [
     image: buildingBlocks,
     href: "https://buildingblocks.cloud",
     accent: "56,189,248",
-    span: "lg:col-span-2 lg:row-span-2",
+    span: "lg:col-span-2",
     stack: [
       "Node.js",
       "Express.js",

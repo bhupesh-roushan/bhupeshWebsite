@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
+import { GithubHeatmap } from "../GithubHeatmap";
 import { journey } from "../../data/portfolio";
 import {
   FaHtml5,
@@ -201,11 +202,7 @@ export const About = () => {
                     {item.period}
                   </p>
 
-                  <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-gray-400">
-                    {item.summary}
-                  </p>
-
-                  <div className="mt-auto flex items-center gap-1 pt-4 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
+                  <div className="mt-auto flex items-center gap-1 pt-5 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
                     View details
                     <LuArrowUpRight className="h-3.5 w-3.5" />
                   </div>
@@ -249,6 +246,11 @@ export const About = () => {
               </BentoCard>
             ))}
           </BentoGrid>
+
+          {/* ── GitHub activity ─────────────────────────────────── */}
+          <div className="mt-6">
+            <GithubHeatmap />
+          </div>
         </div>
       </RevealOnScroll>
 
