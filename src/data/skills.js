@@ -78,7 +78,6 @@ export const skillGroups = [
     title: "GenAI",
     span: "lg:col-span-4",
     accent: "168,85,247",
-    highlight: true,
     items: [
       { name: "LangChain", Icon: SiLangchain, color: "#22C55E" },
       { name: "RAG", Icon: TbDatabaseSearch, color: "#22D3EE" },
