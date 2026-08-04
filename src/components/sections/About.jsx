@@ -46,7 +46,7 @@ import { LuComputer, LuChartNetwork } from "react-icons/lu";
 import { CgWebsite } from "react-icons/cg";
 import adda from "../../assets/adda.png";
 import prep from "../../assets/prep.png";
-import masai from "../../assets/masai.webp";
+import masai from "../../assets/masai.jpg";
 export const About = () => {
   const frontendSkills = [
     { name: "HTML", icon: <FaHtml5 className="text-orange-500 text-2xl" /> },
@@ -327,7 +327,7 @@ export const About = () => {
                   <img
                     src={masai}
                     alt=""
-                    className="items-center h-10 w-32 object-contain"
+                    className="items-center h-10 w-32 object-contain rounded-md"
                   />
                 </div>
 
