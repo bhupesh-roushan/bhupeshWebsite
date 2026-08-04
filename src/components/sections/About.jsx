@@ -375,7 +375,7 @@ export const About = () => {
                   <img
                     src={adda}
                     alt=""
-                    className="items-center h-12 w-12  object-cover"
+                    className="items-center h-12 w-12  object-cover rounded-md"
                   />
                 </div>
 
@@ -428,7 +428,7 @@ export const About = () => {
                   <img
                     src={hudl}
                     alt=""
-                    className="items-center h-10 w-32 object-contain"
+                    className="items-center h-10 w-32 object-contain rounded-md"
                   />
                 </div>
 
@@ -474,7 +474,7 @@ export const About = () => {
                 <img
                   src={bms}
                   alt=""
-                  className="h-14 w-14 object-contain"
+                  className="h-14 w-14 object-contain rounded-md"
                 />
               </div>
 
