@@ -191,12 +191,14 @@ export const Home = () => {
           </a>
         </motion.div>
 
-        {/* Socials */}
+        {/* Socials — hidden from lg, which is exactly where the navbar starts
+            showing its own set. Below lg the navbar hides them (they overflowed
+            at 768), so these remain the only pair of socials above the fold. */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="mb-8 flex items-center justify-center gap-5"
+          className="mb-8 flex items-center justify-center gap-5 lg:hidden"
         >
           {SOCIALS.map(({ href, Icon, label }) => (
             <a
