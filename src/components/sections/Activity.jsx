@@ -3,7 +3,7 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { GithubHeatmap } from "../GithubHeatmap";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { LuArrowUpRight, LuBook, LuGitBranch, LuFlame, LuCalendar } from "react-icons/lu";
+import { LuArrowUpRight, LuBook, LuGitBranch, LuRocket, LuHistory } from "react-icons/lu";
 
 const USER = "bhupesh-roushan";
 
@@ -34,7 +34,9 @@ const REPOS_URL = `https://api.github.com/users/${USER}/repos?per_page=100&sort=
 
 // Unauthenticated api.github.com allows 60 requests/hour per IP, so cache the
 // answer for the session rather than refetching on every mount.
-const CACHE_KEY = "gh-activity-v1";
+// Bump when the payload shape changes, or a session holding the old shape
+// renders undefined fields.
+const CACHE_KEY = "gh-activity-v2";
 
 const LANG_COLORS = {
   JavaScript: "#f1e05a",
@@ -48,19 +50,16 @@ const LANG_COLORS = {
 
 const parseDay = (iso) => new Date(`${iso}T00:00:00`);
 
-/** Longest run of consecutive days with at least one contribution. */
-function longestStreak(days) {
-  let best = 0;
-  let run = 0;
-  days.forEach((d) => {
-    if (d.count > 0) {
-      run += 1;
-      best = Math.max(best, run);
-    } else {
-      run = 0;
-    }
-  });
-  return best;
+/** Compact relative age, e.g. "Today", "6d ago", "3mo ago". */
+function sinceLabel(iso) {
+  if (!iso) return "—";
+  const days = Math.floor((Date.now() - new Date(iso)) / 86400000);
+  if (days <= 0) return "Today";
+  if (days === 1) return "1d ago";
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo ago`;
+  return `${Math.floor(months / 12)}y ago`;
 }
 
 export const Activity = () => {
@@ -115,28 +114,34 @@ export const Activity = () => {
             pct: langTotal ? Math.round((count / langTotal) * 100) : 0,
           }));
 
-        const recent = repos
-          .filter((r) => !r.fork)
-          .slice(0, 5)
+        // A shipped, reachable URL says more than a repo name, so the list
+        // leads with repos that actually have somewhere to visit.
+        const deployed = repos
+          .filter((r) => !r.fork && r.homepage && r.homepage.trim())
           .map((r) => ({
             name: r.name,
             description: r.description,
             language: r.language,
-            url: r.html_url,
-            updated: r.updated_at,
-          }));
+            repoUrl: r.html_url,
+            liveUrl: r.homepage.trim(),
+            pushed: r.pushed_at,
+          }))
+          .sort((a, b) => new Date(b.pushed) - new Date(a.pushed));
+
+        const lastPush = repos
+          .map((r) => r.pushed_at)
+          .filter(Boolean)
+          .sort()
+          .slice(-1)[0];
 
         const payload = {
           days,
           total: contrib.total?.lastYear ?? days.reduce((s, d) => s + d.count, 0),
           repoCount: user?.public_repos ?? repos.length,
-          memberSince: user?.created_at
-            ? new Date(user.created_at).getFullYear()
-            : null,
-          streak: longestStreak(days),
-          activeDays: days.filter((d) => d.count > 0).length,
+          deployedCount: deployed.length,
+          lastPush,
           languages,
-          recent,
+          deployed: deployed.slice(0, 6),
         };
 
         sessionStorage.setItem(CACHE_KEY, JSON.stringify(payload));
@@ -155,10 +160,25 @@ export const Activity = () => {
   const loading = data.status === "loading";
 
   const stats = [
+    {
+      icon: LuRocket,
+      label: "Live deployments",
+      value: data.deployedCount,
+      accent: "34,197,94",
+    },
     { icon: LuBook, label: "Public repos", value: data.repoCount, accent: "99,102,241" },
-    { icon: LuGitBranch, label: "Contributions", value: data.total, accent: "34,197,94" },
-    { icon: LuFlame, label: "Longest streak", value: data.streak ? `${data.streak}d` : "—", accent: "249,115,22" },
-    { icon: LuCalendar, label: "Active days", value: data.activeDays, accent: "56,189,248" },
+    {
+      icon: LuGitBranch,
+      label: "Contributions (12 mo)",
+      value: data.total,
+      accent: "168,85,247",
+    },
+    {
+      icon: LuHistory,
+      label: "Last push",
+      value: loading ? "—" : sinceLabel(data.lastPush),
+      accent: "56,189,248",
+    },
   ];
 
   return (
@@ -274,47 +294,66 @@ export const Activity = () => {
             {/* Recent repositories */}
             <BentoCard className="lg:col-span-4" accent="99,102,241">
               <div className="p-5">
-                <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-                  Recently updated
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white">
+                  Live deployments
+                  {!loading && data.deployedCount > 0 && (
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
+                      {data.deployedCount} shipped
+                    </span>
+                  )}
                 </h3>
-                {loading || !data.recent?.length ? (
+                {loading || !data.deployed?.length ? (
                   <div className="h-24 animate-pulse rounded-lg bg-white/5" />
                 ) : (
                   <ul className="space-y-2.5">
-                    {data.recent.map((repo) => (
-                      <li key={repo.name}>
-                        <a
-                          href={repo.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group/repo flex items-start justify-between gap-3 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2.5 transition-colors hover:border-white/25"
-                        >
-                          <div className="min-w-0">
-                            <p className="truncate text-xs font-semibold text-white">
-                              {repo.name}
+                    {data.deployed.map((repo) => (
+                      <li
+                        key={repo.name}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2.5 transition-colors hover:border-white/25"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate text-xs font-semibold text-white">
+                            {repo.name}
+                          </p>
+                          {repo.description && (
+                            <p className="mt-0.5 line-clamp-1 text-[11px] text-gray-400">
+                              {repo.description}
                             </p>
-                            {repo.description && (
-                              <p className="mt-0.5 line-clamp-1 text-[11px] text-gray-400">
-                                {repo.description}
-                              </p>
-                            )}
-                          </div>
-                          <span className="flex shrink-0 items-center gap-1.5 text-[11px] text-gray-400">
-                            {repo.language && (
-                              <>
-                                <span
-                                  className="h-2 w-2 rounded-full"
-                                  style={{
-                                    backgroundColor:
-                                      LANG_COLORS[repo.language] ?? "#8b949e",
-                                  }}
-                                />
-                                {repo.language}
-                              </>
-                            )}
-                            <LuArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover/repo:opacity-100" />
-                          </span>
-                        </a>
+                          )}
+                        </div>
+
+                        <div className="flex shrink-0 items-center gap-2">
+                          {repo.language && (
+                            <span className="hidden items-center gap-1.5 text-[11px] text-gray-400 sm:flex">
+                              <span
+                                className="h-2 w-2 rounded-full"
+                                style={{
+                                  backgroundColor:
+                                    LANG_COLORS[repo.language] ?? "#8b949e",
+                                }}
+                              />
+                              {repo.language}
+                            </span>
+                          )}
+                          <a
+                            href={repo.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[11px] font-medium text-emerald-300 transition-colors hover:bg-emerald-500/20"
+                          >
+                            Live
+                            <LuArrowUpRight className="h-3 w-3" />
+                          </a>
+                          <a
+                            href={repo.repoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${repo.name} source`}
+                            className="rounded-md border border-white/10 bg-white/5 p-1.5 text-gray-300 transition-colors hover:border-white/30 hover:text-white"
+                          >
+                            <FaGithub className="h-3 w-3" />
+                          </a>
+                        </div>
                       </li>
                     ))}
                   </ul>
