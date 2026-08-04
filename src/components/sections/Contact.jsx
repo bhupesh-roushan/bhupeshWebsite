@@ -99,7 +99,9 @@ export const Contact = () => {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             {/* ── Reach me directly ─────────────────────────── */}
             {/* Pairs up between sm and lg so the cards don't stretch on tablets. */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-1">
+            {/* content-start stops the rows stretching to match the taller
+                form column, which left the cards tall and half-empty. */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-1 lg:content-start">
               <div className="flex flex-col gap-3">
                 <a
                   href={`mailto:${EMAIL}`}
@@ -164,25 +166,6 @@ export const Contact = () => {
                 <p className="text-sm text-white">Bangalore, India</p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  Elsewhere
-                </p>
-                <div className="flex items-center gap-3">
-                  {SOCIALS.map(({ href, Icon, label }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={label}
-                      className="rounded-lg border border-white/10 bg-white/5 p-2.5 text-gray-300 transition-all hover:scale-105 hover:border-white/30 hover:text-white"
-                    >
-                      <Icon className="h-4 w-4" />
-                    </a>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {/* ── Form ──────────────────────────────────────── */}

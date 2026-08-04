@@ -7,8 +7,6 @@ import {
   LuChevronDown,
   LuMapPin,
 } from "react-icons/lu";
-import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 import video from "../../assets/video.mp4";
 import bhupesh from "../../assets/bhupesh.png";
 
@@ -18,13 +16,6 @@ const ROLES = [
   "Full Stack Developer",
   "GenAI & Automation Builder",
   "MERN Stack Engineer",
-];
-
-const SOCIALS = [
-  { href: "https://www.linkedin.com/in/roushanb", Icon: FaLinkedin, label: "LinkedIn" },
-  { href: "https://github.com/bhupesh-roushan", Icon: FaGithub, label: "GitHub" },
-  { href: "https://www.instagram.com/roushanwa", Icon: FaInstagram, label: "Instagram" },
-  { href: "https://x.com/roushanwa", Icon: FaXTwitter, label: "X" },
 ];
 
 const STATS = [
@@ -189,29 +180,6 @@ export const Home = () => {
             <LuMail className="h-4 w-4" />
             Contact
           </a>
-        </motion.div>
-
-        {/* Socials — hidden from lg, which is exactly where the navbar starts
-            showing its own set. Below lg the navbar hides them (they overflowed
-            at 768), so these remain the only pair of socials above the fold. */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="mb-8 flex items-center justify-center gap-5 lg:hidden"
-        >
-          {SOCIALS.map(({ href, Icon, label }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              className="text-gray-400 transition-all hover:scale-110 hover:text-white"
-            >
-              <Icon className="h-5 w-5" />
-            </a>
-          ))}
         </motion.div>
 
         {/* Stats */}
