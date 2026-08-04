@@ -3,7 +3,7 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
 import { projects } from "../../data/portfolio";
-import { LuArrowUpRight, LuKeyRound } from "react-icons/lu";
+import { LuArrowUpRight, LuKeyRound, LuUser, LuCode } from "react-icons/lu";
 
 export const Projects = () => {
   const [activeId, setActiveId] = useState(null);
@@ -112,6 +112,13 @@ export const Projects = () => {
                 {active.tagline}
               </p>
 
+              {active.role && (
+                <p className="mb-5 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-gray-300">
+                  <LuUser className="h-3.5 w-3.5 text-gray-400" />
+                  {active.role}
+                </p>
+              )}
+
               <div className="mb-6 flex flex-wrap gap-2">
                 {active.stack.map((tech) => (
                   <span
@@ -173,6 +180,18 @@ export const Projects = () => {
                 Visit live site
                 <LuArrowUpRight className="h-4 w-4" />
               </a>
+
+              {active.repo && (
+                <a
+                  href={active.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-2 mt-6 inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-white/30 hover:text-white"
+                >
+                  <LuCode className="h-4 w-4" />
+                  Source
+                </a>
+              )}
             </div>
           </div>
         )}

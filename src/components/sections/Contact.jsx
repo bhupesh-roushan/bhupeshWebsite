@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
+import { HiringFacts } from "../HiringFacts";
+import { JdMatcher } from "../JdMatcher";
+import { MAIL_SUBJECT } from "../../data/hiring";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
@@ -115,7 +118,7 @@ export const Contact = () => {
                 padding and repeated chrome. */}
             <div className="lg:col-span-2 lg:self-start">
               <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-                <a href={`mailto:${EMAIL}`} className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
+                <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(MAIL_SUBJECT)}`} className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
                   <span className="shrink-0 rounded-lg bg-indigo-500/10 p-2 text-indigo-300">
                     <LuMail className="h-4 w-4" />
                   </span>
@@ -152,6 +155,10 @@ export const Contact = () => {
                     <p className="text-sm text-white">Bangalore, India</p>
                   </div>
                 </div>
+              </div>
+
+              <div className="mt-4">
+                <HiringFacts />
               </div>
 
               <button
@@ -312,6 +319,10 @@ export const Contact = () => {
                 </button>
               </form>
             </div>
+          </div>
+
+          <div className="mt-6">
+            <JdMatcher />
           </div>
         </div>
       </RevealOnScroll>

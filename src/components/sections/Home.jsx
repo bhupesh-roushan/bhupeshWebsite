@@ -190,7 +190,7 @@ export const Home = () => {
             <LuArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </a>
           <a
-            href="https://drive.google.com/file/d/1keKGwBKNUqwGsR6L1PjvGuidGCIvxodd/view?usp=sharing"
+            href="/Bhupesh-Roushan-Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10 sm:w-auto"

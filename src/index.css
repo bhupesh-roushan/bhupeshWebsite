@@ -48,3 +48,71 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── Print ──────────────────────────────────────────────────────────────────
+   Recruiters do print portfolios, or save them to PDF. On screen this is a
+   dark page built out of video, glow and glass; none of that survives paper.
+   This strips it back to black text on white and drops anything that can't be
+   clicked once printed. */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Chrome-only decoration: nav, hero video, backdrop glyphs, scroll cue,
+     toasts, and the loading screen if it somehow catches a print. */
+  nav,
+  video,
+  footer svg,
+  [aria-hidden="true"],
+  .Toastify {
+    display: none !important;
+  }
+
+  /* Anything relying on the reveal observer must be visible on paper — the
+     observer may never have fired for sections below the fold. */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  section {
+    min-height: 0 !important;
+    padding: 1.25rem 0 !important;
+    page-break-inside: avoid;
+  }
+
+  /* Flatten the dark-theme surfaces: transparent fills and white text are
+     invisible on white paper. */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-text-fill-color: #000 !important; /* undoes bg-clip-text headings */
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  /* Print the destination, since a printed link is otherwise a dead end. */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    word-break: break-all;
+  }
+
+  [class*="border"] {
+    border-color: #ccc !important;
+  }
+
+  img {
+    max-width: 240px !important;
+    height: auto !important;
+  }
+}

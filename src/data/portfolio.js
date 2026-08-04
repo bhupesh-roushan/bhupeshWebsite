@@ -171,6 +171,10 @@ export const journey = [
 export const projects = [
   {
     id: "cloudwatch",
+    repo: "https://github.com/bhupesh-roushan/cloudwatch-digital",
+    // PLACEHOLDER — correct this. Reviewers read impact numbers very
+    // differently depending on whether you owned all of it or part of it.
+    role: "Solo build — design, frontend, backend and deployment",
     title: "CloudWatch",
     tagline: "AI-Powered Digital Marketplace",
     period: "February 2026",
@@ -203,6 +207,10 @@ export const projects = [
   },
   {
     id: "buildingblocks",
+    repo: "https://github.com/bhupesh-roushan/BuildingBlocks",
+    // PLACEHOLDER — correct this. Reviewers read impact numbers very
+    // differently depending on whether you owned all of it or part of it.
+    role: "Solo build — design, frontend, backend and deployment",
     title: "BuildingBlocks",
     tagline: "Learning Management System",
     period: "January 2025",
@@ -235,6 +243,10 @@ export const projects = [
   },
   {
     id: "hourglass",
+    repo: "https://github.com/bhupesh-roushan/hourglass",
+    // PLACEHOLDER — correct this. Reviewers read impact numbers very
+    // differently depending on whether you owned all of it or part of it.
+    role: "Solo build — design, frontend, backend and deployment",
     title: "Hourglass",
     tagline: "Real-Time Social Media",
     image: hourglass,
@@ -265,6 +277,10 @@ export const projects = [
   },
   {
     id: "cubekit",
+    repo: "https://github.com/bhupesh-roushan/cubekit-hiring",
+    // PLACEHOLDER — correct this. Reviewers read impact numbers very
+    // differently depending on whether you owned all of it or part of it.
+    role: "Solo build — design, frontend, backend and deployment",
     title: "Cubekit",
     tagline: "Hiring Platform",
     period: "August 2024",
@@ -295,6 +311,10 @@ export const projects = [
   },
   {
     id: "frequencii",
+    repo: "https://github.com/bhupesh-roushan/frequencii",
+    // PLACEHOLDER — correct this. Reviewers read impact numbers very
+    // differently depending on whether you owned all of it or part of it.
+    role: "Solo build — design, frontend, backend and deployment",
     title: "Frequencii",
     tagline: "E-Commerce Prototype",
     image: frequencii,
@@ -318,6 +338,10 @@ export const projects = [
   },
   {
     id: "pictelai",
+    repo: "https://github.com/bhupesh-roushan/PictelAI-Powered-by-Gemini",
+    // PLACEHOLDER — correct this. Reviewers read impact numbers very
+    // differently depending on whether you owned all of it or part of it.
+    role: "Solo build — design, frontend, backend and deployment",
     title: "PictelAI",
     tagline: "Powered by Gemini",
     image: pictelAi,

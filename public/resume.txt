@@ -1,0 +1,135 @@
+BHUPESH ROUSHAN
+Full Stack Developer | GenAI & Automation
+Bangalore, India
+
+Email: roushan.bhupesh@gmail.com
+Phone: +91 7992302851
+Portfolio: https://www.bhupesh.blog
+GitHub: https://github.com/bhupesh-roushan
+LinkedIn: https://www.linkedin.com/in/roushanb
+
+
+SKILLS
+
+Frontend and Backend Development: HTML, CSS, React, Redux, Tailwind CSS,
+Node.js, Express, MongoDB, Mongoose, MySQL, REST API, Authentication,
+Authorization, Next.js
+
+Programming Languages: JavaScript, TypeScript, Java, Python
+
+GenAI: LangChain, RAG, ChromaDB, Embeddings, LLM APIs, Prompt Engineering,
+AI Agents
+
+Concepts: Object-Oriented Programming, Network Security, System Design
+(LLD, HLD), SDLC
+
+Tools and Others: Git, GitHub, Docker, VS Code, Figma, Postman,
+IntelliJ IDEA, MySQL Workbench
+
+
+WORK EXPERIENCE
+
+Masai, Bangalore - Curriculum Engineer
+May 2026 - Present
+Tech Stack: MERN Stack, JavaScript, Python, Excel, Claude, Codex, AI Agents,
+Prompt Engineering, Data Pipelines
+
+- Managed AI-enabled curriculum and assessment workflows across technical and
+  non-technical programs, covering rubric-based evaluations, question
+  validation, learner submission review, grading prompt refinement, evaluation
+  quality checks, and learner support.
+- Built MERN-based evaluation automation workflows and data pipelines using
+  Claude, Codex, Gemini, and AI agents, collaborating with product,
+  engineering, academic, and operations teams to track submissions, analyze
+  grading issues, improve assessment delivery, maintain validation reports,
+  prompt versions, and issue trackers, and ensure consistent AI-assisted
+  evaluation outcomes.
+
+Adda247 (C24/7, PrepInsta), Bangalore - Executive, Audit & Assessment
+April 2025 - May 2026
+Tech Stack: React.js, Node.js, Express, MongoDB, JavaScript, Java, Computer
+Networks, Operating Systems
+
+- Built and optimized an AI-powered rubric-based automated assessment
+  evaluation system using MERN and Gemini 2.5 Flash Pro, and the end-to-end
+  assessment platform Optimus, improving evaluation accuracy by 80%, reducing
+  manual effort by 70%, and enhancing learner insights by 30%.
+- Designed, audited, and implemented end-to-end MERN-focused technical
+  assessments while resolving learner doubts, increasing question relevance
+  and improving overall learning outcomes by 20%.
+
+Hudl, Bangalore - Sports Analyst
+June 2023 - November 2023
+Tech Stack: SQL, Excel, Google Sheets, Hudl Platform, Data Cleaning, Data
+Validation, Data QA, Sports Analytics
+
+- Processed and analyzed high-volume sports video datasets using Hudl tools,
+  converting match events, player actions, tactical sequences, and performance
+  indicators into structured analytical data for reporting and performance
+  insights.
+- Cleaned, transformed, and validated match-event datasets using SQL, Excel,
+  and Google Sheets, performing data quality checks to identify tagging
+  inconsistencies, correct classification errors, and maintain reliable
+  datasets for downstream sports analytics.
+
+Varcons Technologies, Bangalore - Web Development Intern
+February 2023 - March 2023
+Tech Stack: React.js, Node.js, Express, MongoDB, JWT, REST API
+
+- Developed "Coursezz", an online course-selling platform, implementing
+  JWT-based authentication and Role-Based Access Control (RBAC) to support
+  secure multi-user access, reducing unauthorized access incidents.
+- Optimized API performance by 40% through efficient Express middleware,
+  caching strategies, and robust request validation, significantly enhancing
+  system scalability and throughput.
+
+
+PROJECTS
+
+CloudWatch - AI-Powered Digital Marketplace (February 2026)
+Live: https://www.cloudwatch.in
+Tech Stack: Next.js 16, TypeScript, Node.js, Express, MongoDB, Razorpay,
+Gemini API, Cloudinary, StackBlitz
+
+- Built an AI-powered digital marketplace using Next.js, TypeScript,
+  Express.js, MongoDB, and role-based authentication, enabling creators to
+  list, manage, and sell digital products while reducing product upload time
+  by 45% and improving workflow efficiency by 30%.
+- Integrated Gemini API, Firecrawl, SerpAPI, Razorpay, StackBlitz, and
+  Cloudinary to automate product listing generation, competitor analysis,
+  pricing insights, SEO optimization, live previews, media management, and
+  real-time sales tracking, reducing manual listing effort by 60% and
+  improving SEO efficiency by 40%.
+
+BuildingBlocks - Learning Management System (January 2025)
+Live: https://www.bblocks.cloud
+Tech Stack: Node.js, Express.js, MongoDB, React.js, PayPal, Cloudinary,
+Shadcn UI, Tailwind CSS, Vercel
+
+- Built and deployed a full-scale LMS with role-based dashboards, course
+  creation, and video management features with custom controls and real-time
+  tracking, improving course management efficiency by 40%, reducing upload
+  time by 60%, and increasing learner engagement by 20%.
+- Integrated PayPal payment gateway and configured custom domain deployment,
+  enabling secure transactions and improving payment success rate by 25%.
+
+Cubekit - Hiring Platform (August 2024)
+Live: https://cubekit.vercel.app
+Tech Stack: React.js, Tailwind CSS, Shadcn UI, Supabase, Clerk, React Hook
+Form, Zod, EmailJS, Vercel
+
+- Built Cubekit, a hiring platform using React.js, Supabase, and Clerk for
+  authentication and role-based dashboards.
+- Implemented validated job posting and application workflows (React Hook Form
+  and Zod), location-based filtering API, resume uploads, status tracking, and
+  automated EmailJS notifications, reducing job posting time by 40%.
+
+
+EDUCATION
+
+BMS Institute of Technology and Management, Bangalore
+B.E. in Electronics and Communication Engineering
+October 2018 - May 2023
+
+Relevant Coursework: Data Structures and Algorithms, Database Management
+System, Operating System, Computer Networks
