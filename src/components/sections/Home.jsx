@@ -88,7 +88,7 @@ export const Home = () => {
               Contact Me
             </a>
             <a
-              href="https://drive.google.com/file/d/1ZbTaDg8wV4AGzIdxILKkAYgi1a-S-rEY/view?usp=drive_link"
+              href="https://drive.google.com/file/d/1keKGwBKNUqwGsR6L1PjvGuidGCIvxodd/view?usp=sharing"
               target="_blank"
               className="hover:scale-105 rounded-full shadow-md shadow-indigo-500"
             >
