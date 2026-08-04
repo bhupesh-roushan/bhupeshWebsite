@@ -112,7 +112,7 @@ export const Home = () => {
           className="mx-auto mb-6 w-fit"
         >
           <div className="relative">
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-blue-500 to-pink-500 opacity-70 blur-[6px]" />
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-blue-500 to-sky-400 opacity-70 blur-[6px]" />
             <img
               src={bhupesh}
               alt="Bhupesh Roushan"
@@ -137,7 +137,9 @@ export const Home = () => {
         {/* Name */}
         <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
           <span className="text-gray-300">Hi, I&apos;m </span>
-          <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">
+          {/* Indigo to blue, the same run as the CTA and the nav pill. It used
+              to end in pink, which matched nothing else on the page. */}
+          <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-sky-300 bg-clip-text text-transparent">
             {typed}
           </span>
           {!typingDone && <span className="animate-pulse text-indigo-400">|</span>}

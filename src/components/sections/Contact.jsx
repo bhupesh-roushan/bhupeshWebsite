@@ -98,9 +98,12 @@ export const Contact = () => {
     <section id="contact" className="py-20">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-10 text-center text-3xl font-bold text-white">
+          <h2 className="mb-2 text-center text-3xl font-bold text-white">
             Get In Touch
           </h2>
+          <p className="mb-10 text-center text-sm text-gray-400">
+            Have a role, a project, or a question?
+          </p>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             {/* ── Reach me directly ─────────────────────────── */}
