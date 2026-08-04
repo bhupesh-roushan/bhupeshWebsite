@@ -11,10 +11,31 @@ import "./index.css";
 import { Contact } from "./components/sections/Contact";
 import { ToastContainer } from "react-toastify";
 import { Analytics } from "@vercel/analytics/react";
+import { Routes, Route } from "react-router-dom";
+
+/**
+ * One page at every route. /projects/:projectId renders exactly the same
+ * layout — the param only tells the Projects section which modal to open — so
+ * a shared project link lands on the whole portfolio rather than a bare
+ * detail page with no way back into the rest of it.
+ */
+function Page() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  return (
+    <>
+      <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Home />
+      <About />
+      <Projects />
+      <Activity />
+      <Contact />
+    </>
+  );
+}
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
@@ -24,13 +45,12 @@ function App() {
           isLoaded ? "opacity-100" : "opacity-0"
         } bg-black text-white`}
       >
-        <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-        <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-        <Home />
-        <About />
-        <Projects />
-        <Activity />
-        <Contact />
+        <Routes>
+          <Route path="/" element={<Page />} />
+          <Route path="/projects/:projectId" element={<Page />} />
+          {/* Anything else still gets the portfolio rather than a blank screen */}
+          <Route path="*" element={<Page />} />
+        </Routes>
         <Analytics />
         <ToastContainer
           position="bottom-right"

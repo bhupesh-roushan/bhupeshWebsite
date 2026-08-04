@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
@@ -7,8 +8,22 @@ import { LuArrowUpRight, LuKeyRound, LuUser, LuCode, LuNetwork } from "react-ico
 import { ArchitectureDiagram } from "../ArchitectureDiagram";
 
 export const Projects = () => {
-  const [activeId, setActiveId] = useState(null);
-  const active = projects.find((p) => p.id === activeId) ?? null;
+  // The open project lives in the URL, not in state, so /projects/cloudwatch
+  // is shareable, the back button closes the modal, and a pasted link opens
+  // straight onto the right project.
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+  const active = projects.find((p) => p.id === projectId) ?? null;
+
+  const open = (id) => navigate(`/projects/${id}`);
+  const close = () => navigate("/", { replace: false });
+
+  // Arriving directly on a project URL should land on the section, not at the
+  // top of the page behind the modal.
+  useEffect(() => {
+    if (!active) return;
+    document.getElementById("projects")?.scrollIntoView({ block: "start" });
+  }, [active]);
 
   return (
     <section id="projects" className="min-h-screen py-20">
@@ -24,7 +39,7 @@ export const Projects = () => {
                 key={project.id}
                 className={project.span}
                 accent={project.accent}
-                onClick={() => setActiveId(project.id)}
+                onClick={() => open(project.id)}
               >
                 {/* Preview on top, copy below — the label used to sit over the
                     screenshot, which capped how many chips could fit before
@@ -89,7 +104,7 @@ export const Projects = () => {
       {/* ── Detail modal ──────────────────────────────────────── */}
       <Modal
         open={Boolean(active)}
-        onClose={() => setActiveId(null)}
+        onClose={close}
         label={active ? `${active.title} details` : undefined}
       >
         {active && (
