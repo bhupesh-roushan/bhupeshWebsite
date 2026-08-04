@@ -52,6 +52,15 @@ export const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+
+    // Honeypot: hidden from people, irresistible to naive bots. Anything that
+    // fills it gets a success message and nothing gets sent, so the bot has no
+    // signal that it was caught.
+    if (e.target.company?.value) {
+      toast.success("Message Sent Successfully!");
+      return;
+    }
+
     setLoading(true);
 
     const templateParams = {
@@ -171,6 +180,14 @@ export const Contact = () => {
             {/* ── Form ──────────────────────────────────────── */}
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 lg:col-span-3">
               <form className="space-y-5" onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                />
                 <div>
                   <label htmlFor="name" className="mb-1.5 block text-xs font-medium text-gray-300">
                     Full name

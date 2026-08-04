@@ -5,6 +5,11 @@ const COLS = 12;
 const ROWS = 8;
 const REVEAL_RADIUS = 170;
 
+// Applied inline so the layer is masked from the very first paint. Waiting for
+// the effect left a frame where every icon was visible, and on touch devices —
+// where the effect bails early — they stayed visible for good.
+const HIDDEN_MASK = "radial-gradient(0px circle at 50% 50%, #000 0%, transparent 100%)";
+
 // Deterministic offsets keyed by index. Random ones would reshuffle on every
 // re-render, and this sits inside a hero that re-renders on a 2.6s rotator.
 const jitterX = (i) => ((i * 37) % 7) - 3;
@@ -41,16 +46,17 @@ export const TechBackdrop = () => {
     const el = layerRef.current;
     if (!el) return;
 
-    // No hover on coarse pointers, so there's nothing to drive the reveal.
+    // No hover on coarse pointers, so nothing can drive the reveal — leave the
+    // element on its initial zero-radius mask rather than bailing before one is
+    // applied, which is what made every icon show up on touch devices.
     if (window.matchMedia("(hover: none)").matches) return;
 
     const section = el.closest("section");
     if (!section) return;
 
     const hide = () => {
-      const mask = "radial-gradient(0px circle at 50% 50%, #000 0%, transparent 100%)";
-      el.style.maskImage = mask;
-      el.style.webkitMaskImage = mask;
+      el.style.maskImage = HIDDEN_MASK;
+      el.style.webkitMaskImage = HIDDEN_MASK;
     };
 
     const onMove = (e) => {
@@ -80,6 +86,7 @@ export const TechBackdrop = () => {
     <div
       ref={layerRef}
       aria-hidden="true"
+      style={{ maskImage: HIDDEN_MASK, WebkitMaskImage: HIDDEN_MASK }}
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
     >
       {PLACED.map(({ Icon, color, x, y, size, key }) => (

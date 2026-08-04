@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import icon from "../assets/icon.svg";
-import bhupesh from "../assets/bhupesh.png";
+import bhupesh from "../assets/bhupesh.webp";
 import masai from "../assets/masai.jpg";
 import adda from "../assets/adda.png";
 import hudl from "../assets/hudl.png";
