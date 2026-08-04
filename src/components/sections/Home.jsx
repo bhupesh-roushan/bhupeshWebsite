@@ -12,11 +12,14 @@ import video from "../../assets/video.mp4";
 import bhupesh from "../../assets/bhupesh.webp";
 
 const NAME = "Bhupesh Roushan";
+// Kept to a similar length so the centred rotator doesn't visibly jump width
+// between lines, and to one noun each — "Builder" sat oddly beside Engineer
+// and Developer, and the ampersand read badly at hero size.
 const ROLES = [
   "Curriculum Engineer @ Masai",
   "Full Stack Developer",
-  "GenAI & Automation Builder",
-  "MERN Stack Engineer",
+  "AI Automation Engineer",
+  "MERN Stack Developer",
 ];
 
 const STATS = [
