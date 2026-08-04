@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
+import { BentoGrid, BentoCard } from "../ui/BentoGrid";
+import { Modal } from "../ui/Modal";
+import { journey } from "../../data/portfolio";
 import {
   FaHtml5,
   FaCss3Alt,
   FaJs,
   FaReact,
   FaNodeJs,
-  FaDatabase,
   FaGitAlt,
   FaGithub,
   FaFigma,
@@ -31,7 +34,6 @@ import {
   SiDocker,
   SiBlackmagicdesign,
   SiLinux,
-  SiCplusplus,
   SiThealgorithms,
   SiLangchain,
 } from "react-icons/si";
@@ -42,523 +44,278 @@ import { FaJava } from "react-icons/fa6";
 import { LiaLaptopCodeSolid } from "react-icons/lia";
 import { PiSpinner, PiMagicWandFill } from "react-icons/pi";
 import { MdDataObject, MdOutlineSecurity } from "react-icons/md";
-import { LuComputer, LuChartNetwork } from "react-icons/lu";
+import { LuComputer, LuChartNetwork, LuArrowUpRight } from "react-icons/lu";
 import { CgWebsite } from "react-icons/cg";
-import adda from "../../assets/adda.png";
-import prep from "../../assets/prep.png";
-import masai from "../../assets/masai.jpg";
-import varcons from "../../assets/varcons.png";
-import bms from "../../assets/bms.png";
-import hudl from "../../assets/hudl.png";
+
+const iconClass = "text-lg shrink-0";
+
+const skillGroups = [
+  {
+    title: "Frontend",
+    span: "lg:col-span-3",
+    accent: "56,189,248",
+    items: [
+      { name: "HTML", icon: <FaHtml5 className={`${iconClass} text-orange-500`} /> },
+      { name: "CSS", icon: <FaCss3Alt className={`${iconClass} text-blue-400`} /> },
+      { name: "React.js", icon: <FaReact className={`${iconClass} text-blue-500`} /> },
+      { name: "Context API", icon: <TbApi className={`${iconClass} text-blue-500`} /> },
+      { name: "Redux", icon: <SiRedux className={`${iconClass} text-red-500`} /> },
+      { name: "Tailwind CSS", icon: <SiTailwindcss className={`${iconClass} text-cyan-500`} /> },
+      { name: "Bootstrap", icon: <SiBootstrap className={`${iconClass} text-purple-500`} /> },
+      { name: "Next.js", icon: <SiNextdotjs className={`${iconClass} text-white`} /> },
+      { name: "Framer Motion", icon: <SiFramer className={`${iconClass} text-pink-500`} /> },
+    ],
+  },
+  {
+    title: "Backend",
+    span: "lg:col-span-3",
+    accent: "34,197,94",
+    items: [
+      { name: "Node.js", icon: <FaNodeJs className={`${iconClass} text-green-500`} /> },
+      { name: "Express.js", icon: <SiExpress className={`${iconClass} text-yellow-400`} /> },
+      { name: "REST APIs", icon: <TbApi className={`${iconClass} text-blue-500`} /> },
+      { name: "Supabase (BaaS)", icon: <SiSupabase className={`${iconClass} text-green-500`} /> },
+      { name: "JWT Auth", icon: <PiSpinner className={`${iconClass} text-pink-500`} /> },
+    ],
+  },
+  {
+    title: "GenAI",
+    span: "lg:col-span-4",
+    accent: "168,85,247",
+    highlight: true,
+    items: [
+      { name: "LangChain", icon: <SiLangchain className={`${iconClass} text-green-500`} /> },
+      { name: "RAG", icon: <TbDatabaseSearch className={`${iconClass} text-cyan-500`} /> },
+      { name: "ChromaDB", icon: <TbDatabase className={`${iconClass} text-orange-500`} /> },
+      { name: "Embeddings", icon: <LuChartNetwork className={`${iconClass} text-purple-500`} /> },
+      { name: "LLM APIs", icon: <TbApi className={`${iconClass} text-blue-500`} /> },
+      { name: "Prompt Engineering", icon: <PiMagicWandFill className={`${iconClass} text-pink-500`} /> },
+      { name: "AI Agents", icon: <TbRobot className={`${iconClass} text-yellow-500`} /> },
+    ],
+  },
+  {
+    title: "Languages",
+    span: "lg:col-span-2",
+    accent: "249,115,22",
+    items: [
+      { name: "Java", icon: <FaJava className={`${iconClass} text-red-500`} /> },
+      { name: "JavaScript", icon: <FaJs className={`${iconClass} text-yellow-500`} /> },
+      { name: "TypeScript", icon: <SiTypescript className={`${iconClass} text-blue-500`} /> },
+      { name: "Python", icon: <SiPython className={`${iconClass} text-blue-500`} /> },
+      { name: "C", icon: <LiaLaptopCodeSolid className={`${iconClass} text-green-500`} /> },
+    ],
+  },
+  {
+    title: "Concepts",
+    span: "lg:col-span-4",
+    accent: "99,102,241",
+    items: [
+      { name: "OOPs", icon: <MdDataObject className={`${iconClass} text-green-500`} /> },
+      { name: "System Design", icon: <SiBlackmagicdesign className={`${iconClass} text-red-500`} /> },
+      { name: "Computer Networks", icon: <LuComputer className={`${iconClass} text-white`} /> },
+      { name: "Network Security", icon: <MdOutlineSecurity className={`${iconClass} text-orange-500`} /> },
+      { name: "Operating Systems", icon: <SiLinux className={`${iconClass} text-blue-500`} /> },
+      { name: "Software Engineering", icon: <CgWebsite className={`${iconClass} text-yellow-500`} /> },
+      { name: "DSA", icon: <SiThealgorithms className={`${iconClass} text-cyan-500`} /> },
+    ],
+  },
+  {
+    title: "Databases",
+    span: "lg:col-span-2",
+    accent: "16,185,129",
+    items: [
+      { name: "MongoDB", icon: <SiMongodb className={`${iconClass} text-green-500`} /> },
+      { name: "Mongoose", icon: <SiMongoose className={`${iconClass} text-white`} /> },
+      { name: "MySQL", icon: <GrMysql className={`${iconClass} text-blue-500`} /> },
+    ],
+  },
+  {
+    title: "Tools & Others",
+    span: "lg:col-span-6",
+    accent: "236,72,153",
+    items: [
+      { name: "Git", icon: <FaGitAlt className={`${iconClass} text-red-500`} /> },
+      { name: "GitHub", icon: <FaGithub className={`${iconClass} text-white`} /> },
+      { name: "Docker", icon: <SiDocker className={`${iconClass} text-blue-500`} /> },
+      { name: "VS Code", icon: <DiVisualstudio className={`${iconClass} text-blue-500`} /> },
+      { name: "Figma", icon: <FaFigma className={`${iconClass} text-pink-500`} /> },
+      { name: "Postman", icon: <SiPostman className={`${iconClass} text-orange-500`} /> },
+      { name: "MySQL Workbench", icon: <SiMysql className={`${iconClass} text-blue-500`} /> },
+      { name: "IntelliJ IDEA", icon: <SiIntellijidea className={`${iconClass} text-pink-500`} /> },
+      { name: "Vercel", icon: <SiVercel className={`${iconClass} text-white`} /> },
+      { name: "Render", icon: <SiRender className={`${iconClass} text-white`} /> },
+      { name: "Netlify", icon: <SiNetlify className={`${iconClass} text-white`} /> },
+    ],
+  },
+];
+
+const Chip = ({ children }) => (
+  <span
+    className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5
+      px-2.5 py-1.5 text-xs font-medium text-gray-200 transition-colors hover:border-white/25 hover:bg-white/10"
+  >
+    {children}
+  </span>
+);
+
 export const About = () => {
-  const frontendSkills = [
-    { name: "HTML", icon: <FaHtml5 className="text-orange-500 text-2xl" /> },
-    { name: "CSS", icon: <FaCss3Alt className="text-blue-400 text-2xl" /> },
-    { name: "React.js", icon: <FaReact className="text-blue-500 text-2xl" /> },
-    { name: "Context API", icon: <TbApi className="text-blue-500 text-2xl" /> },
-    { name: "Redux", icon: <SiRedux className="text-red-500 text-2xl" /> },
-    {
-      name: "Tailwind CSS",
-      icon: <SiTailwindcss className="text-cyan-500 text-2xl" />,
-    },
-    {
-      name: "Bootstrap",
-      icon: <SiBootstrap className="text-purple-500 text-2xl" />,
-    },
-    { name: "Next.js", icon: <SiNextdotjs className="text-white text-2xl" /> },
-    {
-      name: "Framer Motion",
-      icon: <SiFramer className="text-pink-500 text-2xl" />,
-    },
-  ];
-
-  const backendSkills = [
-    { name: "Node.js", icon: <FaNodeJs className="text-green-500 text-2xl" /> },
-    {
-      name: "Express.js",
-      icon: <SiExpress className="text-yellow-400 text-2xl" />,
-    },
-    { name: "REST APIs", icon: <TbApi className="text-blue-500 text-2xl" /> },
-    {
-      name: "Supabase (BaaS)",
-      icon: <SiSupabase className="text-green-500 text-2xl" />,
-    },
-    {
-      name: "JWT Authentication",
-      icon: <PiSpinner className="text-pink-500 text-2xl" />,
-    },
-  ];
-  const genAiSkills = [
-    { name: "LangChain", icon: <SiLangchain className="text-green-500 text-2xl" /> },
-    { name: "RAG", icon: <TbDatabaseSearch className="text-cyan-500 text-2xl" /> },
-    { name: "ChromaDB", icon: <TbDatabase className="text-orange-500 text-2xl" /> },
-    { name: "Embeddings", icon: <LuChartNetwork className="text-purple-500 text-2xl" /> },
-    { name: "LLM APIs", icon: <TbApi className="text-blue-500 text-2xl" /> },
-    {
-      name: "Prompt Engineering",
-      icon: <PiMagicWandFill className="text-pink-500 text-2xl" />,
-    },
-    { name: "AI Agents", icon: <TbRobot className="text-yellow-500 text-2xl" /> },
-  ];
-
-  const ProgrammingSkills = [
-    { name: "Java", icon: <FaJava className="text-red-500 text-3xl" /> },
-    { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
-    { name: "Typescript", icon: <SiTypescript className="text-blue-500 text-2xl" /> },
-    { name: "Python", icon: <SiPython className="text-blue-500 text-2xl" /> },
-    {
-      name: "C Programming",
-      icon: <LiaLaptopCodeSolid className="text-green-500 text-2xl" />,
-    },
-  ];
-
-  const Concepts = [
-    {
-      name: "OOPs",
-      icon: <MdDataObject className="text-green-500 text-2xl" />,
-    },
-      {
-      name: "System Design",
-      icon: <SiBlackmagicdesign className="text-red-500 text-2xl" />,
-    },
-    {
-      name: "Computer Networks",
-      icon: <LuComputer className="text-white text-2xl" />,
-    },
-    {
-      name: "Network Security",
-      icon: <MdOutlineSecurity className="text-orange-500 text-2xl" />,
-    },
-       {
-      name: "Operating System",
-      icon: <SiLinux className="text-blue-500 text-2xl" />,
-    },
-    {
-      name: "Software Engineering",
-      icon: <CgWebsite className="text-yellow-500 text-2xl" />,
-    },
-     {
-      name: "Data Structures and Algorithms",
-      icon: <SiThealgorithms className="text-cyan-500 text-2xl" />,
-    },
-  
-    
-  ];
-
-  const DbSkills = [
-    {
-      name: "MongoDB",
-      icon: <SiMongodb className="text-green-500 text-2xl" />,
-    },
-    { name: "Mongoose", icon: <SiMongoose className="text-white text-4xl" /> },
-    { name: "MySQL", icon: <GrMysql className="text-blue-500 text-2xl" /> },
-  ];
-
-  const toolsSkills = [
-    { name: "Git", icon: <FaGitAlt className="text-red-500 text-2xl" /> },
-    { name: "GitHub", icon: <FaGithub className="text-white text-2xl" /> },
-       {
-      name: "Docker",
-      icon: <SiDocker className="text-blue-500 text-2xl" />,
-    },
-    {
-      name: "VS Code",
-      icon: <DiVisualstudio className="text-blue-500 text-2xl" />,
-    },
-  
-    { name: "Figma", icon: <FaFigma className="text-pink-500 text-2xl" /> },
-    {
-      name: "Postman",
-      icon: <SiPostman className="text-orange-500 text-2xl" />,
-    },
-    {
-      name: "MySQL Workbench",
-      icon: <SiMysql className="text-blue-500 text-4xl" />,
-    },
-    {
-      name: "IntelliJ IDEA",
-      icon: <SiIntellijidea className="text-pink-500 text-2xl" />,
-    },
-    { name: "Vercel", icon: <SiVercel className="text-white text-2xl" /> },
-    { name: "Render", icon: <SiRender className="text-white text-2xl" /> },
-    { name: "Netlify", icon: <SiNetlify className="text-white text-2xl" /> },
-  ];
+  const [activeId, setActiveId] = useState(null);
+  const active = journey.find((item) => item.id === activeId) ?? null;
 
   return (
-    <section
-      id="about"
-      className="min-h-screen flex items-center justify-center py-2 md:py-20 "
-    >
+    <section id="about" className="min-h-screen py-20">
       <RevealOnScroll>
-        <div className="max-w-5xl mx-auto px-4 ">
-          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r bg-white bg-clip-text text-transparent text-center">
-            {" "}
-            About Me
-          </h2>
+        <div className="mx-auto max-w-6xl px-4">
+          <h2 className="mb-2 text-center text-3xl font-bold text-white">About Me</h2>
+          <p className="mb-10 text-center text-sm text-gray-400">
+            Tap any card to see the full story.
+          </p>
 
-          <div className="rounded-xl p-8 border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40  shadow-md shadow-indigo-500">
-            <h1 className="text-center font-extrabold text-indigo-500 text-2xl my-2">
-              Technical Skills
-            </h1>
-           
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4"> Frontend</h3>
-                <div className="flex flex-wrap gap-2">
-                  {frontendSkills.map((tech, key) => (
+          {/* ── Journey ─────────────────────────────────────────── */}
+          <BentoGrid className="mb-14">
+            {journey.map((item) => (
+              <BentoCard
+                key={item.id}
+                className={item.span}
+                accent={item.accent}
+                onClick={() => setActiveId(item.id)}
+              >
+                <div className="flex h-full flex-col p-5">
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <img src={item.logo} alt="" className={item.logoClass} />
                     <span
-                      key={key}
-                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                      className="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                      style={{
+                        color: `rgb(${item.accent})`,
+                        borderColor: `rgba(${item.accent},0.35)`,
+                        backgroundColor: `rgba(${item.accent},0.1)`,
+                      }}
                     >
-                      {tech.icon}
-                      {tech.name}
+                      {item.current ? "Current" : item.kind}
                     </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4"> Backend</h3>
-                <div className="flex flex-wrap gap-2">
-                  {backendSkills.map((tech, key) => (
-                    <span
-                      key={key}
-                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-blue-600 to-white text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
-                    >
-                      {tech.icon}
-                      {tech.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4">
-                  {" "}
-                  Programming Languages
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {ProgrammingSkills.map((tech, key) => (
-                    <span
-                      key={key}
-                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
-                    >
-                      {tech.icon}
-                      {tech.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {/* for the other skills section */}
-              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4">Databases</h3>
-                <div className="flex flex-wrap gap-2">
-                  {DbSkills.map((tech, key) => (
-                    <span
-                      key={key}
-                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-blue-600 to-white text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
-                    >
-                      {tech.icon}
-                      {tech.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4">Concepts</h3>
-                <div className="flex flex-wrap gap-2">
-                  {Concepts.map((tech, key) => (
-                    <span
-                      key={key}
-                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
-                    >
-                      {tech.icon}
-                      {tech.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <h3 className="text-xl font-bold mb-4">Tools & Others</h3>
-                <div className="flex flex-wrap gap-2">
-                  {toolsSkills.map((tech, key) => (
-                    <span
-                      key={key}
-                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold
-                      shadow-blue-500 shadow-sm transition
-                      bg-gradient-to-r from-blue-600 to-white
-                      text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
-                    >
-                      {tech.icon}
-                      {tech.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all md:col-span-2">
-                <h3 className="text-xl font-bold mb-4">GenAI</h3>
-                <div className="flex flex-wrap gap-2">
-                  {genAiSkills.map((tech, key) => (
-                    <span
-                      key={key}
-                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
-                    >
-                      {tech.icon}
-                      {tech.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/*  */}
-
-          <div className="grid grid-cols-1  gap-6 mt-8">
-            {/* experience */}
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
-              <h3 className="text-2xl font-bold mb-4 text-white text-center">
-                Work Experience
-              </h3>
-
-              <div className="flex flex-col items-center space-y-2">
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={masai}
-                    alt=""
-                    className="items-center h-10 w-32 object-contain rounded-md"
-                  />
-                </div>
-
-                <h2 className="font-extrabold text-lg text-center">Masai</h2>
-                <h2 className="font-extrabold text-lg text-center">
-                  Curriculum Engineer
-                </h2>
-                <h2 className="font-extrabold text-lg text-center text-blue-500">
-                  ( May 2026 - Present )
-                </h2>
-              </div>
-
-              <div className="my-5 ">
-                <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-indigo-500 to-white text-transparent bg-clip-text ">
-                  Tech Stack : MERN Stack, JavaScript, Python, Excel, Claude,
-                  Codex, AI Agents, Prompt Engineering, Data Pipelines.
-                </p>
-
-                <p className=" font-extralight text-md text-justify">
-                  1. Managed AI-enabled curriculum and assessment workflows
-                  across technical and non-technical programs, covering
-                  rubric-based evaluations, question validation, learner
-                  submission review, grading prompt refinement, evaluation
-                  quality checks, and learner support.
-                </p>
-
-                <p className="mt-5 font-extralight text-md text-justify">
-                  2. Built MERN-based evaluation automation workflows and
-                  data pipelines using Claude, Codex, Gemini, and AI agents,
-                  collaborating with product, engineering, academic, and
-                  operations teams to track submissions, analyze grading
-                  issues, improve assessment delivery, maintain validation
-                  reports, prompt versions, and issue trackers, and ensure
-                  consistent AI-assisted evaluation outcomes.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
-              <div className="flex flex-col items-center space-y-2">
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={adda}
-                    alt=""
-                    className="items-center h-12 w-12  object-cover rounded-md"
-                  />
-                </div>
-
-                <h2 className="font-extrabold text-lg text-center">Adda247</h2>
-                <h2 className="font-extrabold text-lg text-center">
-                  Executive - Audit and Assessment
-                </h2>
-                <h2 className="font-extrabold text-lg text-center text-blue-500">
-                    ( April 2025 - May 2026 )
-                  </h2>
-              </div>
-           
-              <div className="my-5 ">
-                <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-indigo-500 to-white text-transparent bg-clip-text ">
-                  Tech Stack : Web Development, Java, Aptitude, DSA, Computer
-                  Networks, Operating Systems.
-                </p>
-
-                <p className=" font-extralight text-md text-justify">
-                  1. Built an AI-powered assessment evaluation tool using MERN and Gemini 2.5 Flash Pro, automating rubric-based evaluation with 80% higher accuracy and 70% less manual effort.,
-                </p>
-
-                <p className="mt-5 font-extralight text-md text-justify">
-                  2. Curated and evaluated student assessmentsfocused on Operating Systems and Computer Networks, enhancing question quality and accuracy,
-
-                  resulting in a 10% improvement in real-world problem-solving
-                  relevance.
-                </p>
-
-                  <p className=" mt-5 font-extralight text-md text-justify">
-                  3. Collaborated with the development team to build Optimus end-to-end Web Development assessment platform using React, Node.js, and MongoDB, improving evaluation quality and learner insights by 30%.
-                </p>
-
-
-                 <p className=" mt-5 font-extralight text-md text-justify">
-                  4. Created end-to-end MERN-focused assessments and resolved learners’ technical doubts,
-             
-                  improving question relevance and learning outcomes by 20%.
-                </p>
-
-
-
-
-              </div>
-            </div>
-
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
-              <div className="flex flex-col items-center space-y-2">
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={hudl}
-                    alt=""
-                    className="items-center h-10 w-32 object-contain rounded-md"
-                  />
-                </div>
-
-                <h2 className="font-extrabold text-lg text-center">Hudl</h2>
-                <h2 className="font-extrabold text-lg text-center">
-                  Sports Analyst
-                </h2>
-                <h2 className="font-extrabold text-lg text-center text-blue-500">
-                  ( June 2023 - November 2023 )
-                </h2>
-              </div>
-
-              <div className="my-5 ">
-                <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-indigo-500 to-white text-transparent bg-clip-text ">
-                  Tech Stack : SQL, Excel, Google Sheets, Hudl Platform, Data
-                  Cleaning, Data Validation, Data QA, Sports Analytics.
-                </p>
-
-                <p className=" font-extralight text-md text-justify">
-                  1. Processed and analyzed high-volume sports video datasets
-                  using Hudl tools, converting match events, player actions,
-                  tactical sequences, and performance indicators into
-                  structured analytical data for reporting and performance
-                  insights.
-                </p>
-
-                <p className="mt-5 font-extralight text-md text-justify">
-                  2. Cleaned, transformed, and validated match-event datasets
-                  using SQL, Excel, and Google Sheets, performing data
-                  quality checks to identify tagging inconsistencies, correct
-                  classification errors, and maintain reliable datasets for
-                  downstream sports analytics.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
-              <h3 className="text-2xl font-bold mb-4 text-white text-center">
-                Education
-              </h3>
-
-              <div className="flex justify-center mb-2">
-                <img
-                  src={bms}
-                  alt=""
-                  className="h-14 w-14 object-contain rounded-md"
-                />
-              </div>
-
-              <h2 className="font-extrabold text-lg text-center">
-                BMS Institute of Technology and Management, Bangalore
-
-              </h2>
-              <h2 className="font-extrabold text-lg text-center text-blue-500">
-                (2018 - 2023)
-                
-              </h2>
-              <p className="text-center font-semibold text-md my-2 bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
-                B.E. in Electronics and Communication Engineering
-              </p>
-              <div className="my-5 ">
-                <h3 className="text-center text-orange-500 text-md font-semibold mb-3 ">
-                  * Achievements *
-                </h3>
-
-                <p className=" font-extralight text-md text-justify">
-                  Secured Runner-up position for the project ` Reconfiguration of Micro-strip Patch Antenna `{" "}
-
-                  in the department-level ’Project-Based Learning’ competition
-                  during the 6th semester.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
-              <h3 className="text-2xl font-bold mb-4 text-white text-center">
-                Internship{" "}
-              </h3>
-              <div className="space-y-2 text-gray-300">
-                <div>
-                  <div className="flex justify-center pt-2">
-                    <img
-                      src={varcons}
-                      alt=""
-                      className="h-10 w-32 object-contain rounded-md"
-                    />
                   </div>
 
-                  <h3 className="font-extrabold text-center text-lg text-white my-4">
-                    {" "}
-                    Full Stack Developer Intern -{" "}
-                    <span className="bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text">
-                      Varcons Technologies
-                    </span>
-                  </h3>
-                  <h3 className="font-extrabold text-lg text-center text-blue-500">
-                    ( Feb 2023 - March 2023 )
-                  </h3>
-                  <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-blue-500 to-white text-transparent bg-clip-text ">
-                    Tech Stack - React.js, Node.js, Express, MongoDB, JWT, REST
-                    APIs.
+                  <h3 className="text-base font-bold text-white">{item.company}</h3>
+                  <p className="mt-0.5 text-sm font-medium text-gray-300">{item.role}</p>
+                  <p className="mt-1 text-xs font-medium" style={{ color: `rgb(${item.accent})` }}>
+                    {item.period}
                   </p>
 
-                  <div className="my-5 ">
-                    <p className=" font-extralight text-md text-justify">
-                      1. Developed ”Coursezz”, an online course-selling
-                      platform, implementing JWT-based authentication, role-based access control (RBAC), and MongoDB Atlas to support secure multi-user access, reducing unauthorized
-                      access incidents.
-                    </p>
+                  <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-gray-400">
+                    {item.summary}
+                  </p>
 
-                    <p className="mt-5 font-extralight text-md text-justify">
-                      2. Optimized API performance, reducing response times by
-                      40% through efficient Express middleware, caching strategies, and request validation, enhancing scalability and system throughput.
-                    </p>
+                  <div className="mt-auto flex items-center gap-1 pt-4 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
+                    View details
+                    <LuArrowUpRight className="h-3.5 w-3.5" />
                   </div>
-                  <a
-                    href="https://drive.google.com/file/d/1oFndqcViPQE_p8io7HW_wDGryYzqk7cE/view?usp=drive_link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <p className="text-md text-center bg-gradient-to-r from-blue-500 to-white text-transparent bg-clip-text hover:text-blue-300 my-4">
-                      View Certificate →
-                    </p>
-                  </a>
                 </div>
-              </div>
-            </div>
-          </div>
+              </BentoCard>
+            ))}
+          </BentoGrid>
+
+          {/* ── Technical skills ────────────────────────────────── */}
+          <h3 className="mb-6 text-center text-2xl font-bold text-white">
+            Technical Skills
+          </h3>
+
+          <BentoGrid>
+            {skillGroups.map((group) => (
+              <BentoCard key={group.title} className={group.span} accent={group.accent}>
+                <div className="p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ backgroundColor: `rgb(${group.accent})` }}
+                    />
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-white">
+                      {group.title}
+                    </h4>
+                    {group.highlight && (
+                      <span className="rounded-full bg-purple-500/15 px-2 py-0.5 text-[10px] font-semibold text-purple-300">
+                        New
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {group.items.map((item) => (
+                      <Chip key={item.name}>
+                        {item.icon}
+                        {item.name}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+              </BentoCard>
+            ))}
+          </BentoGrid>
         </div>
       </RevealOnScroll>
+
+      {/* ── Detail modal ──────────────────────────────────────── */}
+      <Modal
+        open={Boolean(active)}
+        onClose={() => setActiveId(null)}
+        label={active ? `${active.company} details` : undefined}
+      >
+        {active && (
+          <div className="p-6 sm:p-8">
+            <div className="mb-6 flex flex-wrap items-center gap-4 pr-10">
+              <img src={active.logo} alt="" className={active.logoClass} />
+              <div>
+                <h3 className="text-xl font-bold text-white">{active.company}</h3>
+                <p className="text-sm text-gray-300">
+                  {active.role} · {active.location}
+                </p>
+                <p className="mt-0.5 text-xs font-medium" style={{ color: `rgb(${active.accent})` }}>
+                  {active.period}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-6 flex flex-wrap gap-2">
+              {active.stack.map((tech) => (
+                <span
+                  key={tech}
+                  className="rounded-lg border px-2.5 py-1 text-xs font-medium"
+                  style={{
+                    color: `rgb(${active.accent})`,
+                    borderColor: `rgba(${active.accent},0.3)`,
+                    backgroundColor: `rgba(${active.accent},0.08)`,
+                  }}
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <ul className="space-y-4">
+              {active.bullets.map((bullet, i) => (
+                <li key={i} className="flex gap-3 text-sm leading-relaxed text-gray-300">
+                  <span
+                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: `rgb(${active.accent})` }}
+                  />
+                  {bullet}
+                </li>
+              ))}
+            </ul>
+
+            {active.link && (
+              <a
+                href={active.link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5
+                  px-4 py-2 text-sm font-medium text-white transition-colors hover:border-white/30 hover:bg-white/10"
+              >
+                {active.link.label}
+                <LuArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
+          </div>
+        )}
+      </Modal>
     </section>
   );
 };
