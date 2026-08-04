@@ -72,10 +72,20 @@ body {
   }
 
   /* Anything relying on the reveal observer must be visible on paper — the
-     observer may never have fired for sections below the fold. */
-  .reveal {
+     observer may never have fired for sections below the fold. Framer Motion
+     also writes inline opacity while animating, so a heading caught
+     mid-transition would otherwise print half-faded. */
+  .reveal,
+  [style*="opacity"] {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* Company logos are white or light marks on transparency — on white paper
+     they vanish to a faint outline. The company name sits right beside each
+     one in text, so they carry nothing on paper. */
+  #about img {
+    display: none !important;
   }
 
   section {
