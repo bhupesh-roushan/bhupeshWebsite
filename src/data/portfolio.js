@@ -27,7 +27,7 @@ export const journey = [
     period: "May 2026 - Present",
     current: true,
     logo: masai,
-    logoClass: "h-11 w-[150px] object-contain",
+    logoClass: "h-8 w-auto object-contain",
     accent: "99,102,241",
     span: "lg:col-span-3",
     stack: [
@@ -93,7 +93,7 @@ export const journey = [
     role: "Sports Analyst",
     period: "June 2023 - November 2023",
     logo: hudl,
-    logoClass: "h-11 w-[135px] object-contain rounded-md",
+    logoClass: "h-8 w-auto object-contain rounded-md",
     accent: "249,115,22",
     span: "lg:col-span-2",
     stack: [
@@ -125,7 +125,7 @@ export const journey = [
     role: "Full Stack Developer Intern",
     period: "Feb 2023 - March 2023",
     logo: varcons,
-    logoClass: "h-11 w-[110px] object-contain rounded-md bg-white/90 p-1",
+    logoClass: "h-8 w-auto object-contain rounded-md bg-white/90 p-1",
     accent: "56,189,248",
     span: "lg:col-span-2",
     stack: ["React.js", "Node.js", "Express", "MongoDB", "JWT", "REST API"],
@@ -148,7 +148,7 @@ export const journey = [
     role: "B.E. in Electronics and Communication Engineering",
     period: "October 2018 - May 2023",
     logo: bms,
-    logoClass: "h-11 w-11 object-contain rounded-md",
+    logoClass: "h-14 w-auto object-contain rounded-md",
     accent: "34,197,94",
     span: "lg:col-span-2",
     stack: [
