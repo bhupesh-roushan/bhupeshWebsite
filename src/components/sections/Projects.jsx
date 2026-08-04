@@ -33,6 +33,8 @@ export const Projects = () => {
                   <img
                     src={project.image}
                     alt=""
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* soft wash so the screenshot sits back from the UI */}
