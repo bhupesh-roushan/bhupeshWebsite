@@ -59,7 +59,9 @@ export const journey = [
     role: "Executive - Audit & Assessment",
     period: "April 2025 - May 2026",
     logo: adda,
-    logoClass: "h-10 w-10 object-cover rounded-md",
+    // Box matches the artwork's 1.5 aspect, so object-cover fills it without
+    // cropping the wordmark and the rounded corners clip the red plate itself.
+    logoClass: "h-10 w-[60px] object-cover rounded-md",
     accent: "236,72,153",
     span: "lg:col-span-3",
     stack: [
