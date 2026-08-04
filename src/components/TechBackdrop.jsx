@@ -60,14 +60,11 @@ export const TechBackdrop = () => {
       el.style.webkitMaskImage = HIDDEN_MASK;
     };
 
-    const onMove = (e) => {
+    const revealAt = (clientX, clientY, radius) => {
       cancelAnimationFrame(frame.current);
       const rect = section.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      // A finger needs a tighter circle: 170px on a 390px-wide screen would
-      // light up most of the hero at once.
-      const radius = e.pointerType === "mouse" ? REVEAL_RADIUS : TOUCH_RADIUS;
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
       frame.current = requestAnimationFrame(() => {
         const mask = `radial-gradient(${radius}px circle at ${x}px ${y}px, #000 0%, rgba(0,0,0,0.6) 50%, transparent 75%)`;
         el.style.maskImage = mask;
@@ -75,31 +72,34 @@ export const TechBackdrop = () => {
       });
     };
 
-    // Pointer events rather than mouse events, so a finger drives the reveal
-    // too. On touch, pointermove only fires while the screen is being touched,
-    // which is exactly the behaviour we want — nothing shows at rest.
-    const onRelease = (e) => {
-      if (e.pointerType !== "mouse") hide();
+    const onMouseMove = (e) => revealAt(e.clientX, e.clientY, REVEAL_RADIUS);
+
+    // Native touch events, not pointer events. Once the browser claims a drag
+    // for scrolling it fires pointercancel and stops sending pointermove — so
+    // the reveal only ever landed on a tap. touchmove keeps firing throughout
+    // the gesture, which is what lets the circle track the finger.
+    // A tighter radius too: 170px on a 390px screen lights up half the hero.
+    const onTouch = (e) => {
+      const t = e.touches[0];
+      if (t) revealAt(t.clientX, t.clientY, TOUCH_RADIUS);
     };
 
     hide();
-    // Reveal on contact as well as movement. A finger drag is also a scroll
-    // gesture, and once the browser claims it for scrolling it fires
-    // pointercancel and stops sending moves — so requiring movement meant a
-    // touch often revealed nothing at all.
-    section.addEventListener("pointerdown", onMove, { passive: true });
-    section.addEventListener("pointermove", onMove, { passive: true });
-    section.addEventListener("pointerleave", hide);
-    section.addEventListener("pointercancel", hide);
-    section.addEventListener("pointerup", onRelease);
+    section.addEventListener("mousemove", onMouseMove, { passive: true });
+    section.addEventListener("mouseleave", hide);
+    section.addEventListener("touchstart", onTouch, { passive: true });
+    section.addEventListener("touchmove", onTouch, { passive: true });
+    section.addEventListener("touchend", hide, { passive: true });
+    section.addEventListener("touchcancel", hide, { passive: true });
 
     return () => {
       cancelAnimationFrame(frame.current);
-      section.removeEventListener("pointerdown", onMove);
-      section.removeEventListener("pointermove", onMove);
-      section.removeEventListener("pointerleave", hide);
-      section.removeEventListener("pointercancel", hide);
-      section.removeEventListener("pointerup", onRelease);
+      section.removeEventListener("mousemove", onMouseMove);
+      section.removeEventListener("mouseleave", hide);
+      section.removeEventListener("touchstart", onTouch);
+      section.removeEventListener("touchmove", onTouch);
+      section.removeEventListener("touchend", hide);
+      section.removeEventListener("touchcancel", hide);
     };
   }, []);
 

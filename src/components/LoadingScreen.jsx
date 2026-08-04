@@ -89,7 +89,7 @@ export const LoadingScreen = ({ onComplete }) => {
         <img src={icon} alt="" className="mb-5 h-12 w-auto" />
 
         <p className="mb-6 font-mono text-sm font-bold text-white">
-          Bhupesh<span className="text-indigo-500">.website</span>
+          bhupesh<span className="text-indigo-500">.blog</span>
         </p>
 
         <div
