@@ -51,6 +51,11 @@ export const TechBackdrop = () => {
     if (!section) return;
 
     const hide = () => {
+      // Cancel first. A pointermove queues the reveal on the next frame, and on
+      // touch the final move and the lift land in the same frame — without this
+      // that queued frame repaints the circle straight after hiding it, so the
+      // icons never went away when the finger came off.
+      cancelAnimationFrame(frame.current);
       el.style.maskImage = HIDDEN_MASK;
       el.style.webkitMaskImage = HIDDEN_MASK;
     };
@@ -78,6 +83,11 @@ export const TechBackdrop = () => {
     };
 
     hide();
+    // Reveal on contact as well as movement. A finger drag is also a scroll
+    // gesture, and once the browser claims it for scrolling it fires
+    // pointercancel and stops sending moves — so requiring movement meant a
+    // touch often revealed nothing at all.
+    section.addEventListener("pointerdown", onMove, { passive: true });
     section.addEventListener("pointermove", onMove, { passive: true });
     section.addEventListener("pointerleave", hide);
     section.addEventListener("pointercancel", hide);
@@ -85,6 +95,7 @@ export const TechBackdrop = () => {
 
     return () => {
       cancelAnimationFrame(frame.current);
+      section.removeEventListener("pointerdown", onMove);
       section.removeEventListener("pointermove", onMove);
       section.removeEventListener("pointerleave", hide);
       section.removeEventListener("pointercancel", hide);
