@@ -33,18 +33,20 @@ import {
   SiLinux,
   SiCplusplus,
   SiThealgorithms,
+  SiLangchain,
 } from "react-icons/si";
 import { GrMysql } from "react-icons/gr";
 import { DiVisualstudio } from "react-icons/di";
-import { TbApi } from "react-icons/tb";
+import { TbApi, TbDatabaseSearch, TbDatabase, TbRobot } from "react-icons/tb";
 import { FaJava } from "react-icons/fa6";
 import { LiaLaptopCodeSolid } from "react-icons/lia";
-import { PiSpinner } from "react-icons/pi";
+import { PiSpinner, PiMagicWandFill } from "react-icons/pi";
 import { MdDataObject, MdOutlineSecurity } from "react-icons/md";
-import { LuComputer } from "react-icons/lu";
+import { LuComputer, LuChartNetwork } from "react-icons/lu";
 import { CgWebsite } from "react-icons/cg";
 import adda from "../../assets/adda.png";
 import prep from "../../assets/prep.png";
+import masai from "../../assets/masai.webp";
 export const About = () => {
   const frontendSkills = [
     { name: "HTML", icon: <FaHtml5 className="text-orange-500 text-2xl" /> },
@@ -83,6 +85,19 @@ export const About = () => {
       icon: <PiSpinner className="text-pink-500 text-2xl" />,
     },
   ];
+  const genAiSkills = [
+    { name: "LangChain", icon: <SiLangchain className="text-green-500 text-2xl" /> },
+    { name: "RAG", icon: <TbDatabaseSearch className="text-cyan-500 text-2xl" /> },
+    { name: "ChromaDB", icon: <TbDatabase className="text-orange-500 text-2xl" /> },
+    { name: "Embeddings", icon: <LuChartNetwork className="text-purple-500 text-2xl" /> },
+    { name: "LLM APIs", icon: <TbApi className="text-blue-500 text-2xl" /> },
+    {
+      name: "Prompt Engineering",
+      icon: <PiMagicWandFill className="text-pink-500 text-2xl" />,
+    },
+    { name: "AI Agents", icon: <TbRobot className="text-yellow-500 text-2xl" /> },
+  ];
+
   const ProgrammingSkills = [
     { name: "Java", icon: <FaJava className="text-red-500 text-3xl" /> },
     { name: "JavaScript", icon: <FaJs className="text-yellow-500 text-2xl" /> },
@@ -270,9 +285,24 @@ export const About = () => {
                     <span
                       key={key}
                       className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold
-                      shadow-blue-500 shadow-sm transition 
-                      bg-gradient-to-r from-blue-600 to-white 
+                      shadow-blue-500 shadow-sm transition
+                      bg-gradient-to-r from-blue-600 to-white
                       text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
+                    >
+                      {tech.icon}
+                      {tech.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl p-6 hover:-translate-y-1 transition-all md:col-span-2">
+                <h3 className="text-xl font-bold mb-4">GenAI</h3>
+                <div className="flex flex-wrap gap-2">
+                  {genAiSkills.map((tech, key) => (
+                    <span
+                      key={key}
+                      className="bg-indigo-500/10 mx-1 my-1 py-2 px-3  rounded-md text-md font-bold hover:bg-indigo-500 shadow-blue-500 shadow-sm transition  bg-gradient-to-r from-white to-blue-600 text-transparent bg-clip-text flex flex-row items-center justify-center gap-2"
                     >
                       {tech.icon}
                       {tech.name}
@@ -295,6 +325,51 @@ export const About = () => {
               <div className="flex flex-col items-center space-y-2">
                 <div className="flex items-center space-x-2">
                   <img
+                    src={masai}
+                    alt=""
+                    className="items-center h-10 w-32 object-contain"
+                  />
+                </div>
+
+                <h2 className="font-extrabold text-lg text-center">Masai</h2>
+                <h2 className="font-extrabold text-lg text-center">
+                  Curriculum Engineer
+                </h2>
+                <h2 className="font-extrabold text-lg text-center text-blue-500">
+                  ( May 2026 - Present )
+                </h2>
+              </div>
+
+              <div className="my-5 ">
+                <p className="my-2 text-center text-md font-bold bg-gradient-to-r from-indigo-500 to-white text-transparent bg-clip-text ">
+                  Tech Stack : MERN Stack, JavaScript, Python, Excel, Claude,
+                  Codex, AI Agents, Prompt Engineering, Data Pipelines.
+                </p>
+
+                <p className=" font-extralight text-md text-justify">
+                  1. Managed AI-enabled curriculum and assessment workflows
+                  across technical and non-technical programs, covering
+                  rubric-based evaluations, question validation, learner
+                  submission review, grading prompt refinement, evaluation
+                  quality checks, and learner support.
+                </p>
+
+                <p className="mt-5 font-extralight text-md text-justify">
+                  2. Built MERN-based evaluation automation workflows and
+                  data pipelines using Claude, Codex, Gemini, and AI agents,
+                  collaborating with product, engineering, academic, and
+                  operations teams to track submissions, analyze grading
+                  issues, improve assessment delivery, maintain validation
+                  reports, prompt versions, and issue trackers, and ensure
+                  consistent AI-assisted evaluation outcomes.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-xl border-white/10 border hover:-translate-y-1 transition-all hover:shadow-sm hover:shadow-blue-500/40 shadow-md shadow-indigo-500">
+              <div className="flex flex-col items-center space-y-2">
+                <div className="flex items-center space-x-2">
+                  <img
                     src={adda}
                     alt=""
                     className="items-center h-12 w-12  object-cover"
@@ -306,7 +381,7 @@ export const About = () => {
                   Executive - Audit and Assessment
                 </h2>
                 <h2 className="font-extrabold text-lg text-center text-blue-500">
-                    ( April 2025 - Present )
+                    ( April 2025 - May 2026 )
                   </h2>
               </div>
            
