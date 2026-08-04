@@ -112,11 +112,6 @@ export const About = () => {
                     <h4 className="text-sm font-bold uppercase tracking-wider text-white">
                       {group.title}
                     </h4>
-                    {group.highlight && (
-                      <span className="rounded-full bg-purple-500/15 px-2 py-0.5 text-[11px] font-semibold text-purple-300">
-                        New
-                      </span>
-                    )}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {group.items.map((item) => (
