@@ -4,12 +4,12 @@ import hudl from "../assets/hudl.png";
 import bms from "../assets/bms.png";
 import varcons from "../assets/varcons.png";
 
-import cloudwatch from "../assets/cloudwatch.png";
-import buildingBlocks from "../assets/buildingBlocks.png";
-import hourglass from "../assets/hourglass.png";
-import cubekit from "../assets/cubekit.png";
-import frequencii from "../assets/frequencii.png";
-import pictelAi from "../assets/pictelAi.png";
+import cloudwatch from "../assets/cloudwatch.webp";
+import buildingBlocks from "../assets/buildingBlocks.webp";
+import hourglass from "../assets/hourglass.webp";
+import cubekit from "../assets/cubekit.webp";
+import frequencii from "../assets/frequencii.webp";
+import pictelAi from "../assets/pictelAi.webp";
 
 /**
  * Experience, education and internship, newest first.

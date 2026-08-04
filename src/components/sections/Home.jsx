@@ -9,7 +9,7 @@ import {
 } from "react-icons/lu";
 import { TechBackdrop } from "../TechBackdrop";
 import video from "../../assets/video.mp4";
-import bhupesh from "../../assets/bhupesh.png";
+import bhupesh from "../../assets/bhupesh.webp";
 
 const NAME = "Bhupesh Roushan";
 const ROLES = [
@@ -47,6 +47,20 @@ export const Home = () => {
     return () => clearInterval(t);
   }, []);
 
+  // Gate the 14MB hero video: desktop only, and only once the page has
+  // painted, so it never competes with content for bandwidth. Phones and
+  // reduced-motion visitors never request it at all.
+  const [showVideo, setShowVideo] = useState(false);
+  useEffect(() => {
+    if (reduceMotion) return;
+    const wideEnough = window.matchMedia("(min-width: 1024px)").matches;
+    const saveData = navigator.connection?.saveData;
+    if (!wideEnough || saveData) return;
+
+    const t = setTimeout(() => setShowVideo(true), 1200);
+    return () => clearTimeout(t);
+  }, [reduceMotion]);
+
   const typingDone = typed.length >= NAME.length;
 
   return (
@@ -54,18 +68,23 @@ export const Home = () => {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:py-28"
     >
-      {/* Background video — playsInline is required or iOS refuses to autoplay inline */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-        className="absolute inset-0 z-0 h-full w-full object-cover"
-      >
-        <source src={video} type="video/mp4" />
-      </video>
+      {/* Background video. It's 14MB, which is a brutal thing to push down a
+          phone connection for decoration, so it's only mounted on wider
+          viewports and after first paint — the gradients below stand in for it
+          everywhere else. playsInline is required or iOS refuses to autoplay. */}
+      {showVideo && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="none"
+          aria-hidden="true"
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+        >
+          <source src={video} type="video/mp4" />
+        </video>
+      )}
 
       {/* Legibility + depth over the footage */}
       <div className="absolute inset-0 z-0 bg-black/65" />

@@ -10,6 +10,7 @@ import { Activity } from "./components/sections/Activity";
 import "./index.css";
 import { Contact } from "./components/sections/Contact";
 import { ToastContainer } from "react-toastify";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -30,6 +31,7 @@ function App() {
         <Projects />
         <Activity />
         <Contact />
+        <Analytics />
         <ToastContainer
           position="bottom-right"
           autoClose={5000}
