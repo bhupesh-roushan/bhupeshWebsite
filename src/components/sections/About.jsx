@@ -184,7 +184,7 @@ export const About = () => {
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <img src={item.logo} alt="" className={item.logoClass} />
                     <span
-                      className="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                      className="rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider"
                       style={{
                         color: `rgb(${item.accent})`,
                         borderColor: `rgba(${item.accent},0.35)`,
@@ -232,7 +232,7 @@ export const About = () => {
                       {group.title}
                     </h4>
                     {group.highlight && (
-                      <span className="rounded-full bg-purple-500/15 px-2 py-0.5 text-[10px] font-semibold text-purple-300">
+                      <span className="rounded-full bg-purple-500/15 px-2 py-0.5 text-[11px] font-semibold text-purple-300">
                         New
                       </span>
                     )}

@@ -1,73 +1,60 @@
-import { useEffect } from "react";
+import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+
+const LINKS = [
+  { href: "#home", label: "Home" },
+  { href: "#about", label: "About" },
+  { href: "#projects", label: "Projects" },
+  { href: "#contact", label: "Contact" },
+];
+
+const SOCIALS = [
+  { href: "https://www.linkedin.com/in/roushanb", Icon: FaLinkedin, label: "LinkedIn" },
+  { href: "https://github.com/bhupesh-roushan", Icon: FaGithub, label: "GitHub" },
+  { href: "https://www.instagram.com/roushanwa", Icon: FaInstagram, label: "Instagram" },
+  { href: "https://x.com/roushanwa", Icon: FaXTwitter, label: "X" },
+];
 
 export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
-  
   return (
     <div
-      className={`fixed top-0 left-0 w-full bg-[rgba(10,10,10,0.8)] z-40 flex flex-col items-center justify-center
-                     transition-all duration-300 ease-in-out
-
-                     ${
-                       menuOpen
-                         ? "h-screen opacity-100 pointer-events-auto"
-                         : "h-0 opacity-0 pointer-events-none"
-                     }
-                   `}
+      // z-40 sits under the navbar (z-50) so the toggle button stays clickable.
+      className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-2
+        bg-[#0a0a0a]/98 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden
+        ${menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
     >
-      <button
-        onClick={() => setMenuOpen(false)}
-        className="absolute top-6 right-6 text-white text-3xl focus:outline-none cursor-pointer"
-        aria-label="Close Menu"
-      >
-        &times;
-      </button>
+      {LINKS.map((link, i) => (
+        <a
+          key={link.href}
+          href={link.href}
+          onClick={() => setMenuOpen(false)}
+          style={{ transitionDelay: menuOpen ? `${i * 60}ms` : "0ms" }}
+          className={`my-3 text-2xl font-semibold text-white transition-all duration-300
+            hover:text-indigo-400
+            ${menuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+        >
+          {link.label}
+        </a>
+      ))}
 
-      <a
-        href="#home"
-        onClick={() => setMenuOpen(false)}
-        className={`text-2xl font-semibold text-white my-4 transform transition-transform duration-300
-                    ${
-                      menuOpen
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-5"
-                    }        
-            `}
+      <div
+        className={`mt-8 flex items-center gap-6 transition-all duration-300
+          ${menuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+        style={{ transitionDelay: menuOpen ? "260ms" : "0ms" }}
       >
-        Home
-      </a>
-      <a
-        href="#about"
-        onClick={() => setMenuOpen(false)}
-        className={`text-2xl font-semibold text-white my-4 transform transition-transform duration-300
-            ${
-              menuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-            }        
-    `}
-      >
-        About
-      </a>
-      <a
-        href="#projects"
-        onClick={() => setMenuOpen(false)}
-        className={`text-2xl font-semibold text-white my-4 transform transition-transform duration-300
-            ${
-              menuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-            }        
-    `}
-      >
-        Projects
-      </a>
-      <a
-        href="#contact"
-        onClick={() => setMenuOpen(false)}
-        className={`text-2xl font-semibold text-white my-4 transform transition-transform duration-300
-            ${
-              menuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-            }        
-    `}
-      >
-        Contact
-      </a>
+        {SOCIALS.map(({ href, Icon, label }) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+            className="text-gray-400 transition-colors hover:text-white"
+          >
+            <Icon className="h-6 w-6" />
+          </a>
+        ))}
+      </div>
     </div>
   );
 };

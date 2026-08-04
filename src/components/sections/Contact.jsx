@@ -2,8 +2,30 @@ import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
-import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import {
+  LuMail,
+  LuPhone,
+  LuMapPin,
+  LuSend,
+  LuCopy,
+  LuCheck,
+} from "react-icons/lu";
+
+const EMAIL = "roushan.bhupesh@gmail.com";
+const PHONE = "+91 7992302851";
+
+const SOCIALS = [
+  { href: "https://www.linkedin.com/in/roushanb", Icon: FaLinkedin, label: "LinkedIn" },
+  { href: "https://github.com/bhupesh-roushan", Icon: FaGithub, label: "GitHub" },
+  { href: "https://www.instagram.com/roushanwa", Icon: FaInstagram, label: "Instagram" },
+  { href: "https://x.com/roushanwa", Icon: FaXTwitter, label: "X" },
+];
+
+const inputClass =
+  "w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white " +
+  "placeholder:text-gray-500 transition-colors focus:border-indigo-500 focus:bg-indigo-500/5 focus:outline-none";
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,13 +36,22 @@ export const Contact = () => {
     countryCode: "+91",
     isCustomCode: false,
   });
-
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      toast.error("Couldn't copy — please copy it manually.");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
-
     setLoading(true);
 
     const templateParams = {
@@ -37,9 +68,7 @@ export const Contact = () => {
         templateParams,
         import.meta.env.VITE_PUBLIC_KEY
       );
-
       toast.success("Message Sent Successfully!");
-
       setFormData({
         name: "",
         email: "",
@@ -57,157 +86,261 @@ export const Contact = () => {
   };
 
   return (
-    <section
-      id="contact"
-      className="min-h-screen flex flex-col items-center justify-center py-20"
-    >
+    <section id="contact" className="py-20">
       <RevealOnScroll>
-        <div className="px-4 w-full min-w-[300px] md:w-[500px] sm:w-2/3 p-6">
-          <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-white bg-clip-text text-transparent text-center">
+        <div className="mx-auto max-w-6xl px-4">
+          <h2 className="mb-2 text-center text-3xl font-bold text-white">
             Get In Touch
           </h2>
+          <p className="mb-10 text-center text-sm text-gray-400">
+            Have a role, a project, or a question? I usually reply within a day.
+          </p>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Name */}
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              placeholder="Full Name"
-              className="w-full bg-white/10 border border-white/10 rounded px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:bg-blue-500/5"
-            />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            {/* ── Reach me directly ─────────────────────────── */}
+            {/* Pairs up between sm and lg so the cards don't stretch on tablets. */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-1">
+              <div className="flex flex-col gap-3">
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="group flex-1 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-indigo-500/40"
+                >
+                  <div className="mb-2 flex items-center gap-3">
+                    <span className="rounded-lg bg-indigo-500/15 p-2 text-indigo-400">
+                      <LuMail className="h-4 w-4" />
+                    </span>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                      Email
+                    </span>
+                  </div>
+                  <p className="break-all text-sm text-white group-hover:text-indigo-300">
+                    {EMAIL}
+                  </p>
+                </a>
 
-            {/* Email */}
-            <input
-              type="email"
-              required
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              placeholder="Your Email"
-              className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:bg-blue-500/5"
-            />
+                <button
+                  type="button"
+                  onClick={copyEmail}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-medium text-gray-300 transition-colors hover:border-white/25 hover:text-white cursor-pointer"
+                >
+                  {copied ? (
+                    <>
+                      <LuCheck className="h-3.5 w-3.5 text-emerald-400" />
+                      Copied to clipboard
+                    </>
+                  ) : (
+                    <>
+                      <LuCopy className="h-3.5 w-3.5" />
+                      Copy email address
+                    </>
+                  )}
+                </button>
+              </div>
 
-            {/* Phone Section */}
-            <div className="flex">
-              <select
-                value={
-                  formData.isCustomCode
-                    ? "custom"
-                    : formData.countryCode
-                }
-                onChange={(e) => {
-                  if (e.target.value === "custom") {
-                    setFormData({
-                      ...formData,
-                      countryCode: "+",
-                      isCustomCode: true,
-                    });
-                  } else {
-                    setFormData({
-                      ...formData,
-                      countryCode: e.target.value,
-                      isCustomCode: false,
-                    });
-                  }
-                }}
-                className="bg-white/10 border border-white/10 border-r-0 rounded-l px-3 py-3 text-white focus:outline-none focus:border-blue-500"
+              <a
+                href={`tel:${PHONE.replace(/\s/g, "")}`}
+                className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-blue-500/40"
               >
-                <option value="+91" className="text-black">+91 (IN)</option>
-                <option value="+1" className="text-black">+1 (US)</option>
-                <option value="+44" className="text-black">+44 (UK)</option>
-                <option value="+61" className="text-black">+61 (AU)</option>
-                <option value="+971" className="text-black">+971 (UAE)</option>
-                <option value="custom" className="text-black">Other</option>
-              </select>
+                <div className="mb-2 flex items-center gap-3">
+                  <span className="rounded-lg bg-blue-500/15 p-2 text-blue-400">
+                    <LuPhone className="h-4 w-4" />
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Phone
+                  </span>
+                </div>
+                <p className="text-sm text-white group-hover:text-blue-300">{PHONE}</p>
+              </a>
 
-              {formData.isCustomCode && (
-                <input
-                  type="text"
-                  value={formData.countryCode}
-                  onChange={(e) => {
-                    let value = e.target.value;
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <div className="mb-2 flex items-center gap-3">
+                  <span className="rounded-lg bg-emerald-500/15 p-2 text-emerald-400">
+                    <LuMapPin className="h-4 w-4" />
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Location
+                  </span>
+                </div>
+                <p className="text-sm text-white">Bangalore, India</p>
+              </div>
 
-                    if (!value.startsWith("+")) {
-                      value = "+" + value.replace(/\+/g, "");
-                    }
-
-                    setFormData({
-                      ...formData,
-                      countryCode: value.replace(/[^\d+]/g, ""),
-                    });
-                  }}
-                  placeholder="+Code"
-                  className="w-24 bg-white/10 border border-white/10 border-r-0 px-3 py-3 text-white focus:outline-none focus:border-blue-500"
-                />
-              )}
-
-              <input
-                type="tel"
-                required
-                value={formData.mobile}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    mobile: e.target.value.replace(/\D/g, ""),
-                  })
-                }
-                placeholder="Your Mobile Number"
-                className="w-full bg-white/10 border border-white/10 rounded-r px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:bg-blue-500/5"
-              />
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                  Elsewhere
+                </p>
+                <div className="flex items-center gap-3">
+                  {SOCIALS.map(({ href, Icon, label }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="rounded-lg border border-white/10 bg-white/5 p-2.5 text-gray-300 transition-all hover:scale-105 hover:border-white/30 hover:text-white"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Message */}
-            <textarea
-              required
-              rows={5}
-              value={formData.message}
-              onChange={(e) =>
-                setFormData({ ...formData, message: e.target.value })
-              }
-              placeholder="Your Message..."
-              className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:bg-blue-500/5"
-            />
+            {/* ── Form ──────────────────────────────────────── */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 lg:col-span-3">
+              <form className="space-y-5" onSubmit={handleSubmit}>
+                <div>
+                  <label htmlFor="name" className="mb-1.5 block text-xs font-medium text-gray-300">
+                    Full name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Jane Doe"
+                    className={inputClass}
+                  />
+                </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 px-6 rounded font-medium transition ${
-                loading
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-600 to-white text-white hover:-translate-y-0.5 hover:shadow-md cursor-pointer"
-              }`}
-            >
-              {loading ? "Sending..." : "Send Message"}
-            </button>
-          </form>
+                <div>
+                  <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-gray-300">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="jane@company.com"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="mobile" className="mb-1.5 block text-xs font-medium text-gray-300">
+                    Mobile
+                  </label>
+                  <div className="flex flex-wrap gap-2 sm:flex-nowrap">
+                    <select
+                      aria-label="Country code"
+                      value={formData.isCustomCode ? "custom" : formData.countryCode}
+                      onChange={(e) => {
+                        if (e.target.value === "custom") {
+                          setFormData({ ...formData, countryCode: "+", isCustomCode: true });
+                        } else {
+                          setFormData({
+                            ...formData,
+                            countryCode: e.target.value,
+                            isCustomCode: false,
+                          });
+                        }
+                      }}
+                      className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none"
+                    >
+                      <option value="+91" className="text-black">+91 (IN)</option>
+                      <option value="+1" className="text-black">+1 (US)</option>
+                      <option value="+44" className="text-black">+44 (UK)</option>
+                      <option value="+61" className="text-black">+61 (AU)</option>
+                      <option value="+971" className="text-black">+971 (UAE)</option>
+                      <option value="custom" className="text-black">Other</option>
+                    </select>
+
+                    {formData.isCustomCode && (
+                      <input
+                        type="text"
+                        aria-label="Custom country code"
+                        value={formData.countryCode}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          if (!value.startsWith("+")) {
+                            value = "+" + value.replace(/\+/g, "");
+                          }
+                          setFormData({
+                            ...formData,
+                            countryCode: value.replace(/[^\d+]/g, ""),
+                          });
+                        }}
+                        placeholder="+Code"
+                        className="w-24 shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none"
+                      />
+                    )}
+
+                    <input
+                      id="mobile"
+                      type="tel"
+                      required
+                      value={formData.mobile}
+                      onChange={(e) =>
+                        setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, "") })
+                      }
+                      placeholder="Your mobile number"
+                      className={`${inputClass} min-w-0 flex-1`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="mb-1.5 block text-xs font-medium text-gray-300">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    required
+                    rows={5}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    placeholder="Tell me a bit about what you're working on..."
+                    className={`${inputClass} resize-y`}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all ${
+                    loading
+                      ? "cursor-not-allowed bg-white/10 text-gray-400"
+                      : "cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-600 text-white shadow-lg shadow-indigo-500/25 hover:scale-[1.02]"
+                  }`}
+                >
+                  {loading ? (
+                    "Sending..."
+                  ) : (
+                    <>
+                      <LuSend className="h-4 w-4" />
+                      Send Message
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       </RevealOnScroll>
 
       {/* Footer */}
-      <footer className="mt-20 w-full flex flex-col items-center gap-5 p-4 bg-gradient-to-r from-blue-600 to-orange-600 bg-clip-text text-transparent">
-        <div className="flex md:hidden items-center space-x-8">
-          <a href="https://www.linkedin.com/in/roushanb" target="_blank">
-            <FaLinkedin className="h-6 w-6 text-gray-300 hover:text-white" />
-          </a>
-          <a href="https://github.com/bhupesh-roushan" target="_blank">
-            <FaGithub className="h-6 w-6 text-gray-300 hover:text-white" />
-          </a>
-          <a href="https://www.instagram.com/roushanwa" target="_blank">
-            <FaInstagram className="h-6 w-6 text-gray-300 hover:text-white" />
-          </a>
-          <a href="https://x.com/roushanwa" target="_blank">
-            <FaXTwitter className="h-6 w-6 text-gray-300 hover:text-white" />
-          </a>
+      <footer className="mt-16 border-t border-white/10 pt-8">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 sm:flex-row sm:justify-between">
+          <p className="text-center text-xs text-gray-400 sm:text-left sm:text-sm">
+            © {new Date().getFullYear()} Bhupesh Roushan. All rights reserved.
+          </p>
+          <div className="flex items-center gap-5">
+            {SOCIALS.map(({ href, Icon, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="text-gray-400 transition-colors hover:text-white"
+              >
+                <Icon className="h-5 w-5" />
+              </a>
+            ))}
+          </div>
         </div>
-
-        <p className="text-xs sm:text-md md:text-lg bg-gradient-to-r from-white to-indigo-500 text-transparent bg-clip-text">
-          All rights reserved @ Bhupesh Roushan © {new Date().getFullYear()}
-        </p>
       </footer>
     </section>
   );

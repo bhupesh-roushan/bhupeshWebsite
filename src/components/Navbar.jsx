@@ -1,119 +1,103 @@
 import { useEffect, useState } from "react";
 import icon from "../assets/icon.svg";
-import { LuLinkedin } from "react-icons/lu";
+import { LuLinkedin, LuMenu, LuX } from "react-icons/lu";
 import { FaGithub, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
+const LINKS = [
+  { href: "#home", label: "Home" },
+  { href: "#about", label: "About" },
+  { href: "#projects", label: "Projects" },
+  { href: "#contact", label: "Contact" },
+];
+
+const SOCIALS = [
+  { href: "https://www.linkedin.com/in/roushanb", Icon: LuLinkedin, label: "LinkedIn", className: "text-blue-500" },
+  { href: "https://github.com/bhupesh-roushan", Icon: FaGithub, label: "GitHub" },
+  { href: "https://www.instagram.com/roushanwa", Icon: FaInstagram, label: "Instagram" },
+  { href: "https://x.com/roushanwa", Icon: FaXTwitter, label: "X" },
+];
+
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
+  const [indiaTime, setIndiaTime] = useState("");
+
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
   }, [menuOpen]);
-const [indiaTime, setIndiaTime] = useState("");
 
   useEffect(() => {
-  const updateTime = () => {
-    const time = new Date().toLocaleTimeString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
+    const updateTime = () =>
+      setIndiaTime(
+        new Date().toLocaleTimeString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+      );
 
-    setIndiaTime(time);
-  };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-  updateTime(); // run immediately
-  const interval = setInterval(updateTime, 1000);
-
-  return () => clearInterval(interval); // cleanup
-}, []);
   return (
-    <nav className="fixed top-0 w-full z-40 bg-[rgba(10, 10, 10, 0.8)] backdrop-blur-xs border-b border-white/10 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between  items-center h-16">
-          <div className="flex flex-row items-center justify-center gap-3">
-            <img src={icon} alt="logo" className="w-10 h-10 " />
-            <a href="#home" className="font-mono  font-bold text-white sm:text-xl text-sm">
-              Bhupesh<span className="text-indigo-500 ">.website</span>{" "}
-            </a>
+    <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-[#0a0a0a]/80 shadow-lg backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="flex h-16 items-center justify-between gap-3">
+          {/* Brand */}
+          <a href="#home" className="flex shrink-0 items-center gap-2">
+            <img src={icon} alt="" className="h-8 w-8 sm:h-10 sm:w-10" />
+            <span className="font-mono text-sm font-bold text-white sm:text-lg">
+              Bhupesh<span className="text-indigo-500">.website</span>
+            </span>
+          </a>
+
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-6 md:flex lg:gap-8">
+            {LINKS.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-sm text-white transition-colors hover:text-indigo-400 lg:text-base"
+              >
+                {l.label}
+              </a>
+            ))}
           </div>
 
-          <div
-            className="w-7 h-5 relative cursor-pointer z-40 md:hidden"
-            onClick={() => setMenuOpen((prev) => !prev)}
-          >
-          </div>
-
-          <div className="hidden md:flex items-center space-x-8">
-            <a
-              href="#home"
-              className="text-white  hover:scale-110  transition-all"
-            >
-              {" "}
-              Home
-            </a>
-            <a
-              href="#about"
-              className="text-white  hover:scale-110  transition-all"
-            >
-              {" "}
-              About{" "}
-            </a>
-            <a
-              href="#projects"
-              className="text-white  hover:scale-110  transition-all"
-            >
-              {" "}
-              Projects{" "}
-            </a>
-            <a
-              href="#contact"
-              className="text-white  hover:scale-110  transition-all"
-            >
-              {" "}
-              Contact{" "}
-            </a>
-          </div>
-
-          <div className="hidden md:flex items-center space-x-8">
-            
-            <a
-              href="https://www.linkedin.com/in/roushanb"
-              target="_blank"
-              className="text-blue-500  hover:scale-110  transition-all"
-            >
-              <LuLinkedin className="h-6 w-6"/>
-            </a>
-            <a
-              href="https://github.com/bhupesh-roushan"
-              target="_blank"
-              className="text-white  hover:scale-110  transition-all"
-            >
-              <FaGithub className="h-6 w-6"/>
-            </a>
-            <a
-              href="https://www.instagram.com/roushanwa"
-              target="_blank"
-              className="text-white  hover:scale-110  transition-all "
-            >
-              <FaInstagram className="h-6 w-6"/>
-            </a>
-            <a
-              href="https://x.com/roushanwa"
-              target="_blank"
-              className="text-white  hover:scale-110  transition-all"
-            >
-              <FaXTwitter className="h-6 w-6"/>
-            </a>
-            <div className="items-center space-x-8">
-            <p>{indiaTime}</p>
+          <div className="flex items-center gap-3 lg:gap-5">
+            {/* Socials — only once there's room for them */}
+            <div className="hidden items-center gap-4 lg:flex">
+              {SOCIALS.map(({ href, Icon, label, className }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={`transition-all hover:scale-110 ${className ?? "text-white"}`}
+                >
+                  <Icon className="h-5 w-5" />
+                </a>
+              ))}
             </div>
 
+            <p className="hidden text-xs tabular-nums text-gray-300 sm:block lg:text-sm">
+              {indiaTime}
+            </p>
+
+            {/* Mobile menu trigger */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen((prev) => !prev)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              className="cursor-pointer rounded-md p-1.5 text-white transition-colors hover:bg-white/10 md:hidden"
+            >
+              {menuOpen ? <LuX className="h-6 w-6" /> : <LuMenu className="h-6 w-6" />}
+            </button>
           </div>
-          <div className="sm:hidden items-center space-x-8">
-            <p>{indiaTime}</p>
-            </div>
         </div>
       </div>
     </nav>
