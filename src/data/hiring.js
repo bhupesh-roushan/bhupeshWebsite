@@ -10,8 +10,7 @@ export const hiring = {
   // PLACEHOLDER — set to whatever your contract actually says.
   noticePeriod: "30 days",
 
-  // PLACEHOLDER — adjust if you'd relocate or want onsite only.
-  workMode: "Remote / Hybrid — Bangalore",
+  workMode: "Onsite — Bangalore",
 
   location: "Bangalore, India",
 
@@ -30,7 +29,7 @@ export const hiring = {
   // To turn it on: make a free 15-minute event type at cal.com (or Calendly)
   // and paste the URL here — e.g. "https://cal.com/bhupesh-roushan/15min".
   // I can't create the account for you; it needs your email to verify.
-  bookingUrl: "https://cal.com/bhupesh-roushan-j18jq6/15min",
+  bookingUrl: "https://cal.com/bhupesh-roushan/15min",
 };
 
 /** Prefilled subject line so writing to you takes one less decision. */
