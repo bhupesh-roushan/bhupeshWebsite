@@ -74,7 +74,7 @@ export const journey = [
       "Designed, audited, and implemented end-to-end MERN-focused technical assessments while resolving learner doubts, increasing question relevance and improving overall learning outcomes by 20%.",
     ],
     link: {
-      href: "https://drive.google.com/file/d/1oFndqcViPQE_p8io7HW_wDGryYzqk7cE/view?usp=drive_link",
+      href: "https://drive.google.com/file/d/1tfM6P9unFsKHm5smAgXCUmQnXmYVjol6/view?usp=drive_link",
       label: "Experience Letter",
     },
   },
@@ -105,6 +105,10 @@ export const journey = [
       "Processed and analyzed high-volume sports video datasets using Hudl tools, converting match events, player actions, tactical sequences, and performance indicators into structured analytical data for reporting and performance insights.",
       "Cleaned, transformed, and validated match-event datasets using SQL, Excel, and Google Sheets, performing data quality checks to identify tagging inconsistencies, correct classification errors, and maintain reliable datasets for downstream sports analytics.",
     ],
+    link: {
+      href: "https://drive.google.com/file/d/1Q9yzYNUIN8Sh88XMT0CRPf7-3Kt0b-jT/view?usp=sharing",
+      label: "Experience Letter",
+    },
   },
   {
     id: "varcons",
