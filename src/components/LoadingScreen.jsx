@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import icon from "../assets/logo.svg";
 import bhupesh from "../assets/bhupesh.webp";
-import masai from "../assets/masai.jpg";
+import masai from "../assets/masai.png";
 import adda from "../assets/adda.png";
 import hudl from "../assets/hudl.png";
 import varcons from "../assets/varcons.png";
