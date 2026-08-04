@@ -3,7 +3,7 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { GithubHeatmap } from "../GithubHeatmap";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { LuArrowUpRight, LuBook, LuGitBranch, LuRocket, LuHistory } from "react-icons/lu";
+import { LuArrowUpRight, LuBook, LuGitBranch, LuHistory } from "react-icons/lu";
 
 const USER = "bhupesh-roushan";
 
@@ -36,7 +36,7 @@ const REPOS_URL = `https://api.github.com/users/${USER}/repos?per_page=100&sort=
 // answer for the session rather than refetching on every mount.
 // Bump when the payload shape changes, or a session holding the old shape
 // renders undefined fields.
-const CACHE_KEY = "gh-activity-v2";
+const CACHE_KEY = "gh-activity-v3";
 
 const LANG_COLORS = {
   JavaScript: "#f1e05a",
@@ -114,20 +114,6 @@ export const Activity = () => {
             pct: langTotal ? Math.round((count / langTotal) * 100) : 0,
           }));
 
-        // A shipped, reachable URL says more than a repo name, so the list
-        // leads with repos that actually have somewhere to visit.
-        const deployed = repos
-          .filter((r) => !r.fork && r.homepage && r.homepage.trim())
-          .map((r) => ({
-            name: r.name,
-            description: r.description,
-            language: r.language,
-            repoUrl: r.html_url,
-            liveUrl: r.homepage.trim(),
-            pushed: r.pushed_at,
-          }))
-          .sort((a, b) => new Date(b.pushed) - new Date(a.pushed));
-
         const lastPush = repos
           .map((r) => r.pushed_at)
           .filter(Boolean)
@@ -138,10 +124,8 @@ export const Activity = () => {
           days,
           total: contrib.total?.lastYear ?? days.reduce((s, d) => s + d.count, 0),
           repoCount: user?.public_repos ?? repos.length,
-          deployedCount: deployed.length,
           lastPush,
           languages,
-          deployed: deployed.slice(0, 6),
         };
 
         sessionStorage.setItem(CACHE_KEY, JSON.stringify(payload));
@@ -160,12 +144,6 @@ export const Activity = () => {
   const loading = data.status === "loading";
 
   const stats = [
-    {
-      icon: LuRocket,
-      label: "Live deployments",
-      value: data.deployedCount,
-      accent: "34,197,94",
-    },
     { icon: LuBook, label: "Public repos", value: data.repoCount, accent: "99,102,241" },
     {
       icon: LuGitBranch,
@@ -193,7 +171,7 @@ export const Activity = () => {
           </p>
 
           {/* Stats */}
-          <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
             {stats.map(({ icon: Icon, label, value, accent }) => (
               <div
                 key={label}
@@ -291,78 +269,8 @@ export const Activity = () => {
               </div>
             </BentoCard>
 
-            {/* Recent repositories */}
-            <BentoCard className="lg:col-span-4" accent="99,102,241">
-              <div className="p-5">
-                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white">
-                  Live deployments
-                  {!loading && data.deployedCount > 0 && (
-                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
-                      {data.deployedCount} shipped
-                    </span>
-                  )}
-                </h3>
-                {loading || !data.deployed?.length ? (
-                  <div className="h-24 animate-pulse rounded-lg bg-white/5" />
-                ) : (
-                  <ul className="space-y-2.5">
-                    {data.deployed.map((repo) => (
-                      <li
-                        key={repo.name}
-                        className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2.5 transition-colors hover:border-white/25"
-                      >
-                        <div className="min-w-0">
-                          <p className="truncate text-xs font-semibold text-white">
-                            {repo.name}
-                          </p>
-                          {repo.description && (
-                            <p className="mt-0.5 line-clamp-1 text-[11px] text-gray-400">
-                              {repo.description}
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="flex shrink-0 items-center gap-2">
-                          {repo.language && (
-                            <span className="hidden items-center gap-1.5 text-[11px] text-gray-400 sm:flex">
-                              <span
-                                className="h-2 w-2 rounded-full"
-                                style={{
-                                  backgroundColor:
-                                    LANG_COLORS[repo.language] ?? "#8b949e",
-                                }}
-                              />
-                              {repo.language}
-                            </span>
-                          )}
-                          <a
-                            href={repo.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[11px] font-medium text-emerald-300 transition-colors hover:bg-emerald-500/20"
-                          >
-                            Live
-                            <LuArrowUpRight className="h-3 w-3" />
-                          </a>
-                          <a
-                            href={repo.repoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`${repo.name} source`}
-                            className="rounded-md border border-white/10 bg-white/5 p-1.5 text-gray-300 transition-colors hover:border-white/30 hover:text-white"
-                          >
-                            <FaGithub className="h-3 w-3" />
-                          </a>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </BentoCard>
-
-            {/* LinkedIn */}
-            <BentoCard className="lg:col-span-6" accent="10,102,194">
+            {/* LinkedIn — pairs with Languages to fill the row */}
+            <BentoCard className="lg:col-span-4" accent="10,102,194">
               <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex items-start gap-3.5">
                   <span className="rounded-lg bg-[#0a66c2]/15 p-2.5 text-[#4aa3f0]">
