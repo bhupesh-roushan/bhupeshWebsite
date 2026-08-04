@@ -25,10 +25,11 @@ const LINKEDIN = {
   ],
 };
 
-// Contributions live only in GitHub's GraphQL API, which needs a token — and a
-// static site can't hold one without shipping it in the bundle. This public
-// proxy needs no auth, at the cost of seeing public contributions only.
-const CONTRIB_URL = `https://github-contributions-api.jogruber.de/v4/${USER}?y=last`;
+// Preferred source: our own serverless route, which authenticates and so counts
+// private contributions too. The public proxy below sees public activity only,
+// which undercounts heavily when most work sits in private repos.
+const API_CONTRIB_URL = "/api/contributions";
+const PUBLIC_CONTRIB_URL = `https://github-contributions-api.jogruber.de/v4/${USER}?y=last`;
 const USER_URL = `https://api.github.com/users/${USER}`;
 const REPOS_URL = `https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`;
 
@@ -36,7 +37,7 @@ const REPOS_URL = `https://api.github.com/users/${USER}/repos?per_page=100&sort=
 // answer for the session rather than refetching on every mount.
 // Bump when the payload shape changes, or a session holding the old shape
 // renders undefined fields.
-const CACHE_KEY = "gh-activity-v3";
+const CACHE_KEY = "gh-activity-v4";
 
 const LANG_COLORS = {
   JavaScript: "#f1e05a",
@@ -49,6 +50,27 @@ const LANG_COLORS = {
 };
 
 const parseDay = (iso) => new Date(`${iso}T00:00:00`);
+
+/**
+ * Try the authenticated route, fall back to the public proxy.
+ * The content-type check matters: the SPA rewrite serves index.html for unknown
+ * paths, so a missing /api route answers 200 with HTML rather than a 404.
+ */
+async function fetchContributions(signal) {
+  try {
+    const res = await fetch(API_CONTRIB_URL, { signal });
+    const type = res.headers.get("content-type") ?? "";
+    if (res.ok && type.includes("application/json")) {
+      return { data: await res.json(), includesPrivate: true };
+    }
+  } catch (err) {
+    if (err.name === "AbortError") throw err;
+  }
+
+  const res = await fetch(PUBLIC_CONTRIB_URL, { signal });
+  if (!res.ok) throw new Error("contributions unavailable");
+  return { data: await res.json(), includesPrivate: false };
+}
 
 /** Compact relative age, e.g. "Today", "6d ago", "3mo ago". */
 function sinceLabel(iso) {
@@ -80,14 +102,14 @@ export const Activity = () => {
       }
 
       try {
-        const [contribRes, userRes, reposRes] = await Promise.all([
-          fetch(CONTRIB_URL, { signal: controller.signal }),
+        const [contribResult, userRes, reposRes] = await Promise.all([
+          fetchContributions(controller.signal),
           fetch(USER_URL, { signal: controller.signal }),
           fetch(REPOS_URL, { signal: controller.signal }),
         ]);
 
-        if (!contribRes.ok) throw new Error("contributions unavailable");
-        const contrib = await contribRes.json();
+        const contrib = contribResult.data;
+        const { includesPrivate } = contribResult;
 
         const today = new Date();
         today.setHours(23, 59, 59, 999);
@@ -126,6 +148,7 @@ export const Activity = () => {
           repoCount: user?.public_repos ?? repos.length,
           lastPush,
           languages,
+          includesPrivate,
         };
 
         sessionStorage.setItem(CACHE_KEY, JSON.stringify(payload));
@@ -167,7 +190,7 @@ export const Activity = () => {
             Profiles &amp; Activity
           </h2>
           <p className="mb-10 text-center text-sm text-gray-400">
-            GitHub numbers are pulled live — public contributions over the last year.
+            GitHub numbers are pulled live from my profile.
           </p>
 
           {/* Stats */}
@@ -200,7 +223,9 @@ export const Activity = () => {
                       <p className="text-[11px] text-gray-400">
                         {loading
                           ? "Loading…"
-                          : `${data.total} public contributions in the last year`}
+                          : `${data.total} ${
+                              data.includesPrivate ? "" : "public "
+                            }contributions in the last year`}
                       </p>
                     </div>
                   </div>
