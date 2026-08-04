@@ -1,5 +1,5 @@
 import adda from "../assets/adda.png";
-import masai from "../assets/masai.jpg";
+import masai from "../assets/masai.png";
 import hudl from "../assets/hudl.png";
 import bms from "../assets/bms.png";
 import varcons from "../assets/varcons.png";
@@ -27,10 +27,7 @@ export const journey = [
     period: "May 2026 - Present",
     current: true,
     logo: masai,
-    // bg-white matches the artwork's own white plate, so the rounded corners
-    // clip something visible — object-contain letterboxes the image inside the
-    // box, leaving the artwork's square corners inset from the rounded edge.
-    logoClass: "h-9 w-28 object-contain rounded-md bg-white",
+    logoClass: "h-11 w-[150px] object-contain",
     accent: "99,102,241",
     span: "lg:col-span-3",
     stack: [
@@ -61,7 +58,7 @@ export const journey = [
     logo: adda,
     // Box matches the artwork's 1.5 aspect, so object-cover fills it without
     // cropping the wordmark and the rounded corners clip the red plate itself.
-    logoClass: "h-10 w-[60px] object-cover rounded-md",
+    logoClass: "h-11 w-[66px] object-cover rounded-md",
     accent: "236,72,153",
     span: "lg:col-span-3",
     stack: [
@@ -93,7 +90,7 @@ export const journey = [
     role: "Sports Analyst",
     period: "June 2023 - November 2023",
     logo: hudl,
-    logoClass: "h-8 w-24 object-contain rounded-md",
+    logoClass: "h-11 w-[135px] object-contain rounded-md",
     accent: "249,115,22",
     span: "lg:col-span-2",
     stack: [
@@ -125,7 +122,7 @@ export const journey = [
     role: "Full Stack Developer Intern",
     period: "Feb 2023 - March 2023",
     logo: varcons,
-    logoClass: "h-8 w-24 object-contain rounded-md bg-white/90 p-1",
+    logoClass: "h-11 w-[110px] object-contain rounded-md bg-white/90 p-1",
     accent: "56,189,248",
     span: "lg:col-span-2",
     stack: ["React.js", "Node.js", "Express", "MongoDB", "JWT", "REST API"],
