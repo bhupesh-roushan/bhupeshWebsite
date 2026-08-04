@@ -59,7 +59,10 @@ export const journey = [
     // Box matches the artwork's 1.5 aspect, so object-cover fills it without
     // cropping the wordmark and the rounded corners clip the red plate itself.
     logoClass: "h-11 w-[66px] object-cover rounded-md",
-    accent: "236,72,153",
+    // Adda247's brand red, not pink. The logo's exact (227,17,31) only reaches
+    // 4.1:1 against the dark card — under the 4.5 minimum for text this size —
+    // so this is the same hue lifted to 5.1:1.
+    accent: "239,68,68",
     span: "lg:col-span-3",
     stack: [
       "React.js",
