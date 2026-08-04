@@ -2,7 +2,6 @@ import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
-import { GithubHeatmap } from "../GithubHeatmap";
 import { journey } from "../../data/portfolio";
 import {
   FaHtml5,
@@ -246,11 +245,6 @@ export const About = () => {
               </BentoCard>
             ))}
           </BentoGrid>
-
-          {/* ── GitHub activity ─────────────────────────────────── */}
-          <div className="mt-6">
-            <GithubHeatmap />
-          </div>
         </div>
       </RevealOnScroll>
 
