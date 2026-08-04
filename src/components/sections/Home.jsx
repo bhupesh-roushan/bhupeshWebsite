@@ -180,9 +180,11 @@ export const Home = () => {
             <LuDownload className="h-4 w-4" />
             Resume
           </a>
+          {/* Below md only — from md up the navbar exposes Contact directly,
+              so this would just duplicate it. */}
           <a
             href="#contact"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10 sm:w-auto"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/10 sm:w-auto md:hidden"
           >
             <LuMail className="h-4 w-4" />
             Contact
