@@ -20,7 +20,7 @@ export const Projects = () => {
             Tap a project for the full breakdown and demo credentials.
           </p>
 
-          <BentoGrid className="lg:auto-rows-[15rem]">
+          <BentoGrid>
             {projects.map((project) => (
               <BentoCard
                 key={project.id}
@@ -28,34 +28,29 @@ export const Projects = () => {
                 accent={project.accent}
                 onClick={() => setActiveId(project.id)}
               >
-                <div className="relative flex h-full min-h-[15rem] flex-col justify-end lg:min-h-0">
-                  {/* preview */}
-                  <img
-                    src={project.image}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                  />
-                  {/* soft wash so the screenshot sits back from the UI */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to top, rgba(11,11,18,0.85) 0%, rgba(11,11,18,0.35) 55%, rgba(11,11,18,0.05) 100%)",
-                    }}
-                  />
+                {/* Preview on top, copy below — the label used to sit over the
+                    screenshot, which capped how many chips could fit before
+                    they collided with the image. */}
+                <div className="flex h-full flex-col">
+                  <div className="relative h-36 shrink-0 overflow-hidden sm:h-40">
+                    <img
+                      src={project.image}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(11,11,18,0.95) 0%, rgba(11,11,18,0.25) 55%, rgba(11,11,18,0) 100%)",
+                      }}
+                    />
+                  </div>
 
-                  {/* label — carries its own scrim, so legibility never depends
-                      on how tall the card happens to be */}
-                  <div
-                    className="relative px-5 pb-5 pt-14"
-                    style={{
-                      background:
-                        "linear-gradient(to top, #0b0b12 0%, #0b0b12 62%, rgba(11,11,18,0) 100%)",
-                    }}
-                  >
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="mb-1.5 flex flex-wrap items-baseline gap-2">
                       <h3 className="text-lg font-bold text-white">{project.title}</h3>
                       {project.period && (
                         <span className="text-[11px] font-medium text-gray-400">
@@ -71,7 +66,7 @@ export const Projects = () => {
                     </p>
 
                     <div className="flex flex-wrap items-center gap-1.5">
-                      {project.stack.slice(0, project.featured ? 6 : 3).map((tech) => (
+                      {project.stack.map((tech) => (
                         <span
                           key={tech}
                           className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-gray-300"
@@ -79,14 +74,9 @@ export const Projects = () => {
                           {tech}
                         </span>
                       ))}
-                      {project.stack.length > (project.featured ? 6 : 3) && (
-                        <span className="text-[11px] text-gray-500">
-                          +{project.stack.length - (project.featured ? 6 : 3)}
-                        </span>
-                      )}
                     </div>
 
-                    <div className="mt-4 flex items-center gap-1 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
+                    <div className="mt-auto flex items-center gap-1 pt-4 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
                       View details
                       <LuArrowUpRight className="h-3.5 w-3.5" />
                     </div>
