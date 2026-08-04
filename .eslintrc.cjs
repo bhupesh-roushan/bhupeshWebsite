@@ -18,4 +18,11 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  overrides: [
+    {
+      // Vercel serverless functions run on Node, not in the browser.
+      files: ['api/**/*.js'],
+      env: { node: true, browser: false },
+    },
+  ],
 }
