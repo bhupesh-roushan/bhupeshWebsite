@@ -89,7 +89,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             {/* w-auto, not a square box — the mark is 32x48 and would squash */}
             <img src={icon} alt="" className="h-7 w-auto sm:h-8" />
             <span className="font-mono text-sm font-bold text-white sm:text-base">
-              Bhupesh<span className="text-indigo-500">.website</span>
+              bhupesh<span className="text-indigo-500">.blog</span>
             </span>
           </a>
 
