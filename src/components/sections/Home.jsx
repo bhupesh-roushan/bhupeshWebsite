@@ -90,8 +90,12 @@ export const Home = () => {
       )}
 
       {/* Legibility + depth over the footage */}
-      <div className="absolute inset-0 z-0 bg-black/65" />
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/85 via-black/45 to-[#0a0a0a]" />
+      {/* Lighter than it was: these were tuned against a bright moon-and-tree
+          clip. The current footage is already dark, and at 65% it was erased
+          almost entirely. The gradient still darkens top and bottom, which is
+          where the headline and the stats sit. */}
+      <div className="absolute inset-0 z-0 bg-black/35" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/75 via-black/25 to-[#0a0a0a]" />
       <div
         className="absolute inset-0 z-0 opacity-[0.18]"
         style={{
