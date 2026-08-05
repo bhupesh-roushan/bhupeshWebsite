@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useReducedMotion } from "framer-motion";
 import { allSkills } from "../data/skills";
 
 const COLS = 12;
@@ -40,12 +41,16 @@ const PLACED = Array.from({ length: COLS * ROWS }, (_, i) => {
  * pointer — with no pointer the mask is zero-radius, so nothing shows.
  */
 export const TechBackdrop = () => {
+  const reduceMotion = useReducedMotion();
   const layerRef = useRef(null);
   const frame = useRef(0);
 
   useEffect(() => {
     const el = layerRef.current;
     if (!el) return;
+    // A spotlight chasing the pointer is exactly the kind of incidental motion
+    // this setting asks us to drop; the icons simply stay hidden.
+    if (reduceMotion) return;
 
     const section = el.closest("section");
     if (!section) return;
@@ -101,7 +106,7 @@ export const TechBackdrop = () => {
       section.removeEventListener("touchend", hide);
       section.removeEventListener("touchcancel", hide);
     };
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <div

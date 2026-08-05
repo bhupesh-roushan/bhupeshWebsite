@@ -8,122 +8,165 @@ Portfolio: https://www.bhupesh.blog
 GitHub: https://github.com/bhupesh-roushan
 LinkedIn: https://www.linkedin.com/in/roushanb
 
+AVAILABILITY
+
+Notice period: 30 days
+Work mode: Onsite — Bangalore
+Open to: Software Development Engineer, Full Stack Developer, Backend Engineer, GenAI / AI Automation Engineer
 
 SKILLS
 
-Frontend and Backend Development: HTML, CSS, React, Redux, Tailwind CSS,
-Node.js, Express, MongoDB, Mongoose, MySQL, REST API, Authentication,
-Authorization, Next.js
+Frontend: HTML, CSS, React.js, Context API, Redux, Tailwind CSS, Bootstrap, Next.js, Framer Motion
 
-Programming Languages: JavaScript, TypeScript, Java, Python
+Backend: Node.js, Express.js, REST APIs, Supabase (BaaS), JWT Auth
 
-GenAI: LangChain, RAG, ChromaDB, Embeddings, LLM APIs, Prompt Engineering,
-AI Agents
+GenAI: LangChain, RAG, ChromaDB, Embeddings, LLM APIs, Prompt Engineering, AI Agents
 
-Concepts: Object-Oriented Programming, Network Security, System Design
-(LLD, HLD), SDLC
+Languages: Java, JavaScript, TypeScript, Python, C
 
-Tools and Others: Git, GitHub, Docker, VS Code, Figma, Postman,
-IntelliJ IDEA, MySQL Workbench
+Concepts: OOPs, System Design, Computer Networks, Network Security, Operating Systems, Software Engineering, DSA
 
+Databases: MongoDB, Mongoose, MySQL
 
-WORK EXPERIENCE
+Tools & Others: Git, GitHub, Docker, VS Code, Figma, Postman, MySQL Workbench, IntelliJ IDEA, Vercel, Render, Netlify
+
+EXPERIENCE
 
 Masai, Bangalore - Curriculum Engineer
 May 2026 - Present
-Tech Stack: MERN Stack, JavaScript, Python, Excel, Claude, Codex, AI Agents,
-Prompt Engineering, Data Pipelines
+Tech: MERN Stack, JavaScript, Python, Excel, Claude, Codex, AI Agents, Prompt Engineering, Data Pipelines
 
-- Managed AI-enabled curriculum and assessment workflows across technical and
-  non-technical programs, covering rubric-based evaluations, question
+  - Managed AI-enabled curriculum and assessment workflows across technical
+  and non-technical programs, covering rubric-based evaluations, question
   validation, learner submission review, grading prompt refinement, evaluation
   quality checks, and learner support.
-- Built MERN-based evaluation automation workflows and data pipelines using
+  - Built MERN-based evaluation automation workflows and data pipelines using
   Claude, Codex, Gemini, and AI agents, collaborating with product,
   engineering, academic, and operations teams to track submissions, analyze
   grading issues, improve assessment delivery, maintain validation reports,
   prompt versions, and issue trackers, and ensure consistent AI-assisted
   evaluation outcomes.
 
-Adda247 (C24/7, PrepInsta), Bangalore - Executive, Audit & Assessment
+Adda247, Bangalore - Executive - Audit & Assessment
 April 2025 - May 2026
-Tech Stack: React.js, Node.js, Express, MongoDB, JavaScript, Java, Computer
-Networks, Operating Systems
+Tech: React.js, Node.js, Express, MongoDB, JavaScript, Java, Computer Networks, Operating Systems
 
-- Built and optimized an AI-powered rubric-based automated assessment
-  evaluation system using MERN and Gemini 2.5 Flash Pro, and the end-to-end
-  assessment platform Optimus, improving evaluation accuracy by 80%, reducing
-  manual effort by 70%, and enhancing learner insights by 30%.
-- Designed, audited, and implemented end-to-end MERN-focused technical
+  - Built and optimized an AI-powered rubric-based automated assessment
+  evaluation system using MERN and Gemini 2.5 Flash Pro, along with the
+  end-to-end assessment platform Optimus, improving evaluation accuracy by
+  80%, reducing manual effort by 70%, and enhancing learner insights by 30%.
+  - Designed, audited, and implemented end-to-end MERN-focused technical
   assessments while resolving learner doubts, increasing question relevance
   and improving overall learning outcomes by 20%.
 
 Hudl, Bangalore - Sports Analyst
 June 2023 - November 2023
-Tech Stack: SQL, Excel, Google Sheets, Hudl Platform, Data Cleaning, Data
-Validation, Data QA, Sports Analytics
+Tech: SQL, Excel, Google Sheets, Hudl Platform, Data Cleaning, Data Validation, Data QA, Sports Analytics
 
-- Processed and analyzed high-volume sports video datasets using Hudl tools,
+  - Processed and analyzed high-volume sports video datasets using Hudl tools,
   converting match events, player actions, tactical sequences, and performance
   indicators into structured analytical data for reporting and performance
   insights.
-- Cleaned, transformed, and validated match-event datasets using SQL, Excel,
+  - Cleaned, transformed, and validated match-event datasets using SQL, Excel,
   and Google Sheets, performing data quality checks to identify tagging
   inconsistencies, correct classification errors, and maintain reliable
   datasets for downstream sports analytics.
 
-Varcons Technologies, Bangalore - Web Development Intern
-February 2023 - March 2023
-Tech Stack: React.js, Node.js, Express, MongoDB, JWT, REST API
+Varcons Technologies, Bangalore - Full Stack Developer Intern
+Feb 2023 - March 2023
+Tech: React.js, Node.js, Express, MongoDB, JWT, REST API
 
-- Developed "Coursezz", an online course-selling platform, implementing
+  - Developed “Coursezz”, an online course-selling platform, implementing
   JWT-based authentication and Role-Based Access Control (RBAC) to support
   secure multi-user access, reducing unauthorized access incidents.
-- Optimized API performance by 40% through efficient Express middleware,
+  - Optimized API performance by 40% through efficient Express middleware,
   caching strategies, and robust request validation, significantly enhancing
   system scalability and throughput.
-
 
 PROJECTS
 
 CloudWatch - AI-Powered Digital Marketplace (February 2026)
-Live: https://www.cloudwatch.in
-Tech Stack: Next.js 16, TypeScript, Node.js, Express, MongoDB, Razorpay,
-Gemini API, Cloudinary, StackBlitz
+Live: https://www.cloudwatch.in/
+Source: https://github.com/bhupesh-roushan/cloudwatch-digital
+Tech: Next.js 16, TypeScript, Node.js, Express, MongoDB, Razorpay, Gemini API, Cloudinary, StackBlitz, Aceternity UI
 
-- Built an AI-powered digital marketplace using Next.js, TypeScript,
-  Express.js, MongoDB, and role-based authentication, enabling creators to
-  list, manage, and sell digital products while reducing product upload time
-  by 45% and improving workflow efficiency by 30%.
-- Integrated Gemini API, Firecrawl, SerpAPI, Razorpay, StackBlitz, and
-  Cloudinary to automate product listing generation, competitor analysis,
-  pricing insights, SEO optimization, live previews, media management, and
-  real-time sales tracking, reducing manual listing effort by 60% and
-  improving SEO efficiency by 40%.
+  - Built an AI-powered digital marketplace enabling creators to sell products
+  using Next.js 16, TypeScript, Tailwind CSS, and Aceternity UI on the
+  frontend and Express.js, MongoDB, and Mongoose on the backend with
+  role-based authentication.
+  - Integrated Gemini 2.0 Flash AI, Firecrawl, and SerpAPI to automate product
+  listing generation, competitor analysis, pricing insights, and SEO
+  optimization, reducing manual listing effort by 60% and improving SEO
+  efficiency by 40%.
+  - Implemented Razorpay checkout, StackBlitz live previews, and Cloudinary
+  media management with search filters, a digital purchase library, analytics
+  dashboard, bulk imports, admin moderation, and real-time sales tracking,
+  reducing product upload time by 45% and improving workflow efficiency by
+  30%.
 
 BuildingBlocks - Learning Management System (January 2025)
-Live: https://www.bblocks.cloud
-Tech Stack: Node.js, Express.js, MongoDB, React.js, PayPal, Cloudinary,
-Shadcn UI, Tailwind CSS, Vercel
+Live: https://buildingblocks.cloud
+Source: https://github.com/bhupesh-roushan/BuildingBlocks
+Tech: Node.js, Express.js, MongoDB, React.js, PayPal, Cloudinary, Shadcn UI, Tailwind CSS, Vercel, Hostinger
 
-- Built and deployed a full-scale LMS with role-based dashboards, course
-  creation, and video management features with custom controls and real-time
-  tracking, improving course management efficiency by 40%, reducing upload
-  time by 60%, and increasing learner engagement by 20%.
-- Integrated PayPal payment gateway and configured custom domain deployment,
-  enabling secure transactions and improving payment success rate by 25%.
+  - Developed an LMS with role-based dashboards for instructors and students,
+  improving course management efficiency by 40%.
+  - Implemented course creation and management with bulk video uploads,
+  real-time tracking, and interactive controls, reducing upload time by 60%
+  and boosting engagement.
+  - Integrated the PayPal payment gateway for secure transactions, increasing
+  payment success rate by 25%, and hosted the platform on a custom domain for
+  better accessibility.
+
+Hourglass - Real-Time Social Media
+Live: https://hourglass-0e3w.onrender.com/
+Source: https://github.com/bhupesh-roushan/hourglass
+Tech: React.js, Node.js, Express.js, MongoDB, Redux, Socket.io, Cloudinary, Shadcn UI, Tailwind CSS, Render
+
+  - Developed Hourglass, a social media app with real-time messaging, post
+  creation, likes, comments, and bookmarks using React.js, Node.js,
+  Express.js, and MongoDB.
+  - Integrated Cloudinary for image uploads, Redux Toolkit for state
+  management, and Socket.io for real-time messaging and notifications,
+  enhancing user engagement.
+  - Styled with Tailwind CSS and Shadcn, deployed on Render for seamless
+  scalability and reliable hosting.
 
 Cubekit - Hiring Platform (August 2024)
-Live: https://cubekit.vercel.app
-Tech Stack: React.js, Tailwind CSS, Shadcn UI, Supabase, Clerk, React Hook
-Form, Zod, EmailJS, Vercel
+Live: https://cubekit.vercel.app/
+Source: https://github.com/bhupesh-roushan/cubekit-hiring
+Tech: React.js, Tailwind CSS, Shadcn UI, Supabase, Clerk, React Hook Form, Zod, EmailJS, Vercel
 
-- Built Cubekit, a hiring platform using React.js, Supabase, and Clerk for
-  authentication and role-based dashboards.
-- Implemented validated job posting and application workflows (React Hook Form
-  and Zod), location-based filtering API, resume uploads, status tracking, and
-  automated EmailJS notifications, reducing job posting time by 40%.
+  - Developed Cubekit, a hiring platform using React.js, Supabase, and Clerk
+  for secure authentication and role-based dashboards.
+  - Implemented an advanced job posting system with React Hook Form, Zod, and
+  location-based filtering, reducing job posting time by 40%.
+  - Streamlined job applications with resume uploads, status tracking, and a
+  responsive UI using Tailwind CSS, Shadcn, and EmailJS for automated
+  newsletters.
 
+Frequencii - E-Commerce Prototype
+Live: https://frequencii.vercel.app
+Source: https://github.com/bhupesh-roushan/frequencii
+Tech: React.js, Redux, Redux Toolkit, EmailJS, Shadcn UI, Tailwind CSS, Vercel
+
+  - Developed an e-commerce prototype using React.js and Redux Toolkit for
+  dynamic state management and an interactive user experience.
+  - Styled with Tailwind CSS and Shadcn, ensuring a fully responsive and
+  visually appealing interface.
+  - Integrated EmailJS for automated customer communication, enhancing user
+  engagement.
+
+PictelAI - Powered by Gemini
+Live: https://pictelai.vercel.app/
+Source: https://github.com/bhupesh-roushan/PictelAI-Powered-by-Gemini
+Tech: React.js, Context API, Tailwind CSS, Google Gemini API, Vercel
+
+  - Developed an AI-powered web app using React.js and integrated the Google
+  Gemini API for interactive content generation.
+  - Utilized Context API for efficient and scalable state management.
+  - Designed a responsive UI with Tailwind CSS, ensuring a seamless experience
+  across all devices.
 
 EDUCATION
 
@@ -131,5 +174,9 @@ BMS Institute of Technology and Management, Bangalore
 B.E. in Electronics and Communication Engineering
 October 2018 - May 2023
 
-Relevant Coursework: Data Structures and Algorithms, Database Management
-System, Operating System, Computer Networks
+  - Relevant coursework: Data Structures and Algorithms, Database Management
+  System, Operating System, and Computer Networks.
+  - Secured Runner-up position for the project “Reconfiguration of Micro-strip
+  Patch Antenna” in the department-level Project-Based Learning competition
+  during the 6th semester.
+

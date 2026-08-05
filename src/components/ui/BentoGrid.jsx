@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "../../lib/utils";
 
 /**
@@ -24,6 +24,7 @@ export const BentoGrid = ({ className, children }) => {
  * Renders as a <button> when `onClick` is supplied so keyboard users get it free.
  */
 export const BentoCard = ({ className, children, onClick, accent = "99,102,241" }) => {
+  const reduceMotion = useReducedMotion();
   const ref = useRef(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   // "active" rather than "hovered" — it's now driven by touch as well.
@@ -73,7 +74,7 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
   return (
     <motion.div
       // Driven by state rather than whileHover, so touch raises the card too.
-      animate={{ y: active ? -4 : 0 }}
+      animate={{ y: active && !reduceMotion ? -4 : 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
       className={cn("group relative", className)}
     >
