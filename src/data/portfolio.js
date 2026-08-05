@@ -171,7 +171,6 @@ export const journey = [
 export const projects = [
   {
     id: "cloudwatch",
-    hasDiagram: true,
     codeLinks: [
       { label: "Gemini listing generation", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/ai-intelligence.ts" },
       { label: "Firecrawl competitor scraping", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/firecrawl.ts" },
