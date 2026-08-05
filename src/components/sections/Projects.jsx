@@ -6,6 +6,7 @@ import { Modal } from "../ui/Modal";
 import { projects } from "../../data/portfolio";
 import { LuArrowUpRight, LuKeyRound, LuUser, LuCode, LuNetwork } from "react-icons/lu";
 import { ArchitectureDiagram } from "../ArchitectureDiagram";
+import { DIAGRAMS } from "../../data/diagrams";
 
 export const Projects = () => {
   // The open project lives in the URL, not in state, so /projects/cloudwatch
@@ -163,13 +164,13 @@ export const Projects = () => {
                 ))}
               </ul>
 
-              {active.hasDiagram && (
+              {DIAGRAMS[active.id] && (
                 <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
                   <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-300">
                     <LuNetwork className="h-3.5 w-3.5" />
                     Architecture
                   </div>
-                  <ArchitectureDiagram />
+                  <ArchitectureDiagram id={active.id} />
                 </div>
               )}
 
