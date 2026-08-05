@@ -25,16 +25,17 @@ export const HiringFacts = () => {
         For recruiters
       </h3>
 
+      {/* A <dl>'s <div> wrapper may contain only <dt>/<dd>. The icon used to sit
+          in that wrapper alongside a nested div, which broke the grouping — so
+          it lives inside the <dt> instead. */}
       <dl className="space-y-3">
         {rows.map(({ Icon, label, value }) => (
-          <div key={label} className="flex items-center gap-3">
-            <Icon className="h-4 w-4 shrink-0 text-indigo-300" />
-            <div className="min-w-0">
-              <dt className="text-[11px] uppercase tracking-wider text-gray-500">
-                {label}
-              </dt>
-              <dd className="text-sm text-white">{value}</dd>
-            </div>
+          <div key={label} className="grid grid-cols-[auto_1fr] items-center gap-x-3">
+            <dt className="col-span-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-gray-500">
+              <Icon className="h-4 w-4 shrink-0 text-indigo-300" />
+              {label}
+            </dt>
+            <dd className="col-start-2 -mt-0.5 text-sm text-white">{value}</dd>
           </div>
         ))}
       </dl>

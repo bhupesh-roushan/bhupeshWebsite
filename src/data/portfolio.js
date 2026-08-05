@@ -78,6 +78,11 @@ export const journey = [
       "Built and optimized an AI-powered rubric-based automated assessment evaluation system using MERN and Gemini 2.5 Flash Pro, along with the end-to-end assessment platform Optimus, improving evaluation accuracy by 80%, reducing manual effort by 70%, and enhancing learner insights by 30%.",
       "Designed, audited, and implemented end-to-end MERN-focused technical assessments while resolving learner doubts, increasing question relevance and improving overall learning outcomes by 20%.",
     ],
+    // PLACEHOLDER — replace with how these were actually measured. A number
+    // with its method behind it reads as evidence; the same number on its own
+    // reads as a claim. Delete the field if you'd rather not state one.
+    metricsNote:
+      "Accuracy measured against manually graded submissions; effort measured as reviewer time per batch before and after.",
     link: {
       href: "https://drive.google.com/file/d/1tfM6P9unFsKHm5smAgXCUmQnXmYVjol6/view?usp=drive_link",
       label: "Experience Letter",
