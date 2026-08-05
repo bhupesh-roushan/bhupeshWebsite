@@ -180,6 +180,14 @@ export const About = () => {
               ))}
             </ul>
 
+            {/* How the numbers above were arrived at. A percentage with its
+                method attached reads as evidence rather than a claim. */}
+            {active.metricsNote && (
+              <p className="mt-5 border-l-2 border-white/15 pl-3 text-xs italic leading-relaxed text-gray-400">
+                {active.metricsNote}
+              </p>
+            )}
+
             {active.link && (
               <a
                 href={active.link.href}
