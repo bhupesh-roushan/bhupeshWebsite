@@ -4,7 +4,15 @@ import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
 import { projects } from "../../data/portfolio";
-import { LuArrowUpRight, LuKeyRound, LuUser, LuCode, LuNetwork } from "react-icons/lu";
+import {
+  LuArrowUpRight,
+  LuKeyRound,
+  LuUser,
+  LuCode,
+  LuNetwork,
+  LuLock,
+  LuBuilding2,
+} from "react-icons/lu";
 import { ArchitectureDiagram } from "../ArchitectureDiagram";
 import { DIAGRAMS } from "../../data/diagrams";
 
@@ -46,22 +54,27 @@ export const Projects = () => {
                     screenshot, which capped how many chips could fit before
                     they collided with the image. */}
                 <div className="flex h-full flex-col">
-                  <div className="relative h-36 shrink-0 overflow-hidden sm:h-40">
-                    <img
-                      src={project.image}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, rgba(11,11,18,0.95) 0%, rgba(11,11,18,0.25) 55%, rgba(11,11,18,0) 100%)",
-                      }}
-                    />
-                  </div>
+                  {/* Internal work has no shippable screenshot, and inventing
+                      one would be a picture of a product that doesn't exist.
+                      Those cards simply start at the title instead. */}
+                  {project.image && (
+                    <div className="relative h-36 shrink-0 overflow-hidden sm:h-40">
+                      <img
+                        src={project.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background:
+                            "linear-gradient(to top, rgba(11,11,18,0.95) 0%, rgba(11,11,18,0.25) 55%, rgba(11,11,18,0) 100%)",
+                        }}
+                      />
+                    </div>
+                  )}
 
                   <div className="flex flex-1 flex-col p-5">
                     <div className="mb-1.5 flex flex-wrap items-baseline gap-2">
@@ -71,6 +84,12 @@ export const Projects = () => {
                           {project.period}
                         </span>
                       )}
+                      {project.access && (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-gray-400">
+                          <LuLock className="h-2.5 w-2.5" />
+                          Private
+                        </span>
+                      )}
                     </div>
                     <p
                       className="mb-3 text-xs font-semibold"
@@ -78,6 +97,14 @@ export const Projects = () => {
                     >
                       {project.tagline}
                     </p>
+
+                    {/* Carries the space an absent screenshot would have taken,
+                        and says more than the screenshot would have. */}
+                    {project.summary && (
+                      <p className="mb-3 text-xs leading-relaxed text-gray-400">
+                        {project.summary}
+                      </p>
+                    )}
 
                     <div className="flex flex-wrap items-center gap-1.5">
                       {project.stack.map((tech) => (
@@ -110,10 +137,12 @@ export const Projects = () => {
       >
         {active && (
           <div>
-            <div className="relative overflow-hidden rounded-t-2xl">
-              <img src={active.image} alt="" className="max-h-72 w-full object-cover object-top" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b12] to-transparent" />
-            </div>
+            {active.image && (
+              <div className="relative overflow-hidden rounded-t-2xl">
+                <img src={active.image} alt="" className="max-h-72 w-full object-cover object-top" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b12] to-transparent" />
+              </div>
+            )}
 
             <div className="p-6 sm:p-8">
               <div className="mb-1 flex flex-wrap items-baseline gap-3">
@@ -129,12 +158,20 @@ export const Projects = () => {
                 {active.tagline}
               </p>
 
-              {active.role && (
-                <p className="mb-5 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-gray-300">
-                  <LuUser className="h-3.5 w-3.5 text-gray-400" />
-                  {active.role}
-                </p>
-              )}
+              <div className="mb-5 flex flex-wrap gap-2">
+                {active.role && (
+                  <p className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-gray-300">
+                    <LuUser className="h-3.5 w-3.5 text-gray-400" />
+                    {active.role}
+                  </p>
+                )}
+                {active.org && (
+                  <p className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-gray-300">
+                    <LuBuilding2 className="h-3.5 w-3.5 text-gray-400" />
+                    {active.org}
+                  </p>
+                )}
+              </div>
 
               <div className="mb-6 flex flex-wrap gap-2">
                 {active.stack.map((tech) => (
@@ -223,20 +260,31 @@ export const Projects = () => {
                   of alignment and broke spacing whenever they wrapped. Both
                   buttons share a height and a border width so they match — the
                   accent only changes colour, never the box. */}
+              {/* Says why there is nothing to click, instead of leaving a gap
+                  that reads as an omission. */}
+              {active.access && (
+                <p className="mt-6 flex items-start gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-xs leading-relaxed text-gray-400">
+                  <LuLock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-500" />
+                  {active.access}
+                </p>
+              )}
+
               <div className="mt-6 flex flex-wrap items-center gap-2.5">
-                <a
-                  href={active.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-10 items-center gap-1.5 rounded-lg border px-4 text-sm font-semibold text-white transition-transform hover:scale-[1.03]"
-                  style={{
-                    backgroundColor: `rgba(${active.accent},0.18)`,
-                    borderColor: `rgba(${active.accent},0.4)`,
-                  }}
-                >
-                  Visit live site
-                  <LuArrowUpRight className="h-4 w-4" />
-                </a>
+                {active.href && (
+                  <a
+                    href={active.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-10 items-center gap-1.5 rounded-lg border px-4 text-sm font-semibold text-white transition-transform hover:scale-[1.03]"
+                    style={{
+                      backgroundColor: `rgba(${active.accent},0.18)`,
+                      borderColor: `rgba(${active.accent},0.4)`,
+                    }}
+                  >
+                    Visit live site
+                    <LuArrowUpRight className="h-4 w-4" />
+                  </a>
+                )}
 
                 {active.repo && (
                   <a

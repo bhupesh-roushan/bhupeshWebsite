@@ -85,6 +85,28 @@ Tech: React.js, Node.js, Express, MongoDB, JWT, REST API
 
 PROJECTS
 
+Atlas - AI Evaluation Platform (July–August 2026)
+Built at Masai School
+Private repo — internal grading tooling. Walkthrough on request.
+Tech: Next.js 15, React 19, Node.js, BullMQ, Redis, MongoDB, vLLM, Qwen3-Coder-30B, Google Sheets API, Docker
+
+  - Built an admin-only platform that grades student submissions against
+  per-question rubrics using a self-hosted Qwen3-Coder-30B model on rented
+  L40S GPU pods, covering both written answers and GitHub repositories.
+  - Moved the grading pipeline off Celery and RabbitMQ onto BullMQ over Redis,
+  removing the separate broker and its 20-connection ceiling, with per-user
+  queues so one large batch cannot starve another grader's work.
+  - Routed every request to the active pod with the fewest in-flight jobs,
+  tracked spend per run against a budget cap, and requeued the jobs of any pod
+  that died — the pods are preemptible, so losing one mid-batch is expected
+  rather than exceptional.
+  - Added a human review queue for flagged grades with keyboard-driven approve
+  and override, accuracy calibration against a human-scored golden set,
+  cohort-wide common-mistake analysis and copy detection.
+  - Ingested batches straight from Google Sheets and wrote scores back in the
+  previous grader's column format with original row numbering preserved, so
+  the output stayed a drop-in replacement for the process it replaced.
+
 CloudWatch - AI-Powered Digital Marketplace (February 2026)
 Live: https://www.cloudwatch.in/
 Source: https://github.com/bhupesh-roushan/cloudwatch-digital

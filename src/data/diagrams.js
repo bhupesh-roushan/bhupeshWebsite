@@ -7,6 +7,25 @@
  * here, and every diagram lands on the same grid and spacing.
  */
 export const DIAGRAMS = {
+  atlas: {
+    layers: [
+      [{ title: "Next.js 15 dashboard", sub: "review queue · live progress", accent: true }],
+      [{ title: "API routes", sub: "invite-only auth · audit log" }],
+      [
+        { title: "/evaluations", sub: "manifest · start · retry" },
+        { title: "/review", sub: "approve · override" },
+        { title: "/nodes", sub: "pods · health · cost" },
+      ],
+      [{ title: "BullMQ on Redis", sub: "per-user queues · retries" }],
+      [
+        { title: "vLLM pod pool", sub: "Qwen3-Coder-30B · least in-flight" },
+        { title: "Google Sheets", sub: "ingest · score write-back" },
+        { title: "GitHub repos", sub: "shallow clone · never executed" },
+      ],
+    ],
+    store: "MongoDB — evaluations, jobs, results, prompts",
+  },
+
   cloudwatch: {
     layers: [
       [{ title: "Next.js 16 client", sub: "TypeScript · Tailwind", accent: true }],

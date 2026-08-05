@@ -175,6 +175,44 @@ export const journey = [
  */
 export const projects = [
   {
+    id: "atlas",
+    // Internal tooling, so there is nothing to link: the repo is private and
+    // the deployment is invite-only. `access` says so on the card rather than
+    // offering a Source button that 404s or a live link to a login wall.
+    role: "Solo build — platform, grading worker and deployment",
+    org: "Built at Masai School",
+    title: "Atlas",
+    tagline: "AI Evaluation Platform",
+    summary:
+      "Grades student submissions against per-question rubrics using a self-hosted 30B model on rented GPU pods, then writes the scores back to the source spreadsheet in the previous grader's format. Anything the model flags goes to a human review queue before it counts.",
+    period: "July–August 2026",
+    accent: "45,212,191",
+    featured: true,
+    span: "lg:col-span-3",
+    access: "Private repo — internal grading tooling. Walkthrough on request.",
+    stack: [
+      "Next.js 15",
+      "React 19",
+      "Node.js",
+      "BullMQ",
+      "Redis",
+      "MongoDB",
+      "vLLM",
+      "Qwen3-Coder-30B",
+      "Google Sheets API",
+      "Docker",
+    ],
+    bullets: [
+      "Built an admin-only platform that grades student submissions against per-question rubrics using a self-hosted Qwen3-Coder-30B model on rented L40S GPU pods, covering both written answers and GitHub repositories.",
+      "Moved the grading pipeline off Celery and RabbitMQ onto BullMQ over Redis, removing the separate broker and its 20-connection ceiling, with per-user queues so one large batch cannot starve another grader's work.",
+      "Routed every request to the active pod with the fewest in-flight jobs, tracked spend per run against a budget cap, and requeued the jobs of any pod that died — the pods are preemptible, so losing one mid-batch is expected rather than exceptional.",
+      "Added a human review queue for flagged grades with keyboard-driven approve and override, accuracy calibration against a human-scored golden set, cohort-wide common-mistake analysis and copy detection.",
+      "Ingested batches straight from Google Sheets and wrote scores back in the previous grader's column format with original row numbering preserved, so the output stayed a drop-in replacement for the process it replaced.",
+    ],
+    metricsNote:
+      "219 commits between 16 July and 3 August 2026. Figures above describe the system's design rather than measured outcomes — see the notes on each pull request for what was verified.",
+  },
+  {
     id: "cloudwatch",
     codeLinks: [
       { label: "Gemini listing generation", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/ai-intelligence.ts" },
@@ -191,7 +229,7 @@ export const projects = [
     href: "https://www.cloudwatch.in/",
     accent: "99,102,241",
     featured: true,
-    span: "lg:col-span-4",
+    span: "lg:col-span-3",
     stack: [
       "Next.js 16",
       "TypeScript",
@@ -230,7 +268,7 @@ export const projects = [
     image: buildingBlocks,
     href: "https://buildingblocks.cloud",
     accent: "56,189,248",
-    span: "lg:col-span-2",
+    span: "lg:col-span-3",
     stack: [
       "Node.js",
       "Express.js",
@@ -306,7 +344,7 @@ export const projects = [
     image: cubekit,
     href: "https://cubekit.vercel.app/",
     accent: "34,197,94",
-    span: "lg:col-span-3",
+    span: "lg:col-span-2",
     stack: [
       "React.js",
       "Tailwind CSS",
@@ -341,7 +379,7 @@ export const projects = [
     image: frequencii,
     href: "https://frequencii.vercel.app",
     accent: "249,115,22",
-    span: "lg:col-span-3",
+    span: "lg:col-span-2",
     stack: [
       "React.js",
       "Redux",
@@ -370,7 +408,7 @@ export const projects = [
     image: pictelAi,
     href: "https://pictelai.vercel.app/",
     accent: "168,85,247",
-    span: "lg:col-span-3",
+    span: "lg:col-span-2",
     stack: [
       "React.js",
       "Context API",
