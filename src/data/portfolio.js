@@ -4,6 +4,7 @@ import hudl from "../assets/hudl.png";
 import bms from "../assets/bms.png";
 import varcons from "../assets/varcons.png";
 
+import atlas from "../assets/atlas.webp";
 import cloudwatch from "../assets/cloudwatch.webp";
 import buildingBlocks from "../assets/buildingBlocks.webp";
 import hourglass from "../assets/hourglass.webp";
@@ -186,6 +187,7 @@ export const projects = [
     summary:
       "Grades student submissions against per-question rubrics using a self-hosted 30B model on rented GPU pods, then writes the scores back to the source spreadsheet in the previous grader's format. Anything the model flags goes to a human review queue before it counts.",
     period: "July–August 2026",
+    image: atlas,
     accent: "45,212,191",
     featured: true,
     span: "lg:col-span-3",

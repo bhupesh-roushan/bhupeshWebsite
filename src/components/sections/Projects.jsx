@@ -54,9 +54,9 @@ export const Projects = () => {
                     screenshot, which capped how many chips could fit before
                     they collided with the image. */}
                 <div className="flex h-full flex-col">
-                  {/* Internal work has no shippable screenshot, and inventing
-                      one would be a picture of a product that doesn't exist.
-                      Those cards simply start at the title instead. */}
+                  {/* Optional: internal work may have no shippable screenshot,
+                      and inventing one would be a picture of a product nobody
+                      can open. Those cards start at the title instead. */}
                   {project.image && (
                     <div className="relative h-36 shrink-0 overflow-hidden sm:h-40">
                       <img
