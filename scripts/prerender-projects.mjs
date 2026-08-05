@@ -42,25 +42,44 @@ const titleFor = (id) => {
 const shell = readFileSync(resolve(root, "dist/index.html"), "utf8");
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
+/**
+ * `\s+` rather than a literal space: the longer tags in index.html are written
+ * across several lines, and patterns assuming one line matched nothing. The
+ * three description tags — the whole reason this script exists — were quietly
+ * skipped, so every project page shipped with the site-wide blurb.
+ */
+const metaRe = (attr, name) =>
+  new RegExp(`(<meta\\s+${attr}="${name}"\\s+content=")[^"]*(")`);
+
+/** Replace, or fail — a no-op substitution here is invisible in the output. */
+const sub = (html, re, value, what) => {
+  if (!re.test(html)) throw new Error(`prerender: no ${what} tag to replace`);
+  return html.replace(re, `$1${value}$2`);
+};
+
 let written = 0;
 for (const id of entries) {
   const { title, tagline } = titleFor(id);
   const pageTitle = `${title} — ${tagline} | Bhupesh Roushan`;
-  const desc = `${tagline}. Built by Bhupesh Roushan — stack, architecture and source.`;
+  // No "and source" — one of these projects is internal work with a private
+  // repo, and the preview shouldn't promise a link that isn't there.
+  const desc = `${tagline}. Built by Bhupesh Roushan — stack, architecture and engineering detail.`;
   const url = `${SITE}/projects/${id}`;
 
-  const html = shell
-    .replace(/<title>[^<]*<\/title>/, `<title>${esc(pageTitle)}</title>`)
-    .replace(
-      /(<meta name="description" content=")[^"]*(")/,
-      `$1${esc(desc)}$2`
-    )
-    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(pageTitle)}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
-    .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
-    .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(pageTitle)}$2`)
-    .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
-    .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`);
+  if (!/<title>[^<]*<\/title>/.test(shell)) throw new Error("prerender: no <title>");
+  let html = shell.replace(/<title>[^<]*<\/title>/, `<title>${esc(pageTitle)}</title>`);
+
+  for (const [re, value, what] of [
+    [metaRe("name", "description"), esc(desc), "description"],
+    [metaRe("property", "og:title"), esc(pageTitle), "og:title"],
+    [metaRe("property", "og:description"), esc(desc), "og:description"],
+    [metaRe("property", "og:url"), url, "og:url"],
+    [metaRe("name", "twitter:title"), esc(pageTitle), "twitter:title"],
+    [metaRe("name", "twitter:description"), esc(desc), "twitter:description"],
+    [/(<link rel="canonical" href=")[^"]*(")/, url, "canonical"],
+  ]) {
+    html = sub(html, re, value, what);
+  }
 
   // Written in both shapes on purpose. Static hosts disagree about how a
   // extensionless path resolves — some map /projects/x to x/index.html, others

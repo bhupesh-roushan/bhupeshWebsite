@@ -123,8 +123,12 @@ out.push("PROJECTS");
 out.push("");
 for (const p of projects) {
   out.push(`${p.title} - ${p.tagline}${p.period ? ` (${p.period})` : ""}`);
-  out.push(`Live: ${p.href}`);
+  // Internal work has neither — an unguarded template printed "Live: undefined"
+  // into a file recruiters read. `access` explains the absence instead.
+  if (p.org) out.push(p.org);
+  if (p.href) out.push(`Live: ${p.href}`);
   if (p.repo) out.push(`Source: ${p.repo}`);
+  if (p.access) out.push(p.access);
   out.push(`Tech: ${p.stack.join(", ")}`);
   out.push("");
   for (const b of p.bullets) out.push(wrap(`- ${b}`));

@@ -20,10 +20,23 @@ const BOX_H = 58;
 const GAP_Y = 34;
 const TOP = 16;
 
+const EDGE = 13; // outer margin, set by the widest row a diagram can hold
+const GUTTER = 26;
+const INNER = W - EDGE * 2;
+
+/**
+ * Every row spans the same left and right edge, splitting the width between
+ * however many boxes it holds. A single-box row used to be capped at 300 of
+ * 880 units regardless of the space available, so the top of a diagram sat
+ * as a third-width stub above full-width columns and read as unfinished.
+ *
+ * Centres are unchanged by this — only widths grow — so all the connector
+ * geometry below still lands where it did.
+ */
 const layout = (count, i) => {
-  const centre = ((i + 0.5) / count) * W;
-  const width = Math.min(300, W / count - 26);
-  return { x: centre - width / 2, width, centre };
+  const width = (INNER - GUTTER * (count - 1)) / count;
+  const x = EDGE + i * (width + GUTTER);
+  return { x, width, centre: x + width / 2 };
 };
 
 const Box = ({ x, y, w, h, title, sub, accent }) => (
@@ -67,121 +80,135 @@ export const ArchitectureDiagram = ({ id }) => {
   const marker = `arrow-${id}`;
 
   return (
-    <svg
-      viewBox={`0 0 ${W} ${height}`}
-      className="h-auto w-full"
-      role="img"
-      aria-label={`${id} architecture: ${layers
-        .map((l) => l.map((b) => b.title).join(", "))
-        .join(" then ")}, persisting to ${store}.`}
-    >
-      <defs>
-        <marker
-          id={marker}
-          viewBox="0 0 10 10"
-          refX="9"
-          refY="5"
-          markerWidth="6"
-          markerHeight="6"
-          orient="auto-start-reverse"
-        >
-          <path d="M 0 0 L 10 5 L 0 10 z" fill={BORDER} />
-        </marker>
-      </defs>
+    // Scrolls sideways rather than shrinking below a legible size. Squeezed
+    // into a phone-width modal the whole 880-unit frame scales to ~0.32, which
+    // puts the box labels under 5px — a diagram nobody can read.
+    <div className="overflow-x-auto">
+      <svg
+        viewBox={`0 0 ${W} ${height}`}
+        className="h-auto w-full min-w-[640px]"
+        role="img"
+        aria-label={`${id} architecture: ${layers
+          .map((l) => l.map((b) => b.title).join(", "))
+          .join(" then ")}, persisting to ${store}.`}
+      >
+        <defs>
+          <marker
+            id={marker}
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto-start-reverse"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={BORDER} />
+          </marker>
+        </defs>
 
-      {layers.map((row, li) => {
-        const y = rowY[li];
-        const next = layers[li + 1];
-        return (
-          <g key={li}>
-            {row.map((box, bi) => {
-              const { x, width } = layout(row.length, bi);
-              return <Box key={bi} x={x} y={y} w={width} h={BOX_H} {...box} />;
-            })}
+        {layers.map((row, li) => {
+          const y = rowY[li];
+          const next = layers[li + 1];
+          return (
+            <g key={li}>
+              {row.map((box, bi) => {
+                const { x, width } = layout(row.length, bi);
+                return <Box key={bi} x={x} y={y} w={width} h={BOX_H} {...box} />;
+              })}
 
-            {next && (
-              <g>
-                {/* Fan out through a shared bus when the counts differ, so the
-                    lines can't imply a one-to-one mapping that isn't there. */}
-                {row.length !== next.length && (
-                  <line
-                    x1={layout(next.length, 0).centre}
-                    y1={y + BOX_H + GAP_Y / 2}
-                    x2={layout(next.length, next.length - 1).centre}
-                    y2={y + BOX_H + GAP_Y / 2}
-                    stroke={BORDER}
-                    strokeWidth="1.5"
-                  />
-                )}
-                {row.map((_, bi) => (
-                  <line
-                    key={`d${bi}`}
-                    x1={layout(row.length, bi).centre}
-                    y1={y + BOX_H}
-                    x2={layout(row.length, bi).centre}
-                    y2={y + BOX_H + GAP_Y / 2}
-                    stroke={BORDER}
-                    strokeWidth="1.5"
-                  />
-                ))}
-                {next.map((_, bi) => (
-                  <line
-                    key={`u${bi}`}
-                    x1={layout(next.length, bi).centre}
-                    y1={y + BOX_H + GAP_Y / 2}
-                    x2={layout(next.length, bi).centre}
-                    y2={rowY[li + 1] - 2}
-                    stroke={BORDER}
-                    strokeWidth="1.5"
-                    markerEnd={`url(#${marker})`}
-                  />
-                ))}
-              </g>
-            )}
-          </g>
-        );
-      })}
+              {next && (
+                <g>
+                  {/* Fan out through a shared bus when the counts differ, so the
+                      lines can't imply a one-to-one mapping that isn't there.
+                      It has to span both rows: sized to the lower row alone, a
+                      3-into-2 fan left the outer column's connector hanging in
+                      space, short of a bus that stopped before it. */}
+                  {row.length !== next.length && (
+                    <line
+                      x1={Math.min(
+                        layout(row.length, 0).centre,
+                        layout(next.length, 0).centre
+                      )}
+                      y1={y + BOX_H + GAP_Y / 2}
+                      x2={Math.max(
+                        layout(row.length, row.length - 1).centre,
+                        layout(next.length, next.length - 1).centre
+                      )}
+                      y2={y + BOX_H + GAP_Y / 2}
+                      stroke={BORDER}
+                      strokeWidth="1.5"
+                    />
+                  )}
+                  {row.map((_, bi) => (
+                    <line
+                      key={`d${bi}`}
+                      x1={layout(row.length, bi).centre}
+                      y1={y + BOX_H}
+                      x2={layout(row.length, bi).centre}
+                      y2={y + BOX_H + GAP_Y / 2}
+                      stroke={BORDER}
+                      strokeWidth="1.5"
+                    />
+                  ))}
+                  {next.map((_, bi) => (
+                    <line
+                      key={`u${bi}`}
+                      x1={layout(next.length, bi).centre}
+                      y1={y + BOX_H + GAP_Y / 2}
+                      x2={layout(next.length, bi).centre}
+                      y2={rowY[li + 1] - 2}
+                      stroke={BORDER}
+                      strokeWidth="1.5"
+                      markerEnd={`url(#${marker})`}
+                    />
+                  ))}
+                </g>
+              )}
+            </g>
+          );
+        })}
 
-      {/* Persistence collects from every path — a single arrow off the middle
-          column would read as "only that one writes to the database". */}
-      {(() => {
-        const last = layers[layers.length - 1];
-        const y = rowY[rowY.length - 1] + BOX_H;
-        const busY = y + GAP_Y / 2;
-        return (
-          <g>
-            {last.map((_, bi) => (
+        {/* Persistence collects from every path — a single arrow off the middle
+            column would read as "only that one writes to the database". */}
+        {(() => {
+          const last = layers[layers.length - 1];
+          const y = rowY[rowY.length - 1] + BOX_H;
+          const busY = y + GAP_Y / 2;
+          return (
+            <g>
+              {last.map((_, bi) => (
+                <line
+                  key={bi}
+                  x1={layout(last.length, bi).centre}
+                  y1={y}
+                  x2={layout(last.length, bi).centre}
+                  y2={busY}
+                  stroke={BORDER}
+                  strokeWidth="1.5"
+                />
+              ))}
               <line
-                key={bi}
-                x1={layout(last.length, bi).centre}
-                y1={y}
-                x2={layout(last.length, bi).centre}
+                x1={layout(last.length, 0).centre}
+                y1={busY}
+                x2={layout(last.length, last.length - 1).centre}
                 y2={busY}
                 stroke={BORDER}
                 strokeWidth="1.5"
               />
-            ))}
-            <line
-              x1={layout(last.length, 0).centre}
-              y1={busY}
-              x2={layout(last.length, last.length - 1).centre}
-              y2={busY}
-              stroke={BORDER}
-              strokeWidth="1.5"
-            />
-            <line
-              x1={W / 2}
-              y1={busY}
-              x2={W / 2}
-              y2={storeY - 2}
-              stroke={BORDER}
-              strokeWidth="1.5"
-              markerEnd={`url(#${marker})`}
-            />
-            <Box x={W / 2 - 170} y={storeY} w={340} h={32} title={store} />
-          </g>
-        );
-      })()}
-    </svg>
+              <line
+                x1={W / 2}
+                y1={busY}
+                x2={W / 2}
+                y2={storeY - 2}
+                stroke={BORDER}
+                strokeWidth="1.5"
+                markerEnd={`url(#${marker})`}
+              />
+              <Box x={EDGE} y={storeY} w={INNER} h={32} title={store} />
+            </g>
+          );
+        })()}
+      </svg>
+    </div>
   );
 };

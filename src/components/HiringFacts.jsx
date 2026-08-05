@@ -28,9 +28,13 @@ export const HiringFacts = () => {
       {/* A <dl>'s <div> wrapper may contain only <dt>/<dd>. The icon used to sit
           in that wrapper alongside a nested div, which broke the grouping — so
           it lives inside the <dt> instead. */}
+      {/* The first grid column is the icon's exact width (h-4 = 1rem). As `auto`
+          it collapsed to zero — nothing occupies it, since the <dt> spans both
+          columns — so the value was indented by the gap alone while the label
+          was indented by icon + gap, leaving the two 16px out of line. */}
       <dl className="space-y-3">
         {rows.map(({ Icon, label, value }) => (
-          <div key={label} className="grid grid-cols-[auto_1fr] items-center gap-x-3">
+          <div key={label} className="grid grid-cols-[1rem_1fr] items-center gap-x-3">
             <dt className="col-span-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-gray-500">
               <Icon className="h-4 w-4 shrink-0 text-indigo-300" />
               {label}
