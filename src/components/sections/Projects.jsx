@@ -217,32 +217,38 @@ export const Projects = () => {
                 </div>
               )}
 
-              <a
-                href={active.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold
-                  text-white transition-transform hover:scale-[1.03]"
-                style={{
-                  backgroundColor: `rgba(${active.accent},0.18)`,
-                  border: `1px solid rgba(${active.accent},0.4)`,
-                }}
-              >
-                Visit live site
-                <LuArrowUpRight className="h-4 w-4" />
-              </a>
-
-              {active.repo && (
+              {/* One flex row with a gap, rather than two inline-flex anchors
+                  nudged apart by ml-2/mt-6. The margins let the pair drift out
+                  of alignment and broke spacing whenever they wrapped. Both
+                  buttons share a height and a border width so they match — the
+                  accent only changes colour, never the box. */}
+              <div className="mt-6 flex flex-wrap items-center gap-2.5">
                 <a
-                  href={active.repo}
+                  href={active.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="ml-2 mt-6 inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-white/30 hover:text-white"
+                  className="inline-flex h-10 items-center gap-1.5 rounded-lg border px-4 text-sm font-semibold text-white transition-transform hover:scale-[1.03]"
+                  style={{
+                    backgroundColor: `rgba(${active.accent},0.18)`,
+                    borderColor: `rgba(${active.accent},0.4)`,
+                  }}
                 >
-                  <LuCode className="h-4 w-4" />
-                  Source
+                  Visit live site
+                  <LuArrowUpRight className="h-4 w-4" />
                 </a>
-              )}
+
+                {active.repo && (
+                  <a
+                    href={active.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-semibold text-gray-200 transition-colors hover:border-white/30 hover:text-white"
+                  >
+                    <LuCode className="h-4 w-4" />
+                    Source
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         )}
