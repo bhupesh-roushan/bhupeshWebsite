@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { track } from "@vercel/analytics";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
@@ -13,8 +14,14 @@ import {
   LuLock,
   LuBuilding2,
 } from "react-icons/lu";
-import { ArchitectureDiagram } from "../ArchitectureDiagram";
 import { DIAGRAMS } from "../../data/diagrams";
+
+// Only reachable once a project modal is open, so it has no business being in
+// the first download. DIAGRAMS itself stays eager — it's plain data, and the
+// card grid needs to know which projects have one.
+const ArchitectureDiagram = lazy(() =>
+  import("../ArchitectureDiagram").then((m) => ({ default: m.ArchitectureDiagram }))
+);
 
 export const Projects = () => {
   // The open project lives in the URL, not in state, so /projects/cloudwatch
@@ -24,7 +31,13 @@ export const Projects = () => {
   const navigate = useNavigate();
   const active = projects.find((p) => p.id === projectId) ?? null;
 
-  const open = (id) => navigate(`/projects/${id}`);
+  // Which projects actually get opened is the one thing the page can tell you
+  // that a CV can't. Vercel Analytics is cookieless and stores no identifiers,
+  // so this counts events, not people.
+  const open = (id) => {
+    track("project_open", { project: id });
+    navigate(`/projects/${id}`);
+  };
   const close = () => navigate("/", { replace: false });
 
   // Arriving directly on a project URL should land on the section, not at the
@@ -207,7 +220,11 @@ export const Projects = () => {
                     <LuNetwork className="h-3.5 w-3.5" />
                     Architecture
                   </div>
-                  <ArchitectureDiagram id={active.id} />
+                  {/* Reserves the height it will occupy, so the modal doesn't
+                      jump when the chunk lands. */}
+                  <Suspense fallback={<div className="h-64" />}>
+                    <ArchitectureDiagram id={active.id} />
+                  </Suspense>
                 </div>
               )}
 

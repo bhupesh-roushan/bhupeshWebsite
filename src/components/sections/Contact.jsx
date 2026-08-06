@@ -2,7 +2,6 @@ import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { HiringFacts } from "../HiringFacts";
 import { MAIL_SUBJECT } from "../../data/hiring";
-import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -73,6 +72,11 @@ export const Contact = () => {
     };
 
     try {
+      // Loaded on submit, not on page load. Most visitors never send a
+      // message, and the SDK is dead weight in the initial download for all
+      // of them. By the time this resolves the click has already happened.
+      const { default: emailjs } = await import("@emailjs/browser");
+
       await emailjs.send(
         import.meta.env.VITE_SERVICE_ID,
         import.meta.env.VITE_TEMPLATE_ID,
