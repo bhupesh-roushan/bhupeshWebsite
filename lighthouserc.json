@@ -9,7 +9,8 @@
         "http://localhost/404.html",
         "http://localhost/writing/atlas-constrained-decoding.html",
         "http://localhost/writing/atlas-false-failures.html",
-        "http://localhost/writing/cloudwatch-cookie-origin.html"
+        "http://localhost/writing/cloudwatch-cookie-origin.html",
+        "http://localhost/writing/buildingblocks-mixed-content.html"
       ],
       "numberOfRuns": 3,
       "settings": {

@@ -289,6 +289,14 @@ export const projects = [
       { label: "Course progress tracking", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/controllers/student-controller/course-progress-controller.js" },
       { label: "Role-based route guard", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/client/src/components/route-guard/index.jsx" },
     ],
+    caseStudies: [
+      {
+        id: "buildingblocks-mixed-content",
+        label: "The lecture videos that only played on my machine",
+        blurb:
+          "Cloudinary returns two URLs per upload and only one works on an HTTPS page. Why the fix belonged at the boundary, not the call site.",
+      },
+    ],
     repo: "https://github.com/bhupesh-roushan/BuildingBlocks",
     role: "Solo build — frontend, backend and deployment",
     title: "BuildingBlocks",
