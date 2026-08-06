@@ -23,13 +23,19 @@ const SITE = "https://www.bhupesh.blog";
 const source = readFileSync(resolve(root, "src/data/portfolio.js"), "utf8");
 const projectsBlock = source.slice(source.indexOf("export const projects"));
 
-const entries = [...projectsBlock.matchAll(/id:\s*"([^"]+)"/g)].map((m) => m[1]);
+// Anchored to a top-level entry's exact indentation. A bare /id:\s*"..."/
+// also matched nested objects — adding `caseStudy: { id: ... }` inside a
+// project immediately produced a phantom project named after it, and the
+// title/tagline guard below is what surfaced that rather than shipping a
+// broken page.
+const ENTRY_ID = /\n {4}id: "([^"]+)"/g;
+const entries = [...projectsBlock.matchAll(ENTRY_ID)].map((m) => m[1]);
 // Slice from this entry to the start of the next one. A fixed-size window
 // silently truncated once codeLinks were added between `id` and `title`, and
 // the affected pages quietly fell back to the raw id.
 const titleFor = (id) => {
-  const at = projectsBlock.indexOf(`id: "${id}"`);
-  const next = projectsBlock.indexOf('id: "', at + 5);
+  const at = projectsBlock.indexOf(`\n    id: "${id}"`);
+  const next = projectsBlock.indexOf('\n    id: "', at + 6);
   const slice = projectsBlock.slice(at, next === -1 ? undefined : next);
   const title = slice.match(/title:\s*"([^"]+)"/)?.[1];
   const tagline = slice.match(/tagline:\s*"([^"]+)"/)?.[1];
@@ -90,6 +96,46 @@ for (const id of entries) {
   writeFileSync(resolve(dir, "index.html"), html);
   writeFileSync(resolve(root, "dist/projects", `${id}.html`), html);
   written += 1;
+}
+
+/**
+ * Case studies get the same treatment: a real file per URL, with its own
+ * title and description in the markup, so sharing one previews as the
+ * write-up rather than as the portfolio it hangs off.
+ */
+const studySource = readFileSync(resolve(root, "src/data/caseStudies.js"), "utf8");
+const studies = [...studySource.matchAll(/\n  "([a-z0-9-]+)": \{/g)].map((m) => m[1]);
+
+for (const id of studies) {
+  const at = studySource.indexOf(`"${id}": {`);
+  const slice = studySource.slice(at, at + 2000);
+  const title = slice.match(/title:\s*"([^"]+)"/)?.[1];
+  const dek = slice.match(/dek:\s*\n?\s*"([^"]+)"/)?.[1];
+  const project = slice.match(/project:\s*"([^"]+)"/)?.[1];
+  if (!title || !dek || !project) {
+    throw new Error(`prerender: could not read title/dek/project for study "${id}"`);
+  }
+
+  const pageTitle = `${title} | ${project} case study — Bhupesh Roushan`;
+  const url = `${SITE}/writing/${id}`;
+
+  let html = shell.replace(/<title>[^<]*<\/title>/, `<title>${esc(pageTitle)}</title>`);
+  for (const [re, value, what] of [
+    [metaRe("name", "description"), esc(dek), "description"],
+    [metaRe("property", "og:title"), esc(pageTitle), "og:title"],
+    [metaRe("property", "og:description"), esc(dek), "og:description"],
+    [metaRe("property", "og:url"), url, "og:url"],
+    [metaRe("name", "twitter:title"), esc(pageTitle), "twitter:title"],
+    [metaRe("name", "twitter:description"), esc(dek), "twitter:description"],
+    [/(<link rel="canonical" href=")[^"]*(")/, url, "canonical"],
+  ]) {
+    html = sub(html, re, value, what);
+  }
+
+  const dir = resolve(root, "dist/writing", id);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(resolve(dir, "index.html"), html);
+  writeFileSync(resolve(root, "dist/writing", `${id}.html`), html);
 }
 
 /**
@@ -157,6 +203,7 @@ writeFileSync(resolve(root, "dist/404.html"), notFound);
 const urls = [
   { loc: `${SITE}/`, priority: "1.0" },
   ...entries.map((id) => ({ loc: `${SITE}/projects/${id}`, priority: "0.8" })),
+  ...studies.map((id) => ({ loc: `${SITE}/writing/${id}`, priority: "0.9" })),
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -171,5 +218,5 @@ ${urls
 writeFileSync(resolve(root, "dist/sitemap.xml"), sitemap);
 
 console.log(
-  `prerendered ${written} project pages + 404 + sitemap (${urls.length} urls)`
+  `prerendered ${written} project pages + ${studies.length} case ${studies.length === 1 ? "study" : "studies"} + 404 + sitemap (${urls.length} urls)`
 );

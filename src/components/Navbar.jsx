@@ -88,7 +88,8 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           {/* Brand */}
           <a href="#home" className="flex w-fit items-center gap-2 justify-self-start">
             {/* w-auto, not a square box — the mark is 32x48 and would squash */}
-            <img src={icon} alt="" className="h-7 w-auto sm:h-8" />
+            {/* Dimensions declared so the row cannot reflow once the logo loads. */}
+            <img src={icon} alt="" width="32" height="32" className="h-7 w-auto sm:h-8" />
             <span className="font-mono text-sm font-bold text-white sm:text-base">
               bhupesh<span className="text-indigo-500">.blog</span>
             </span>
@@ -153,7 +154,9 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 sm:flex md:hidden lg:flex">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               <span className="text-xs tabular-nums text-gray-300">{indiaTime}</span>
-              <span className="hidden text-[11px] text-gray-500 lg:inline">IST</span>
+              {/* gray-400: gray-500 measures 4.01:1 on the page background, under the
+                  4.5 needed at 11px. */}
+              <span className="hidden text-[11px] text-gray-400 lg:inline">IST</span>
             </div>
 
             <button
