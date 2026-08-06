@@ -1,0 +1,117 @@
+// Vercel serverless function — emails a visit alert.
+//
+// What this can and cannot know, stated up front because the gap matters:
+// a browser never exposes who someone is. There is no name, email, phone or
+// employer available at any price here. What arrives is city and country
+// derived from the IP, the device and browser, where they came from, and
+// which page they landed on. That is the whole ceiling.
+//
+// It runs server-side for two reasons. The client cannot see its own IP
+// without asking a third party, and the EmailJS private key must never reach
+// the bundle — the public key already ships there, and anyone can read it.
+//
+// Set in the Vercel project's environment variables:
+//   EMAILJS_SERVICE_ID        same value as VITE_SERVICE_ID
+//   EMAILJS_VISIT_TEMPLATE_ID a second template, separate from the contact one
+//   EMAILJS_PUBLIC_KEY        same value as VITE_PUBLIC_KEY
+//   EMAILJS_PRIVATE_KEY       EmailJS account → Account → API keys
+// Missing any of them and this reports 501 rather than failing silently.
+
+const EMAILJS_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
+
+/**
+ * Crawlers, previewers and uptime checks outnumber people on a public site by
+ * a wide margin. Without this the mailbox fills with Googlebot and every
+ * LinkedIn or WhatsApp link-preview fetch.
+ */
+const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|slackbot|discordbot|embedly|quora|pinterest|vkshare|redditbot|applebot|semrush|ahrefs|mj12|dotbot|petalbot|yandex|duckduck|baidu|sogou|exabot|ia_archiver|headlesschrome|phantomjs|puppeteer|playwright|lighthouse|curl|wget|python-requests|axios|got\/|node-fetch|monitor|uptime|pingdom|statuscake|gtmetrix|vercel-screenshot|prerender/i;
+
+/** Trim anything unbounded — a header is attacker-controlled input. */
+const clip = (value, max = 300) =>
+  typeof value === "string" ? value.slice(0, max) : "";
+
+const firstIp = (header) => clip(String(header || "").split(",")[0].trim(), 60);
+
+export default async function handler(req, res) {
+  // Always cheap to reject: this is fired from a page load, and must never
+  // become something a visitor can feel.
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "POST only" });
+    return;
+  }
+
+  const serviceId = process.env.EMAILJS_SERVICE_ID;
+  const templateId = process.env.EMAILJS_VISIT_TEMPLATE_ID;
+  const publicKey = process.env.EMAILJS_PUBLIC_KEY;
+  const privateKey = process.env.EMAILJS_PRIVATE_KEY;
+
+  if (!serviceId || !templateId || !publicKey || !privateKey) {
+    res.status(501).json({
+      error:
+        "visit alerts not configured — set EMAILJS_SERVICE_ID, EMAILJS_VISIT_TEMPLATE_ID, EMAILJS_PUBLIC_KEY and EMAILJS_PRIVATE_KEY",
+    });
+    return;
+  }
+
+  const ua = clip(req.headers["user-agent"], 400);
+  if (!ua || BOT.test(ua)) {
+    // 204, not an error: the request was handled correctly, it just wasn't a
+    // person. Returning 4xx here would fill the function logs with noise.
+    res.status(204).end();
+    return;
+  }
+
+  const body = typeof req.body === "object" && req.body ? req.body : {};
+
+  // Vercel resolves these at the edge from the connecting IP. They are city
+  // level at best, and often only country.
+  const city = clip(req.headers["x-vercel-ip-city"], 80);
+  const region = clip(req.headers["x-vercel-ip-country-region"], 80);
+  const country = clip(req.headers["x-vercel-ip-country"], 8);
+  const place =
+    [decodeURIComponent(city || ""), region, country].filter(Boolean).join(", ") ||
+    "unknown";
+
+  const referrer = clip(body.referrer) || clip(req.headers.referer) || "direct";
+
+  const params = {
+    // Named so an EmailJS template can drop them in directly.
+    place,
+    ip: firstIp(req.headers["x-forwarded-for"]),
+    referrer,
+    page: clip(body.page, 200) || "/",
+    device: ua,
+    screen: clip(body.screen, 40),
+    language: clip(body.language, 40),
+    timezone: clip(body.timezone, 60),
+    time: new Date().toISOString(),
+    // One line, for a phone notification where only the subject is visible.
+    summary: `Visitor from ${place} via ${referrer}`,
+  };
+
+  try {
+    const mail = await fetch(EMAILJS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        service_id: serviceId,
+        template_id: templateId,
+        user_id: publicKey,
+        accessToken: privateKey,
+        template_params: params,
+      }),
+    });
+
+    if (!mail.ok) {
+      const detail = await mail.text().catch(() => "");
+      res.status(502).json({ error: `EmailJS ${mail.status}: ${detail.slice(0, 200)}` });
+      return;
+    }
+
+    res.status(204).end();
+  } catch (err) {
+    // Never surface a failure to the page — a broken alert must not become a
+    // broken visit.
+    res.status(500).json({ error: err.message });
+  }
+}
