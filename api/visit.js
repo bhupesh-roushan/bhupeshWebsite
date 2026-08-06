@@ -101,14 +101,90 @@ function readAgent(ua) {
   };
 }
 
+/**
+ * Android apps hand over a package name rather than a URL, so a visit from the
+ * Google app arrived as "com.google.android.googlequicksearchbox" — accurate
+ * and unreadable. These are the ones a portfolio link actually travels through.
+ */
+const APPS = {
+  "com.google.android.googlequicksearchbox": "Google app",
+  "com.google.android.gm": "Gmail app",
+  "com.linkedin.android": "LinkedIn app",
+  "com.whatsapp": "WhatsApp",
+  "com.instagram.android": "Instagram",
+  "com.twitter.android": "X",
+  "com.x.android": "X",
+  "com.facebook.katana": "Facebook",
+  "com.facebook.orca": "Messenger",
+  "org.telegram.messenger": "Telegram",
+  "com.Slack": "Slack",
+  "com.microsoft.teams": "Teams",
+  "com.discord": "Discord",
+  "com.reddit.frontpage": "Reddit",
+  "com.google.android.apps.docs": "Google Drive",
+};
+
 /** "linkedin.com" reads better in a subject line than the full tracking URL. */
 function readReferrer(raw) {
   if (!raw || raw === "direct") return "direct";
+
+  // android-app://com.foo.bar and bare package names both turn up here.
+  //
+  // A package is a *reversed* domain, which is the only thing separating
+  // "com.whatsapp" from a hostname like "whatsapp.com" — matching on segment
+  // count alone would read "google.com" as an app called "com". So the test
+  // is that it starts with a TLD rather than ending with one.
+  const looksLikePackage = (s) =>
+    /^(com|org|net|io|co|app|android|dev|me|tv|in)\.[a-zA-Z]/.test(s) &&
+    /^[a-zA-Z0-9_.]+$/.test(s);
+
+  const pkg = raw.startsWith("android-app://")
+    ? raw.slice("android-app://".length).split("/")[0]
+    : looksLikePackage(raw)
+      ? raw
+      : null;
+
+  if (pkg) {
+    if (APPS[pkg]) return APPS[pkg];
+    // Unknown app: "com.foo.barapp" is more use as "barapp" than in full.
+    const tail = pkg.split(".").filter(Boolean).pop();
+    return tail ? `${tail} (app)` : clip(raw, 80);
+  }
+
   try {
     return new URL(raw).hostname.replace(/^www\./, "");
   } catch {
     return clip(raw, 80);
   }
+}
+
+/** Windows reports 13+ for Windows 11; the platform version is not the name. */
+const windowsName = (v) => (parseInt(v, 10) >= 13 ? "Windows 11" : "Windows 10");
+
+/**
+ * Client Hints when the browser offered them, the user-agent otherwise.
+ * The hints are the only route to a true Android version or a device model —
+ * Chrome reports "Android 10" in the UA for every device on every version.
+ */
+function describeDevice(ua, hint) {
+  const parsed = readAgent(ua);
+  if (!hint?.platform) return parsed;
+
+  const major = String(hint.platformVersion || "").split(".")[0];
+  const os =
+    hint.platform === "Windows"
+      ? windowsName(major)
+      : hint.platform === "Android"
+        ? `Android${major ? " " + major : ""}`
+        : hint.platform === "macOS"
+          ? `macOS${major ? " " + major : ""}`
+          : `${hint.platform}${major ? " " + major : ""}`;
+
+  const browser = clip(hint.browser, 40) || parsed.label.split(" on ")[0];
+  const model = clip(hint.model, 60);
+  const kind = hint.mobile ? (parsed.kind === "Tablet" ? "Tablet" : "Phone") : "Desktop";
+
+  return { label: `${browser} on ${os}${model ? ` · ${model}` : ""}`, kind };
 }
 
 export default async function handler(req, res) {
@@ -161,7 +237,13 @@ export default async function handler(req, res) {
       .filter(Boolean)
       .join(", ") || "unknown";
 
-  const agent = readAgent(ua);
+  const agent = describeDevice(ua, {
+    platform: clip(body.platform, 40),
+    platformVersion: clip(body.platformVersion, 40),
+    model: clip(body.model, 60),
+    browser: clip(body.browser, 40),
+    mobile: !!body.mobile,
+  });
   const referrer = readReferrer(
     clip(body.referrer) || clip(req.headers.referer) || "direct"
   );
@@ -193,7 +275,9 @@ export default async function handler(req, res) {
     agent: ua,
     screen: clip(body.screen, 40),
     language: clip(body.language, 40),
-    timezone: clip(body.timezone, 60),
+    // Asia/Calcutta is a legacy alias some browsers still report; it's the
+    // same zone, and seeing the current name avoids a double-take.
+    timezone: clip(body.timezone, 60).replace("Asia/Calcutta", "Asia/Kolkata"),
     // Their local clock, not UTC — an ISO string in another timezone is a
     // small subtraction you shouldn't have to do at a glance.
     time: when.toLocaleString("en-GB", {
