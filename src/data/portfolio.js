@@ -216,12 +216,20 @@ export const projects = [
       "Added a human review queue for flagged grades with keyboard-driven approve and override, accuracy calibration against a human-scored golden set, cohort-wide common-mistake analysis and copy detection.",
       "Ingested batches straight from Google Sheets and wrote scores back in the previous grader's column format with original row numbering preserved, so the output stayed a drop-in replacement for the process it replaced.",
     ],
-    caseStudy: {
-      id: "atlas-constrained-decoding",
-      label: "Case study: the safety net was breaking the grades",
-      blurb:
-        "Constrained decoding guaranteed valid JSON and silently destroyed the grading. What it measured, and why turning it off was safe.",
-    },
+    caseStudies: [
+      {
+        id: "atlas-constrained-decoding",
+        label: "The safety net was breaking the grades",
+        blurb:
+          "Constrained decoding guaranteed valid JSON and silently destroyed the grading. What it measured, and why turning it off was safe.",
+      },
+      {
+        id: "atlas-false-failures",
+        label: "470 students were told they failed a run that never happened",
+        blurb:
+          "An absent record is not a failure record — and what a timed-out read actually tells you about the queue.",
+      },
+    ],
     metricsNote:
       "219 commits between 16 July and 3 August 2026. Figures above describe the system's design rather than measured outcomes — see the notes on each pull request for what was verified.",
   },
@@ -232,6 +240,14 @@ export const projects = [
       { label: "Firecrawl competitor scraping", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/firecrawl.ts" },
       { label: "Razorpay checkout", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/razorpay.ts" },
       { label: "Role-based auth middleware", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/middleware/requireAuth.ts" },
+    ],
+    caseStudies: [
+      {
+        id: "cloudwatch-cookie-origin",
+        label: "The login that worked everywhere except production",
+        blurb:
+          "Forty commits chasing a cross-subdomain auth cookie, and the reason none of them could have worked.",
+      },
     ],
     repo: "https://github.com/bhupesh-roushan/cloudwatch-digital",
     role: "Solo build — frontend, backend and deployment",

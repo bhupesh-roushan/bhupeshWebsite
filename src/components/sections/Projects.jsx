@@ -278,25 +278,37 @@ export const Projects = () => {
                   of alignment and broke spacing whenever they wrapped. Both
                   buttons share a height and a border width so they match — the
                   accent only changes colour, never the box. */}
-              {/* The write-up, where there is one. Boxed like the code links
-                  because it serves the same purpose: proof you can go and
+              {/* Write-ups, where they exist. Boxed like the code links
+                  because they serve the same purpose: proof you can go and
                   read rather than a claim you have to take. */}
-              {active.caseStudy && (
-                <Link
-                  to={`/writing/${active.caseStudy.id}`}
-                  className="mt-6 flex items-start gap-3 rounded-xl border p-4 transition-colors hover:bg-white/[0.04]"
-                  style={{ borderColor: `rgba(${active.accent},0.3)`, backgroundColor: `rgba(${active.accent},0.06)` }}
-                >
-                  <LuBookOpen className="mt-0.5 h-4 w-4 shrink-0" style={{ color: `rgb(${active.accent})` }} />
-                  <span>
-                    <span className="block text-sm font-semibold text-white">
-                      {active.caseStudy.label}
-                    </span>
-                    <span className="mt-0.5 block text-xs leading-relaxed text-gray-400">
-                      {active.caseStudy.blurb}
-                    </span>
-                  </span>
-                </Link>
+              {active.caseStudies?.length > 0 && (
+                <div className="mt-6 space-y-2.5">
+                  {active.caseStudies.map((cs) => (
+                    <Link
+                      key={cs.id}
+                      to={`/writing/${cs.id}`}
+                      onClick={() => track("case_study_open", { study: cs.id })}
+                      className="flex items-start gap-3 rounded-xl border p-4 transition-colors hover:bg-white/[0.06]"
+                      style={{
+                        borderColor: `rgba(${active.accent},0.3)`,
+                        backgroundColor: `rgba(${active.accent},0.06)`,
+                      }}
+                    >
+                      <LuBookOpen
+                        className="mt-0.5 h-4 w-4 shrink-0"
+                        style={{ color: `rgb(${active.accent})` }}
+                      />
+                      <span>
+                        <span className="block text-sm font-semibold text-white">
+                          {cs.label}
+                        </span>
+                        <span className="mt-0.5 block text-xs leading-relaxed text-gray-400">
+                          {cs.blurb}
+                        </span>
+                      </span>
+                    </Link>
+                  ))}
+                </div>
               )}
 
               {/* Says why there is nothing to click, instead of leaving a gap
