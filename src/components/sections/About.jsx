@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
 import { journey } from "../../data/portfolio";
 import { LuArrowUpRight } from "react-icons/lu";
 import { skillGroups } from "../../data/skills";
-import { JdMatcher } from "../JdMatcher";
+// Below the fold and self-contained, so it has no claim on the first download.
+const JdMatcher = lazy(() =>
+  import("../JdMatcher").then((m) => ({ default: m.JdMatcher }))
+);
 
 /** Inclusive month span, the way LinkedIn counts it: Apr 2025–May 2026 = 1y 2mo. */
 function durationLabel(start, end) {
@@ -134,7 +137,11 @@ export const About = () => {
               was a tool with its own subject matter sitting three screens away
               from the list it matches against. */}
           <div className="mt-6">
-            <JdMatcher />
+            {/* Holds the space it will fill, so the skills grid above doesn't
+                shift when the chunk arrives. */}
+            <Suspense fallback={<div className="h-56" />}>
+              <JdMatcher />
+            </Suspense>
           </div>
         </div>
       </RevealOnScroll>

@@ -56,12 +56,33 @@ export const Home = () => {
   const [showVideo, setShowVideo] = useState(false);
   useEffect(() => {
     if (reduceMotion) return;
-    const wideEnough = window.matchMedia("(min-width: 1024px)").matches;
-    const saveData = navigator.connection?.saveData;
-    if (!wideEnough || saveData) return;
 
-    const t = setTimeout(() => setShowVideo(true), 1200);
-    return () => clearTimeout(t);
+    const conn = navigator.connection;
+    const wideEnough = window.matchMedia("(min-width: 1024px)").matches;
+    // A wide window is not a fast link — a laptop on tethered data is both.
+    const slowLink = /(^|-)[23]g$/.test(conn?.effectiveType || "");
+    if (!wideEnough || conn?.saveData || slowLink) return;
+
+    // A 1.2s timer from mount still landed inside the load window, so the
+    // video competed with the fonts and the bundle for the connection and
+    // dragged LCP out to 2.9s. Waiting for `load` and then for idle puts it
+    // strictly after everything the visitor is actually waiting on.
+    let idle;
+    const start = () => {
+      idle = window.requestIdleCallback
+        ? window.requestIdleCallback(() => setShowVideo(true), { timeout: 3000 })
+        : setTimeout(() => setShowVideo(true), 2000);
+    };
+
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+
+    return () => {
+      window.removeEventListener("load", start);
+      if (idle == null) return;
+      if (window.cancelIdleCallback && window.requestIdleCallback) window.cancelIdleCallback(idle);
+      else clearTimeout(idle);
+    };
   }, [reduceMotion]);
 
   const typingDone = typed.length >= NAME.length;

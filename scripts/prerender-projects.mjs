@@ -108,6 +108,10 @@ const notFound = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, follow" />
     <title>Page not found | Bhupesh Roushan</title>
+    <meta
+      name="description"
+      content="That page doesn't exist. Bhupesh Roushan — full-stack developer, Bangalore."
+    />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <style>
       *{ box-sizing: border-box; }
@@ -117,7 +121,9 @@ const notFound = `<!DOCTYPE html>
         font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       }
       main { max-width: 32rem; text-align: center; }
-      .code { font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: #6366f1; margin: 0 0 .75rem; }
+      /* indigo-400, not indigo-500: Lighthouse measured #6366f1 on this
+         background at 4.43:1, just under the 4.5 needed for 12px text. */
+      .code { font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: #818cf8; margin: 0 0 .75rem; }
       h1 { font-size: clamp(1.5rem, 5vw, 2rem); margin: 0 0 .75rem; }
       p { color: #9ca3af; line-height: 1.6; margin: 0 0 1.75rem; font-size: .95rem; }
       .row { display: flex; gap: .625rem; flex-wrap: wrap; justify-content: center; }
