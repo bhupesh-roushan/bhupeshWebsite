@@ -66,6 +66,55 @@ export const CASE_STUDIES = {
       "Job counts, row counts and reasoning are from commit 3df3201 in the Atlas repository. The repo is private — internal tooling built at Masai — so the figures are quoted rather than linked.",
   },
 
+  "buildingblocks-mixed-content": {
+    project: "BuildingBlocks",
+    projectId: "buildingblocks",
+    accent: "56,189,248",
+    title: "The lecture videos that only played on my machine",
+    dek: "Cloudinary hands back two URLs for every upload. Only one of them works on an HTTPS page.",
+    date: "January 2025",
+    readingTime: "3 min",
+    tags: ["Mixed content", "Media pipeline", "Boundaries"],
+
+    sections: [
+      {
+        heading: "Fine locally, blank in production",
+        body: [
+          "Instructors upload lecture videos, which go to Cloudinary and come back as a URL stored against the course. Locally every video played. On the deployed site the players were blank and the console was full of errors.",
+          "Cloudinary returns two URLs for every upload. `url` is `http://`, `secure_url` is `https://`, and the code was storing `url` — which is the obvious field to reach for, and the one that is wrong for anything served over HTTPS.",
+          "Browsers block an `http://` video embedded in an `https://` page. That is mixed content, and the block is silent as far as the page is concerned: no exception, no failed promise, just a player with nothing in it and a console warning nobody sees until they look. It worked locally because local development is `http://`, where there is nothing to mix.",
+        ],
+      },
+      {
+        heading: "Where to fix it",
+        body: [
+          "The quick fix is to use `secure_url` at the point where the course record is written. That works, and it lasts exactly until the next feature reads `url` again — because `url` still exists, still looks correct, and still returns a working-looking string.",
+          "So the fix went in the upload helper instead. `uploadMediaToCloudinary` now resolves the whole result with `url` overwritten by `secure_url`, and rejects outright if Cloudinary did not return one:",
+        ],
+        compare: {
+          caption: "What the upload helper hands back",
+          rows: [
+            { label: "Cloudinary's result", score: "url", quote: "http://res.cloudinary.com/… — blocked on an HTTPS page", bad: true },
+            { label: "What callers get", score: "url", quote: "https://res.cloudinary.com/… — secure_url, always" },
+          ],
+        },
+        after: [
+          "Every caller now gets an HTTPS URL from the field it was already reading. `secure_url` appears in exactly one file in the repository, which is the point: there is no longer a wrong value available to pick.",
+        ],
+      },
+      {
+        heading: "What I take from it",
+        body: [
+          "The bug was not that I used the wrong field. It was that the API offered two fields where one of them can never be used, and my code passed that choice along to every consumer downstream.",
+          "The general form: when a dependency hands you a value that is correct in one environment and broken in another, normalise it at the boundary where it enters your system. A rule you have to remember at each call site is a rule you will eventually forget at one of them — and this particular failure gives you no error to find it by, only a blank rectangle where the lesson was supposed to be.",
+        ],
+      },
+    ],
+
+    footnote:
+      "From server/helpers/cloudinary.js in bhupesh-roushan/BuildingBlocks — the override and its guard are both in uploadMediaToCloudinary. The repository is public.",
+  },
+
   "cloudwatch-cookie-origin": {
     project: "CloudWatch",
     projectId: "cloudwatch",
