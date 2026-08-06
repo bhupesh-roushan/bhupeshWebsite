@@ -1,12 +1,5 @@
 import { hiring } from "../data/hiring";
-import {
-  LuClock,
-  LuMapPin,
-  LuBriefcase,
-  LuCalendarCheck,
-  LuFileText,
-  LuArrowUpRight,
-} from "react-icons/lu";
+import { LuCalendarCheck, LuFileText, LuArrowUpRight } from "react-icons/lu";
 
 /**
  * The questions a recruiter emails to ask before they can do anything with a
@@ -14,9 +7,9 @@ import {
  */
 export const HiringFacts = () => {
   const rows = [
-    { Icon: LuClock, label: "Notice period", value: hiring.noticePeriod },
-    { Icon: LuMapPin, label: "Work mode", value: hiring.workMode },
-    { Icon: LuBriefcase, label: "Experience", value: hiring.experience },
+    { label: "Notice period", value: hiring.noticePeriod },
+    { label: "Work mode", value: hiring.workMode },
+    { label: "Experience", value: hiring.experience },
   ];
 
   return (
@@ -25,21 +18,17 @@ export const HiringFacts = () => {
         For recruiters
       </h3>
 
-      {/* A <dl>'s <div> wrapper may contain only <dt>/<dd>. The icon used to sit
-          in that wrapper alongside a nested div, which broke the grouping — so
-          it lives inside the <dt> instead. */}
-      {/* The first grid column is the icon's exact width (h-4 = 1rem). As `auto`
-          it collapsed to zero — nothing occupies it, since the <dt> spans both
-          columns — so the value was indented by the gap alone while the label
-          was indented by icon + gap, leaving the two 16px out of line. */}
+      {/* One left edge for the whole card. The icons sat in a 28px gutter that
+          only these rows had, so "Notice period" started 28px right of "For
+          recruiters" and "Open to" — every other block in the card is flush.
+          Aligning the labels was the fix; the icons were what pushed them out,
+          and a clock beside the words "Notice period" was never carrying any
+          meaning the words didn't already. */}
       <dl className="space-y-3">
-        {rows.map(({ Icon, label, value }) => (
-          <div key={label} className="grid grid-cols-[1rem_1fr] items-center gap-x-3">
-            <dt className="col-span-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-gray-500">
-              <Icon className="h-4 w-4 shrink-0 text-indigo-300" />
-              {label}
-            </dt>
-            <dd className="col-start-2 -mt-0.5 text-sm text-white">{value}</dd>
+        {rows.map(({ label, value }) => (
+          <div key={label}>
+            <dt className="text-[11px] uppercase tracking-wider text-gray-500">{label}</dt>
+            <dd className="mt-0.5 text-sm text-white">{value}</dd>
           </div>
         ))}
       </dl>

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { HiringFacts } from "../HiringFacts";
-import { JdMatcher } from "../JdMatcher";
 import { MAIL_SUBJECT } from "../../data/hiring";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
@@ -319,10 +318,6 @@ export const Contact = () => {
                 </button>
               </form>
             </div>
-          </div>
-
-          <div className="mt-6">
-            <JdMatcher />
           </div>
         </div>
       </RevealOnScroll>
