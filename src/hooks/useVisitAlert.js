@@ -29,13 +29,49 @@ export function useVisitAlert() {
 
     // After paint, and idle — the alert is for you, not for them, so it waits
     // until the page it interrupts has finished rendering.
-    const send = () => {
+    /**
+     * Chrome froze the Android version in its user-agent at "Android 10" for
+     * every device, so a phone on Android 17 reports 10 and the string cannot
+     * be fixed by parsing it better. The real version, and the device model,
+     * only exist behind high-entropy Client Hints — which have to be asked
+     * for. Chromium only; Safari and Firefox fall back to UA parsing.
+     */
+    const hints = async () => {
+      try {
+        const uad = navigator.userAgentData;
+        if (!uad?.getHighEntropyValues) return {};
+        const h = await uad.getHighEntropyValues([
+          "platformVersion",
+          "model",
+          "fullVersionList",
+        ]);
+        // "Not.A/Brand" is deliberate noise Chromium injects to stop anyone
+        // hardcoding the list; the real browser is whatever remains.
+        const real = (h.fullVersionList || []).find(
+          (b) => !/not.?a.?brand/i.test(b.brand)
+        );
+        return {
+          platform: uad.platform || "",
+          platformVersion: h.platformVersion || "",
+          model: h.model || "",
+          browser: real ? `${real.brand} ${real.version.split(".")[0]}` : "",
+          mobile: !!uad.mobile,
+        };
+      } catch {
+        return {};
+      }
+    };
+
+    const send = async () => {
       if (cancelled) return;
       try {
         sessionStorage.setItem(KEY, "1");
       } catch {
         /* keep going — worst case it sends twice */
       }
+
+      const ch = await hints();
+      if (cancelled) return;
 
       fetch("/api/visit", {
         method: "POST",
@@ -47,6 +83,7 @@ export function useVisitAlert() {
           screen: `${window.screen?.width}x${window.screen?.height}`,
           language: navigator.language,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          ...ch,
         }),
       }).catch(() => {
         /* offline, blocked by an ad blocker, or not configured — all fine */
