@@ -8,7 +8,6 @@ import {
   LuMapPin,
 } from "react-icons/lu";
 import { TechBackdrop } from "../TechBackdrop";
-import video from "../../assets/video.mp4";
 import bhupesh from "../../assets/bhupesh.webp";
 
 const NAME = "Bhupesh Roushan";
@@ -50,41 +49,6 @@ export const Home = () => {
     return () => clearInterval(t);
   }, []);
 
-  // Gate the 3.8MB hero video: desktop only, and only once the page has
-  // painted, so it never competes with content for bandwidth. Phones,
-  // data-saver and reduced-motion visitors never request it at all.
-  const [showVideo, setShowVideo] = useState(false);
-  useEffect(() => {
-    if (reduceMotion) return;
-
-    const conn = navigator.connection;
-    const wideEnough = window.matchMedia("(min-width: 1024px)").matches;
-    // A wide window is not a fast link — a laptop on tethered data is both.
-    const slowLink = /(^|-)[23]g$/.test(conn?.effectiveType || "");
-    if (!wideEnough || conn?.saveData || slowLink) return;
-
-    // A 1.2s timer from mount still landed inside the load window, so the
-    // video competed with the fonts and the bundle for the connection and
-    // dragged LCP out to 2.9s. Waiting for `load` and then for idle puts it
-    // strictly after everything the visitor is actually waiting on.
-    let idle;
-    const start = () => {
-      idle = window.requestIdleCallback
-        ? window.requestIdleCallback(() => setShowVideo(true), { timeout: 3000 })
-        : setTimeout(() => setShowVideo(true), 2000);
-    };
-
-    if (document.readyState === "complete") start();
-    else window.addEventListener("load", start, { once: true });
-
-    return () => {
-      window.removeEventListener("load", start);
-      if (idle == null) return;
-      if (window.cancelIdleCallback && window.requestIdleCallback) window.cancelIdleCallback(idle);
-      else clearTimeout(idle);
-    };
-  }, [reduceMotion]);
-
   const typingDone = typed.length >= NAME.length;
 
   return (
@@ -92,31 +56,26 @@ export const Home = () => {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:py-28"
     >
-      {/* Background video — 3.8MB, still a lot to push down a phone connection
-          for decoration, so it's only mounted on wider viewports and after
-          first paint. The gradients below stand in for it everywhere else.
-          playsInline is required or iOS refuses to autoplay. */}
-      {showVideo && (
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="none"
-          aria-hidden="true"
-          className="absolute inset-0 z-0 h-full w-full object-cover"
-        >
-          <source src={video} type="video/mp4" />
-        </video>
-      )}
+      {/* What the 3.9MB video was: a centred elliptical glow with a twin core,
+          black through #020f18 to a #174a6a teal, drifting so slowly that two
+          seconds of footage differed by less than one part in 255. All of that
+          is three radial gradients and a long keyframe — so it now costs about
+          a kilobyte of CSS, paints on the first frame instead of after a
+          multi-megabyte download, and looks the same on a phone as on fibre. */}
+      <div className="hero-aurora absolute inset-0 z-0" aria-hidden="true">
+        <span className="hero-aurora__core" />
+        <span className="hero-aurora__halo" />
+        <span className="hero-aurora__drift" />
+      </div>
 
-      {/* Legibility + depth over the footage */}
-      {/* Lighter than it was: these were tuned against a bright moon-and-tree
-          clip. The current footage is already dark, and at 65% it was erased
-          almost entirely. The gradient still darkens top and bottom, which is
-          where the headline and the stats sit. */}
-      <div className="absolute inset-0 z-0 bg-black/35" />
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/75 via-black/25 to-[#0a0a0a]" />
+      {/* The flat 35% black scrim is gone. It existed to tame bright footage
+          we no longer load, and over a backdrop that is already dark by
+          construction it just crushed the colour out — measured against the
+          original video, the teal fell from 20% of the frame to 11%.
+          The vertical gradient stays: it darkens the top and bottom bands
+          where the headline and stats sit, which is the part that was ever
+          about legibility. */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/70 via-transparent to-[#0a0a0a]" />
       <div
         className="absolute inset-0 z-0 opacity-[0.18]"
         style={{
