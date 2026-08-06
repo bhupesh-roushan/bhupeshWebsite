@@ -14,8 +14,12 @@
 //   EMAILJS_SERVICE_ID        same value as VITE_SERVICE_ID
 //   EMAILJS_VISIT_TEMPLATE_ID a second template, separate from the contact one
 //   EMAILJS_PUBLIC_KEY        same value as VITE_PUBLIC_KEY
-//   EMAILJS_PRIVATE_KEY       EmailJS account → Account → API keys
-// Missing any of them and this reports 501 rather than failing silently.
+//   EMAILJS_PRIVATE_KEY       optional — only needed if the EmailJS account
+//                             still blocks API calls from non-browser
+//                             applications (Account → Security). Without that
+//                             restriction, the three above are enough.
+// Missing any required one and this reports 501 naming it, rather than
+// failing silently.
 
 const EMAILJS_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
 
@@ -45,11 +49,16 @@ export default async function handler(req, res) {
   const publicKey = process.env.EMAILJS_PUBLIC_KEY;
   const privateKey = process.env.EMAILJS_PRIVATE_KEY;
 
-  if (!serviceId || !templateId || !publicKey || !privateKey) {
-    res.status(501).json({
-      error:
-        "visit alerts not configured — set EMAILJS_SERVICE_ID, EMAILJS_VISIT_TEMPLATE_ID, EMAILJS_PUBLIC_KEY and EMAILJS_PRIVATE_KEY",
-    });
+  // Names the missing ones. A single "not configured" told you something was
+  // wrong but not which of four, which is a slow way to debug a deploy.
+  const missing = [
+    !serviceId && "EMAILJS_SERVICE_ID",
+    !templateId && "EMAILJS_VISIT_TEMPLATE_ID",
+    !publicKey && "EMAILJS_PUBLIC_KEY",
+  ].filter(Boolean);
+
+  if (missing.length) {
+    res.status(501).json({ error: "not configured", missing });
     return;
   }
 
@@ -97,7 +106,11 @@ export default async function handler(req, res) {
         service_id: serviceId,
         template_id: templateId,
         user_id: publicKey,
-        accessToken: privateKey,
+        // Optional. EmailJS refuses non-browser calls unless either the
+        // private key is supplied or "Allow API calls from non-browser
+        // applications" is enabled on the account. Sending the field as
+        // undefined would serialise to nothing, so it's omitted entirely.
+        ...(privateKey ? { accessToken: privateKey } : {}),
         template_params: params,
       }),
     });
