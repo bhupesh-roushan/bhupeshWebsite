@@ -13,6 +13,15 @@ import { ToastContainer } from "react-toastify";
 import { Analytics } from "@vercel/analytics/react";
 import { Routes, Route } from "react-router-dom";
 import { useVisitAlert } from "./hooks/useVisitAlert";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+
+const SECTIONS = [
+  { name: "Home", Component: Home },
+  { name: "About", Component: About },
+  { name: "Projects", Component: Projects },
+  { name: "Activity", Component: Activity },
+  { name: "Contact", Component: Contact },
+];
 
 /**
  * One page at every route. /projects/:projectId renders exactly the same
@@ -26,11 +35,13 @@ function Page() {
     <>
       <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <Home />
-      <About />
-      <Projects />
-      <Activity />
-      <Contact />
+      {/* One boundary per section, not one around the lot: a section that
+          throws should cost you that section, not the whole page. */}
+      {SECTIONS.map(({ name, Component }) => (
+        <ErrorBoundary key={name} name={name}>
+          <Component />
+        </ErrorBoundary>
+      ))}
     </>
   );
 }

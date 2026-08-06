@@ -12,6 +12,7 @@ import { useEffect } from "react";
  * visitor can see, so nothing throws and nothing blocks paint.
  */
 const KEY = "visit-alerted";
+const MUTE = "visit-alerts-muted";
 
 export function useVisitAlert() {
   useEffect(() => {
@@ -20,12 +21,22 @@ export function useVisitAlert() {
     // sessionStorage throws in some privacy modes; a visit alert is not worth
     // taking the page down for.
     let already = false;
+    let muted = false;
     try {
+      // Your own visits are the ones you least need telling about, and you
+      // open this site more than anyone. /?alerts=off silences this browser
+      // for good; /?alerts=on undoes it. localStorage, not session, so it
+      // survives closing the tab.
+      const wanted = new URLSearchParams(window.location.search).get("alerts");
+      if (wanted === "off") localStorage.setItem(MUTE, "1");
+      if (wanted === "on") localStorage.removeItem(MUTE);
+
+      muted = localStorage.getItem(MUTE) === "1";
       already = sessionStorage.getItem(KEY) === "1";
     } catch {
       return;
     }
-    if (already) return;
+    if (muted || already) return;
 
     // After paint, and idle — the alert is for you, not for them, so it waits
     // until the page it interrupts has finished rendering.
