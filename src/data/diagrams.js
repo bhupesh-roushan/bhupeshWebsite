@@ -18,7 +18,7 @@ export const DIAGRAMS = {
       ],
       [{ title: "BullMQ on Redis", sub: "per-user queues · retries" }],
       [
-        { title: "vLLM pod pool", sub: "Qwen3-Coder-30B · least in-flight" },
+        { title: "Any model endpoint", sub: "vLLM · Ollama · OpenAI · Claude" },
         { title: "Google Sheets", sub: "ingest · score write-back" },
         { title: "GitHub repos", sub: "shallow clone · never executed" },
       ],

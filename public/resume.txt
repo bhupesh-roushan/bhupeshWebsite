@@ -88,18 +88,28 @@ PROJECTS
 Atlas - AI Evaluation Platform (July–August 2026)
 Built at Masai School
 Private repo — internal grading tooling. Walkthrough on request.
-Tech: Next.js 15, React 19, Node.js, BullMQ, Redis, MongoDB, vLLM, Qwen3-Coder-30B, Google Sheets API, Docker
+Tech: Next.js 15, React 19, Node.js, BullMQ, Redis, MongoDB, vLLM, Ollama, OpenAI API, Claude API, OpenRouter, Google Sheets API, Docker
 
   - Built an admin-only platform that grades student submissions against
-  per-question rubrics using a self-hosted Qwen3-Coder-30B model on rented
-  L40S GPU pods, covering both written answers and GitHub repositories.
+  per-question rubrics, covering both written answers and GitHub repositories,
+  with the model endpoint registered by an operator rather than hardcoded to
+  one provider.
+  - Wrote a single adapter over six backends — vLLM, Ollama, OpenAI, Claude,
+  OpenRouter and a mock for GPU-free local development — collapsing three
+  different request shapes behind one call, so moving from a rented GPU pod to
+  a hosted API is a settings change rather than a code change.
+  - Normalised what the adapter couldn't hide: reasoning is a visible mode on
+  vLLM, Ollama and OpenRouter but happens server-side on Claude and OpenAI's
+  o-series, and JSON-schema output is withheld from OpenRouter because support
+  varies by whichever upstream it routes to.
   - Moved the grading pipeline off Celery and RabbitMQ onto BullMQ over Redis,
   removing the separate broker and its 20-connection ceiling, with per-user
   queues so one large batch cannot starve another grader's work.
-  - Routed every request to the active pod with the fewest in-flight jobs,
-  tracked spend per run against a budget cap, and requeued the jobs of any pod
-  that died — the pods are preemptible, so losing one mid-batch is expected
-  rather than exceptional.
+  - Routed every request to the healthy endpoint with the fewest in-flight
+  jobs, tracked spend per run against a budget cap using provider-reported
+  cost where it's available, and requeued the jobs of any pod that died —
+  rented pods are preemptible, so losing one mid-batch is expected rather than
+  exceptional.
   - Added a human review queue for flagged grades with keyboard-driven approve
   and override, accuracy calibration against a human-scored golden set,
   cohort-wide common-mistake analysis and copy detection.
