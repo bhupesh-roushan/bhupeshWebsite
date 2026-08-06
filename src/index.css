@@ -126,3 +126,80 @@ body {
     height: auto !important;
   }
 }
+
+/* ── Hero backdrop ──────────────────────────────────────────────────────
+   Replaces a 3.9MB looping video with the same picture in CSS.
+
+   Sampled from the footage it stands in for: black at 40% of the frame,
+   #020f18 at 24%, and a #174a6a teal at 19%, arranged as a centred ellipse
+   with a brighter twin core. The motion was measured too — two seconds of
+   video differed by a mean of 0.85/255, so these keyframes are deliberately
+   slow and low-amplitude. Anything faster would read as a different clip.
+
+   Three layers on prime-ish durations (29s, 37s, 43s) so the combination
+   takes minutes to repeat and never looks like a short loop.
+   ---------------------------------------------------------------------- */
+.hero-aurora {
+  overflow: hidden;
+  background: #000;
+}
+
+.hero-aurora > span {
+  position: absolute;
+  inset: -20%;
+  display: block;
+  /* Composited on the GPU: without this the browser repaints a full-screen
+     gradient every frame, which is exactly the cost we came here to avoid. */
+  will-change: transform, opacity;
+}
+
+.hero-aurora__core {
+  background:
+    radial-gradient(19% 11% at 44% 50%, rgba(122, 200, 244, 1) 0%, rgba(58, 148, 204, 0.75) 42%, transparent 78%),
+    radial-gradient(17% 10% at 58% 50%, rgba(104, 186, 236, 1) 0%, rgba(48, 132, 186, 0.7) 44%, transparent 80%),
+    radial-gradient(38% 22% at 50% 50%, rgba(38, 122, 176, 0.9) 0%, rgba(23, 74, 106, 0.55) 54%, transparent 86%);
+  animation: aurora-breathe 29s ease-in-out infinite;
+}
+
+.hero-aurora__halo {
+  background: radial-gradient(
+    56% 32% at 50% 50%,
+    rgba(23, 74, 106, 0.55) 0%,
+    rgba(14, 46, 68, 0.28) 52%,
+    transparent 82%
+  );
+  animation: aurora-swell 37s ease-in-out infinite;
+}
+
+.hero-aurora__drift {
+  background: radial-gradient(
+    22% 13% at 52% 49%,
+    rgba(44, 128, 180, 0.4) 0%,
+    transparent 76%
+  );
+  animation: aurora-drift 43s ease-in-out infinite;
+}
+
+@keyframes aurora-breathe {
+  0%, 100% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.9; }
+  50%      { transform: scale(1.06) translate3d(-1.2%, 0.6%, 0); opacity: 1; }
+}
+
+@keyframes aurora-swell {
+  0%, 100% { transform: scale(1.02) translate3d(0, 0, 0); opacity: 0.75; }
+  50%      { transform: scale(1.1) translate3d(1.4%, -0.8%, 0); opacity: 0.95; }
+}
+
+@keyframes aurora-drift {
+  0%, 100% { transform: translate3d(-1.5%, 0, 0); opacity: 0.6; }
+  50%      { transform: translate3d(1.5%, 1%, 0); opacity: 0.85; }
+}
+
+/* Someone who has asked for less motion should get the picture, not the
+   movement. The gradients stay; only the animation stops. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora > span {
+    animation: none;
+    will-change: auto;
+  }
+}
