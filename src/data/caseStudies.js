@@ -1,11 +1,145 @@
 /**
  * Long-form write-ups, one per hard decision.
  *
- * Every claim here is traceable to the Atlas repository — the measured scores
- * and the reasoning come from commit f2e961c, "Stop enforcing the JSON schema
- * at the decoder — it was fabricating zero scores". Nothing is illustrative.
+ * Every claim is traceable to a commit or to shipped code — the Atlas pieces
+ * to commits f2e961c and 3df3201, the CloudWatch one to its auth commit trail
+ * and to client/next.config.ts as it stands. Nothing here is illustrative, and
+ * nothing is written that the repository cannot back up.
+ *
+ * Which is also why there are three and not seven: the other projects have no
+ * decision record to draw on. A case study invented to fill a slot is worse
+ * than an empty slot, because someone will ask about it.
  */
 export const CASE_STUDIES = {
+  "atlas-false-failures": {
+    project: "Atlas",
+    projectId: "atlas",
+    accent: "45,212,191",
+    title: "470 students were told they failed a run that never happened",
+    dek: "An absent record is not a failure record — and what a timed-out read actually tells you.",
+    date: "July 2026",
+    readingTime: "5 min",
+    tags: ["Failure modes", "Fail closed", "Data integrity"],
+
+    sections: [
+      {
+        heading: "What staff downloaded",
+        body: [
+          "Atlas exports a spreadsheet of results for each batch. The export had a branch for jobs that had exhausted their retries, which wrote a failure notice into the mark column.",
+          "That branch never checked the job's status. It fired for any job with no result row attached — and a job sitting untouched in the queue has no result row either. Production held 697 jobs in that state and exactly zero that had genuinely failed, so every failure notice the export was capable of producing was false.",
+          "Downloading the paused Module 4 batch gave staff 964 rows. 470 of them read \"EVALUATION FAILED: unknown error\" beside a blank mark. Forwarded to a student, that is the worst thing this system can say — and it would have been said about work nobody had looked at yet.",
+        ],
+        compare: {
+          caption: "The same batch, exported before and after",
+          rows: [
+            { label: "Before", score: "470 rows", quote: "EVALUATION FAILED: unknown error", bad: true },
+            { label: "After", score: "470 rows", quote: "NOT GRADED YET" },
+          ],
+        },
+        after: [
+          "The row count is unchanged. The difference is entirely in what the file claims about work that had not been done. Only a job that actually reached a failed status gets failure text now.",
+        ],
+      },
+      {
+        heading: "The second bug was the interesting one",
+        body: [
+          "Adding a deadline to the queue read made an existing catch block reachable for the first time. Nobody had ever seen what it did, and what it did was carry on and enqueue the batch anyway — on the reasoning that a duplicate submission beats a batch that stalls forever.",
+          "That has the risk backwards. A read that timed out tells you nothing about whether messages exist. And the likeliest cause of a slow read — a broker that is alive but under load — is exactly the case where the messages do exist and are about to be graded.",
+          "So enqueueing buys no progress at all. It re-submits work already queued, and on a 20,000-submission cycle it doubles the GPU bill for it.",
+        ],
+        list: [
+          "It now refuses, with a message telling the user to press Start again.",
+          "The jobs stay queued in Mongo, which is the durable record either way — Redis was never the source of truth.",
+          "The read gets a 20-second deadline rather than the API's 5, because it fetches every message hash in the queue and 5 seconds was never enough for a real batch.",
+        ],
+      },
+      {
+        heading: "What I take from it",
+        body: [
+          "Both bugs are the same shape: a piece of code treating \"I do not have this\" as \"this went wrong\". The export could not tell an ungraded job from a failed one. The catch block could not tell a timed-out read from an empty queue. In both cases the system answered confidently, and in both cases the confident answer was the damaging one.",
+          "The rule I now apply to anything that reports on work: state absence as absence. \"Not graded yet\" and \"failed\" are different facts about a student, and a system that cannot tell them apart should say so rather than guess — because the guess gets forwarded, and by then it has your name on it.",
+        ],
+      },
+    ],
+
+    footnote:
+      "Job counts, row counts and reasoning are from commit 3df3201 in the Atlas repository. The repo is private — internal tooling built at Masai — so the figures are quoted rather than linked.",
+  },
+
+  "cloudwatch-cookie-origin": {
+    project: "CloudWatch",
+    projectId: "cloudwatch",
+    accent: "99,102,241",
+    title: "The login that worked everywhere except production",
+    dek: "Forty commits chasing a cross-subdomain auth cookie, and the reason none of them could have worked.",
+    date: "February 2026",
+    readingTime: "5 min",
+    tags: ["Auth", "Cookies", "Serverless deploys"],
+
+    sections: [
+      {
+        heading: "The setup that broke",
+        body: [
+          "CloudWatch signs users in with a JWT in an httpOnly cookie. `requireAuth` reads it on every protected route, verifies it, loads the user and attaches them to the request. Standard, and it worked perfectly in development, where the Next.js client and the Express API share an origin.",
+          "In production they did not. The client was one Vercel deployment and the API was another, so the browser was being asked to send a cookie to a different origin from the one that set it — and it declined, every time. Login appeared to succeed and the next request was anonymous.",
+        ],
+      },
+      {
+        heading: "What I tried",
+        body: [
+          "The commit history is an honest record of working the problem from the cookie end, because that is where the symptom was:",
+        ],
+        list: [
+          "`sameSite: none` with `secure: true`, so the cookie would be sent cross-site at all.",
+          "Setting the cookie's `domain` to `.vercel.app`, so both deployments would fall under it.",
+          "Then a specific domain, then no domain, then the custom domain once there was one.",
+          "`VERCEL_ENV` instead of `NODE_ENV` to detect production, after finding the environment check was wrong.",
+          "`Max-Age` in seconds rather than milliseconds — a real bug, found on the way, that was expiring the cookie instantly.",
+          "CORS widened to allow every Vercel subdomain dynamically, then both HTTP and HTTPS origins.",
+          "Eventually, bypassing Express routing entirely, because by then it was unclear which layer was even at fault.",
+        ],
+        after: [
+          "Several of those were genuine bugs and worth fixing. None of them was the problem.",
+        ],
+      },
+      {
+        heading: "Why the domain attempt could never work",
+        body: [
+          "`.vercel.app` is on the Public Suffix List — the same registry that stops a site setting a cookie on `.co.uk` or `.com`. Browsers refuse to set a cookie scoped to a public suffix, because if they did not, any project on the platform could write a cookie every other project would send.",
+          "So the most promising-looking fix in that list was not merely wrong, it was unreachable. The browser was enforcing a rule that exists specifically to prevent what I was attempting, and it was right to.",
+          "That is the part worth remembering: I spent a long time tuning the parameters of an approach that had no working configuration. No amount of care with `sameSite` and `secure` gets you a cookie shared across two `.vercel.app` deployments.",
+        ],
+      },
+      {
+        heading: "The fix was to stop crossing the boundary",
+        body: [
+          "The cookie was never the problem. Two origins was the problem, and the cookie was where it showed up.",
+          "`client/next.config.ts` now rewrites `/api/:path*` to the backend deployment. The browser only ever talks to the frontend origin; Next.js forwards the request server-side, where same-origin rules do not apply. The auth cookie became first-party, and every piece of cross-site cookie configuration became unnecessary.",
+        ],
+        compare: {
+          caption: "Where the request goes",
+          rows: [
+            { label: "Before", score: "2 origins", quote: "browser -> api.example -> cookie refused", bad: true },
+            { label: "After", score: "1 origin", quote: "browser -> /api -> proxied server-side" },
+          ],
+        },
+        after: [
+          "The `sameSite` and `secure` settings stayed, because they are correct on their own merits. They just stopped being load-bearing.",
+        ],
+      },
+      {
+        heading: "What I take from it",
+        body: [
+          "When a fix has many knobs and none of them help, that is evidence about the approach rather than about the knobs. I read the repeated failures as \"not tuned correctly yet\" for far longer than I should have, when they were saying \"this cannot work\".",
+          "The question I would ask an hour in now, instead of a week in: is there any configuration of this approach that succeeds? For cookies across two public-suffix subdomains the answer was no, and it was knowable before the first attempt.",
+        ],
+      },
+    ],
+
+    footnote:
+      "Reconstructed from the auth commit trail in bhupesh-roushan/cloudwatch-digital and from client/next.config.ts as it currently stands. The repository is public — the rewrite is at the bottom of that file.",
+  },
+
   "atlas-constrained-decoding": {
     project: "Atlas",
     projectId: "atlas",
