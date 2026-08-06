@@ -5,6 +5,7 @@ import { Modal } from "../ui/Modal";
 import { journey } from "../../data/portfolio";
 import { LuArrowUpRight } from "react-icons/lu";
 import { skillGroups } from "../../data/skills";
+import { JdMatcher } from "../JdMatcher";
 
 /** Inclusive month span, the way LinkedIn counts it: Apr 2025–May 2026 = 1y 2mo. */
 function durationLabel(start, end) {
@@ -128,6 +129,13 @@ export const About = () => {
               </BentoCard>
             ))}
           </BentoGrid>
+
+          {/* Directly under the skills it reads from. At the foot of Contact it
+              was a tool with its own subject matter sitting three screens away
+              from the list it matches against. */}
+          <div className="mt-6">
+            <JdMatcher />
+          </div>
         </div>
       </RevealOnScroll>
 
