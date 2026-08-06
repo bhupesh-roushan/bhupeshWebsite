@@ -36,6 +36,81 @@ const clip = (value, max = 300) =>
 
 const firstIp = (header) => clip(String(header || "").split(",")[0].trim(), 60);
 
+/**
+ * Vercel's own geo headers are country-only for a lot of IPs — the first alert
+ * that arrived said nothing but "IN". This fills in city and, more usefully,
+ * the network operator: on a corporate connection that is often the company
+ * name, which is the closest thing to "who" that exists here.
+ *
+ * Best-effort by design. It runs on the alert path, so a slow or dead lookup
+ * service must cost the visitor nothing and must never lose the email.
+ */
+async function lookupIp(ip) {
+  if (!ip || ip.startsWith("127.") || ip.startsWith("::")) return null;
+  try {
+    const r = await fetch(`https://ipwho.is/${encodeURIComponent(ip)}`, {
+      signal: AbortSignal.timeout(2000),
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d?.success ? d : null;
+  } catch {
+    return null; // timeout, rate limit, outage — the email still goes.
+  }
+}
+
+/**
+ * A raw user-agent is 120 characters of boilerplate wrapped around three facts.
+ * Order matters: Edge and Opera both claim to be Chrome, and every iPad claims
+ * to be a Mac, so the more specific test has to run first.
+ */
+function readAgent(ua) {
+  const has = (s) => ua.toLowerCase().includes(s);
+
+  const browser =
+    /edg[ea]?\//i.test(ua) ? "Edge"
+    : /opr\/|opera/i.test(ua) ? "Opera"
+    : /samsungbrowser/i.test(ua) ? "Samsung Internet"
+    : /firefox\//i.test(ua) ? "Firefox"
+    : /chrome\//i.test(ua) ? "Chrome"
+    : /safari\//i.test(ua) ? "Safari"
+    : "browser";
+
+  const version = ua.match(
+    /(?:edg[ea]?|opr|firefox|chrome|version)\/(\d+)/i
+  )?.[1];
+
+  const os =
+    has("iphone") ? "iPhone"
+    : has("ipad") ? "iPad"
+    : /android/i.test(ua) ? `Android${ua.match(/android (\d+)/i)?.[1] ? " " + ua.match(/android (\d+)/i)[1] : ""}`
+    : has("mac os x") ? "macOS"
+    : has("windows") ? "Windows"
+    : has("cros") ? "ChromeOS"
+    : has("linux") ? "Linux"
+    : "unknown OS";
+
+  const kind =
+    has("iphone") || (/android/i.test(ua) && has("mobile")) ? "Phone"
+    : has("ipad") || (/android/i.test(ua) && !has("mobile")) ? "Tablet"
+    : "Desktop";
+
+  return {
+    label: `${browser}${version ? " " + version : ""} on ${os}`,
+    kind,
+  };
+}
+
+/** "linkedin.com" reads better in a subject line than the full tracking URL. */
+function readReferrer(raw) {
+  if (!raw || raw === "direct") return "direct";
+  try {
+    return new URL(raw).hostname.replace(/^www\./, "");
+  } catch {
+    return clip(raw, 80);
+  }
+}
+
 export default async function handler(req, res) {
   // Always cheap to reject: this is fired from a page load, and must never
   // become something a visitor can feel.
@@ -71,31 +146,65 @@ export default async function handler(req, res) {
   }
 
   const body = typeof req.body === "object" && req.body ? req.body : {};
+  const ip = firstIp(req.headers["x-forwarded-for"]);
 
-  // Vercel resolves these at the edge from the connecting IP. They are city
-  // level at best, and often only country.
-  const city = clip(req.headers["x-vercel-ip-city"], 80);
-  const region = clip(req.headers["x-vercel-ip-country-region"], 80);
-  const country = clip(req.headers["x-vercel-ip-country"], 8);
+  const geo = await lookupIp(ip);
+
+  // Vercel's headers as the fallback: they always exist, but are often
+  // country-only, which is how the first alert managed to say just "IN".
   const place =
-    [decodeURIComponent(city || ""), region, country].filter(Boolean).join(", ") ||
-    "unknown";
+    [
+      geo?.city || decodeURIComponent(clip(req.headers["x-vercel-ip-city"], 80) || ""),
+      geo?.region || clip(req.headers["x-vercel-ip-country-region"], 80),
+      geo?.country || clip(req.headers["x-vercel-ip-country"], 8),
+    ]
+      .filter(Boolean)
+      .join(", ") || "unknown";
 
-  const referrer = clip(body.referrer) || clip(req.headers.referer) || "direct";
+  const agent = readAgent(ua);
+  const referrer = readReferrer(
+    clip(body.referrer) || clip(req.headers.referer) || "direct"
+  );
 
+  // Who runs the connection. A home visitor gives you their ISP, which tells
+  // you little; an office one often gives the employer's name, which tells you
+  // a great deal when you're job hunting.
+  const org = clip(geo?.connection?.org || geo?.connection?.isp || "", 120);
+  const asn = geo?.connection?.asn ? `AS${geo.connection.asn}` : "";
+  const network = [org, asn].filter(Boolean).join(" · ") || "unknown";
+
+  // Worth knowing before you read anything into the rest: a datacentre IP is
+  // a scraper or someone behind a VPN, not a person in that city.
+  const flags = [
+    geo?.type === "IPv6" && "IPv6",
+    /vpn|proxy|hosting|cloud|amazon|google llc|microsoft|digitalocean|linode|ovh/i.test(org) &&
+      "datacentre or VPN — treat the location as unreliable",
+  ].filter(Boolean);
+
+  const when = new Date();
   const params = {
     // Named so an EmailJS template can drop them in directly.
     place,
-    ip: firstIp(req.headers["x-forwarded-for"]),
+    network,
+    ip,
     referrer,
     page: clip(body.page, 200) || "/",
-    device: ua,
+    device: `${agent.label} · ${agent.kind}`,
+    agent: ua,
     screen: clip(body.screen, 40),
     language: clip(body.language, 40),
     timezone: clip(body.timezone, 60),
-    time: new Date().toISOString(),
-    // One line, for a phone notification where only the subject is visible.
-    summary: `Visitor from ${place} via ${referrer}`,
+    // Their local clock, not UTC — an ISO string in another timezone is a
+    // small subtraction you shouldn't have to do at a glance.
+    time: when.toLocaleString("en-GB", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "medium",
+      timeStyle: "short",
+    }) + " IST",
+    notes: flags.join(" · ") || "—",
+    // The subject line. On a phone this is often all you see, so it carries
+    // the three facts that decide whether the rest is worth opening.
+    summary: `${place} · ${referrer === "direct" ? "direct" : "via " + referrer} · ${clip(body.page, 60) || "/"}`,
   };
 
   try {
