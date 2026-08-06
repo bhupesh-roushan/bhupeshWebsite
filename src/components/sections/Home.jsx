@@ -50,9 +50,9 @@ export const Home = () => {
     return () => clearInterval(t);
   }, []);
 
-  // Gate the 14MB hero video: desktop only, and only once the page has
-  // painted, so it never competes with content for bandwidth. Phones and
-  // reduced-motion visitors never request it at all.
+  // Gate the 3.8MB hero video: desktop only, and only once the page has
+  // painted, so it never competes with content for bandwidth. Phones,
+  // data-saver and reduced-motion visitors never request it at all.
   const [showVideo, setShowVideo] = useState(false);
   useEffect(() => {
     if (reduceMotion) return;
@@ -71,10 +71,10 @@ export const Home = () => {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:py-28"
     >
-      {/* Background video. It's 14MB, which is a brutal thing to push down a
-          phone connection for decoration, so it's only mounted on wider
-          viewports and after first paint — the gradients below stand in for it
-          everywhere else. playsInline is required or iOS refuses to autoplay. */}
+      {/* Background video — 3.8MB, still a lot to push down a phone connection
+          for decoration, so it's only mounted on wider viewports and after
+          first paint. The gradients below stand in for it everywhere else.
+          playsInline is required or iOS refuses to autoplay. */}
       {showVideo && (
         <video
           autoPlay

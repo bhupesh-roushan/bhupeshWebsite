@@ -92,6 +92,61 @@ for (const id of entries) {
   written += 1;
 }
 
+/**
+ * Vercel serves 404.html for anything that matches no file. Without one it
+ * answers with a 79-byte unstyled default — correct status, but a dead end
+ * with no branding and no way back into the site.
+ *
+ * Deliberately standalone: no bundle, no fonts, no requests. A 404 is the one
+ * page that should never wait on a 500KB download to tell you it isn't there.
+ * `noindex` because a 404 body must never be indexed as content.
+ */
+const notFound = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, follow" />
+    <title>Page not found | Bhupesh Roushan</title>
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <style>
+      *{ box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100vh; display: grid; place-items: center;
+        background: #0a0a0a; color: #fff; padding: 24px;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      main { max-width: 32rem; text-align: center; }
+      .code { font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: #6366f1; margin: 0 0 .75rem; }
+      h1 { font-size: clamp(1.5rem, 5vw, 2rem); margin: 0 0 .75rem; }
+      p { color: #9ca3af; line-height: 1.6; margin: 0 0 1.75rem; font-size: .95rem; }
+      .row { display: flex; gap: .625rem; flex-wrap: wrap; justify-content: center; }
+      a {
+        display: inline-flex; align-items: center; height: 2.5rem; padding: 0 1rem;
+        border-radius: .5rem; border: 1px solid rgba(255,255,255,.15);
+        background: rgba(255,255,255,.05); color: #e5e7eb;
+        font-size: .875rem; font-weight: 600; text-decoration: none;
+      }
+      a.primary { border-color: rgba(99,102,241,.4); background: rgba(99,102,241,.18); color: #fff; }
+      a:hover { border-color: rgba(255,255,255,.3); color: #fff; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="code">Error 404</p>
+      <h1>That page doesn&rsquo;t exist</h1>
+      <p>The link may be out of date, or the address mistyped. Everything lives on one page &mdash; the sections below will get you there.</p>
+      <div class="row">
+        <a class="primary" href="/">Back to the site</a>
+        <a href="/#projects">Projects</a>
+        <a href="/#contact">Contact</a>
+      </div>
+    </main>
+  </body>
+</html>
+`;
+writeFileSync(resolve(root, "dist/404.html"), notFound);
+
 // Keep the sitemap in step — these are the URLs worth indexing.
 const urls = [
   { loc: `${SITE}/`, priority: "1.0" },
@@ -109,4 +164,6 @@ ${urls
 `;
 writeFileSync(resolve(root, "dist/sitemap.xml"), sitemap);
 
-console.log(`prerendered ${written} project pages + sitemap (${urls.length} urls)`);
+console.log(
+  `prerendered ${written} project pages + 404 + sitemap (${urls.length} urls)`
+);
