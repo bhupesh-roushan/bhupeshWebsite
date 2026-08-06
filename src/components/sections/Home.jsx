@@ -56,26 +56,21 @@ export const Home = () => {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:py-28"
     >
-      {/* What the 3.9MB video was: a centred elliptical glow with a twin core,
-          black through #020f18 to a #174a6a teal, drifting so slowly that two
-          seconds of footage differed by less than one part in 255. All of that
-          is three radial gradients and a long keyframe — so it now costs about
-          a kilobyte of CSS, paints on the first frame instead of after a
-          multi-megabyte download, and looks the same on a phone as on fibre. */}
-      <div className="hero-aurora absolute inset-0 z-0" aria-hidden="true">
-        <span className="hero-aurora__core" />
-        <span className="hero-aurora__halo" />
-        <span className="hero-aurora__drift" />
+      {/* Aceternity's Aurora Background. It replaced a 3.9MB looping video —
+          the page now paints this on the first frame instead of after a
+          multi-megabyte download, and a phone gets the same backdrop as
+          fibre rather than a flat gradient. */}
+      <div className="aurora z-0" aria-hidden="true">
+        <div className="aurora__layer" />
       </div>
 
-      {/* The flat 35% black scrim is gone. It existed to tame bright footage
-          we no longer load, and over a backdrop that is already dark by
-          construction it just crushed the colour out — measured against the
-          original video, the teal fell from 20% of the frame to 11%.
-          The vertical gradient stays: it darkens the top and bottom bands
-          where the headline and stats sit, which is the part that was ever
-          about legibility. */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/70 via-transparent to-[#0a0a0a]" />
+      {/* Only 40% at the top now. The aurora's mask puts its brightest bands
+          along the top edge, which is exactly where this gradient was darkest
+          — the two were cancelling each other out. The headline sits in the
+          middle third, where this is transparent anyway, so nothing is lost
+          for legibility; the bottom still fades to the page colour so the
+          section joins the next one cleanly. */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 via-transparent to-[#0a0a0a]" />
       <div
         className="absolute inset-0 z-0 opacity-[0.18]"
         style={{

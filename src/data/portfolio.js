@@ -216,6 +216,12 @@ export const projects = [
       "Added a human review queue for flagged grades with keyboard-driven approve and override, accuracy calibration against a human-scored golden set, cohort-wide common-mistake analysis and copy detection.",
       "Ingested batches straight from Google Sheets and wrote scores back in the previous grader's column format with original row numbering preserved, so the output stayed a drop-in replacement for the process it replaced.",
     ],
+    caseStudy: {
+      id: "atlas-constrained-decoding",
+      label: "Case study: the safety net was breaking the grades",
+      blurb:
+        "Constrained decoding guaranteed valid JSON and silently destroyed the grading. What it measured, and why turning it off was safe.",
+    },
     metricsNote:
       "219 commits between 16 July and 3 August 2026. Figures above describe the system's design rather than measured outcomes — see the notes on each pull request for what was verified.",
   },

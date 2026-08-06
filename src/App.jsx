@@ -14,6 +14,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Routes, Route } from "react-router-dom";
 import { useVisitAlert } from "./hooks/useVisitAlert";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { CaseStudy } from "./components/sections/CaseStudy";
 
 const SECTIONS = [
   { name: "Home", Component: Home },
@@ -48,6 +49,7 @@ function Page() {
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   useVisitAlert();
 
   return (
@@ -61,6 +63,20 @@ function App() {
         <Routes>
           <Route path="/" element={<Page />} />
           <Route path="/projects/:projectId" element={<Page />} />
+          {/* Its own page rather than a section: long-form, worth a URL, and
+              the thing most likely to be sent to someone else. */}
+          <Route
+            path="/writing/:studyId"
+            element={
+              <>
+                <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+                <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+                <ErrorBoundary name="CaseStudy">
+                  <CaseStudy />
+                </ErrorBoundary>
+              </>
+            }
+          />
           {/* Anything else still gets the portfolio rather than a blank screen */}
           <Route path="*" element={<Page />} />
         </Routes>

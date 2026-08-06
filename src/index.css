@@ -127,79 +127,76 @@ body {
   }
 }
 
-/* ── Hero backdrop ──────────────────────────────────────────────────────
-   Replaces a 3.9MB looping video with the same picture in CSS.
+/* ── Hero backdrop: Aceternity's Aurora Background ──────────────────────
+   Their technique, adapted to this site: two repeating linear gradients
+   stacked, blurred, with a copy on ::after that slides its background-position
+   from 50% to 350% over 60s under mix-blend-mode: difference. The difference
+   blend against the slower base layer is what makes the bands shimmer rather
+   than merely slide.
 
-   Sampled from the footage it stands in for: black at 40% of the frame,
-   #020f18 at 24%, and a #174a6a teal at 19%, arranged as a centred ellipse
-   with a brighter twin core. The motion was measured too — two seconds of
-   video differed by a mean of 0.85/255, so these keyframes are deliberately
-   slow and low-amplitude. Anything faster would read as a different clip.
+   Adapted rather than copied wholesale: the original carries a light theme
+   behind `invert dark:invert-0`, and this site has no light theme, so the
+   inversion is dropped and the palette is the site's own indigo-to-sky run.
 
-   Three layers on prime-ish durations (29s, 37s, 43s) so the combination
-   takes minutes to repeat and never looks like a short loop.
+   One thing worth knowing about `background-attachment: fixed` — it is what
+   couples the animation to the viewport, and it is also expensive to composite
+   on iOS. The mask keeps the painted area small enough for that to be fine.
    ---------------------------------------------------------------------- */
-.hero-aurora {
+.aurora {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: #000;
 }
 
-.hero-aurora > span {
+.aurora__layer {
+  --gradient: repeating-linear-gradient(
+    100deg,
+    #000 0%,
+    #000 7%,
+    transparent 10%,
+    transparent 12%,
+    #000 16%
+  );
+  --aurora: repeating-linear-gradient(
+    100deg,
+    #4f46e5 10%,
+    #818cf8 15%,
+    #7dd3fc 20%,
+    #c7d2fe 25%,
+    #38bdf8 30%
+  );
+
   position: absolute;
-  inset: -20%;
-  display: block;
-  /* Composited on the GPU: without this the browser repaints a full-screen
-     gradient every frame, which is exactly the cost we came here to avoid. */
-  will-change: transform, opacity;
+  inset: -10px;
+  pointer-events: none;
+  background-image: var(--gradient), var(--aurora);
+  background-size: 300%, 200%;
+  background-position: 50% 50%, 50% 50%;
+  filter: blur(10px);
+  opacity: 0.75;
+  will-change: transform;
+  -webkit-mask-image: radial-gradient(ellipse at 55% 0%, #000 18%, transparent 80%);
+  mask-image: radial-gradient(ellipse at 55% 0%, #000 18%, transparent 80%);
 }
 
-.hero-aurora__core {
-  background:
-    radial-gradient(19% 11% at 44% 50%, rgba(122, 200, 244, 1) 0%, rgba(58, 148, 204, 0.75) 42%, transparent 78%),
-    radial-gradient(17% 10% at 58% 50%, rgba(104, 186, 236, 1) 0%, rgba(48, 132, 186, 0.7) 44%, transparent 80%),
-    radial-gradient(38% 22% at 50% 50%, rgba(38, 122, 176, 0.9) 0%, rgba(23, 74, 106, 0.55) 54%, transparent 86%);
-  animation: aurora-breathe 29s ease-in-out infinite;
+.aurora__layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient), var(--aurora);
+  background-size: 200%, 100%;
+  background-attachment: fixed;
+  mix-blend-mode: difference;
+  animation: aurora 60s linear infinite;
 }
 
-.hero-aurora__halo {
-  background: radial-gradient(
-    56% 32% at 50% 50%,
-    rgba(23, 74, 106, 0.55) 0%,
-    rgba(14, 46, 68, 0.28) 52%,
-    transparent 82%
-  );
-  animation: aurora-swell 37s ease-in-out infinite;
+@keyframes aurora {
+  from { background-position: 50% 50%, 50% 50%; }
+  to   { background-position: 350% 50%, 350% 50%; }
 }
 
-.hero-aurora__drift {
-  background: radial-gradient(
-    22% 13% at 52% 49%,
-    rgba(44, 128, 180, 0.4) 0%,
-    transparent 76%
-  );
-  animation: aurora-drift 43s ease-in-out infinite;
-}
-
-@keyframes aurora-breathe {
-  0%, 100% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.9; }
-  50%      { transform: scale(1.06) translate3d(-1.2%, 0.6%, 0); opacity: 1; }
-}
-
-@keyframes aurora-swell {
-  0%, 100% { transform: scale(1.02) translate3d(0, 0, 0); opacity: 0.75; }
-  50%      { transform: scale(1.1) translate3d(1.4%, -0.8%, 0); opacity: 0.95; }
-}
-
-@keyframes aurora-drift {
-  0%, 100% { transform: translate3d(-1.5%, 0, 0); opacity: 0.6; }
-  50%      { transform: translate3d(1.5%, 1%, 0); opacity: 0.85; }
-}
-
-/* Someone who has asked for less motion should get the picture, not the
-   movement. The gradients stay; only the animation stops. */
+/* The bands stay; only the travel stops. */
 @media (prefers-reduced-motion: reduce) {
-  .hero-aurora > span {
-    animation: none;
-    will-change: auto;
-  }
+  .aurora__layer::after { animation: none; }
 }

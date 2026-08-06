@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { track } from "@vercel/analytics";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
@@ -13,6 +13,7 @@ import {
   LuNetwork,
   LuLock,
   LuBuilding2,
+  LuBookOpen,
 } from "react-icons/lu";
 import { DIAGRAMS } from "../../data/diagrams";
 
@@ -277,6 +278,27 @@ export const Projects = () => {
                   of alignment and broke spacing whenever they wrapped. Both
                   buttons share a height and a border width so they match — the
                   accent only changes colour, never the box. */}
+              {/* The write-up, where there is one. Boxed like the code links
+                  because it serves the same purpose: proof you can go and
+                  read rather than a claim you have to take. */}
+              {active.caseStudy && (
+                <Link
+                  to={`/writing/${active.caseStudy.id}`}
+                  className="mt-6 flex items-start gap-3 rounded-xl border p-4 transition-colors hover:bg-white/[0.04]"
+                  style={{ borderColor: `rgba(${active.accent},0.3)`, backgroundColor: `rgba(${active.accent},0.06)` }}
+                >
+                  <LuBookOpen className="mt-0.5 h-4 w-4 shrink-0" style={{ color: `rgb(${active.accent})` }} />
+                  <span>
+                    <span className="block text-sm font-semibold text-white">
+                      {active.caseStudy.label}
+                    </span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-gray-400">
+                      {active.caseStudy.blurb}
+                    </span>
+                  </span>
+                </Link>
+              )}
+
               {/* Says why there is nothing to click, instead of leaving a gap
                   that reads as an omission. */}
               {active.access && (
