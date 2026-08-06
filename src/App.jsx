@@ -12,6 +12,7 @@ import { Contact } from "./components/sections/Contact";
 import { ToastContainer } from "react-toastify";
 import { Analytics } from "@vercel/analytics/react";
 import { Routes, Route } from "react-router-dom";
+import { useVisitAlert } from "./hooks/useVisitAlert";
 
 /**
  * One page at every route. /projects/:projectId renders exactly the same
@@ -36,6 +37,7 @@ function Page() {
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  useVisitAlert();
 
   return (
     <>
