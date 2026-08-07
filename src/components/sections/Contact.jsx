@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { HiringFacts } from "../HiringFacts";
+import { logVisitEvent } from "../../lib/visitLog";
 import { MAIL_SUBJECT } from "../../data/hiring";
 import { toast } from "react-toastify";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
@@ -84,6 +85,7 @@ export const Contact = () => {
         import.meta.env.VITE_PUBLIC_KEY
       );
       toast.success("Message Sent Successfully!");
+      logVisitEvent("contact_sent");
       setFormData({
         name: "",
         email: "",
@@ -365,9 +367,10 @@ export const Contact = () => {
               size already gives it less weight than the copyright line. */}
           <p className="text-center text-[11px] leading-relaxed text-gray-400 sm:text-left">
             This site records each visit — approximate location from your IP,
-            your browser and the link you arrived from. No cookies, no
-            cross-site tracking, and nothing is sold or shared. Only the contact
-            form above sends me anything you write.
+            your browser, the link you arrived from, and which pages and
+            projects you opened while you were here. No cookies, no cross-site
+            tracking, nothing sold or shared, and none of it identifies you.
+            Only the contact form above sends me anything you write.
           </p>
         </div>
       </footer>

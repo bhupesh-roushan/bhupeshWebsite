@@ -1,5 +1,6 @@
 import { hiring } from "../data/hiring";
 import { track } from "@vercel/analytics";
+import { logVisitEvent } from "../lib/visitLog";
 import { LuCalendarCheck, LuFileText, LuArrowUpRight } from "react-icons/lu";
 
 /**
@@ -53,7 +54,7 @@ export const HiringFacts = () => {
       <div className="mt-4 flex flex-wrap gap-2">
         <a
           href="/Bhupesh-Roushan-Resume.pdf"
-          onClick={() => track("resume_download", { format: "pdf" })}
+          onClick={() => { track("resume_download", { format: "pdf" }); logVisitEvent("resume_download", "PDF"); }}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-[11px] font-medium text-gray-300 transition-colors hover:border-white/30 hover:text-white"
@@ -65,7 +66,7 @@ export const HiringFacts = () => {
             PDF layouts, and a .txt always parses. */}
         <a
           href="/resume.txt"
-          onClick={() => track("resume_download", { format: "txt" })}
+          onClick={() => { track("resume_download", { format: "txt" }); logVisitEvent("resume_download", "plain text"); }}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-[11px] font-medium text-gray-300 transition-colors hover:border-white/30 hover:text-white"
@@ -75,7 +76,7 @@ export const HiringFacts = () => {
         {hiring.bookingUrl && (
           <a
             href={hiring.bookingUrl}
-            onClick={() => track("booking_click")}
+            onClick={() => { track("booking_click"); logVisitEvent("booking_click"); }}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-500/40 bg-indigo-500/15 px-3 py-2 text-[11px] font-semibold text-white transition-colors hover:bg-indigo-500/25"

@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { track } from "@vercel/analytics";
+import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
@@ -37,6 +38,8 @@ export const Projects = () => {
   // so this counts events, not people.
   const open = (id) => {
     track("project_open", { project: id });
+    logVisitEvent("project_open", id);
+    logVisitPath(`/projects/${id}`);
     navigate(`/projects/${id}`);
   };
   const close = () => navigate("/", { replace: false });
@@ -287,7 +290,10 @@ export const Projects = () => {
                     <Link
                       key={cs.id}
                       to={`/writing/${cs.id}`}
-                      onClick={() => track("case_study_open", { study: cs.id })}
+                      onClick={() => {
+                        track("case_study_open", { study: cs.id });
+                        logVisitEvent("case_study_open", cs.id);
+                      }}
                       className="flex items-start gap-3 rounded-xl border p-4 transition-colors hover:bg-white/[0.06]"
                       style={{
                         borderColor: `rgba(${active.accent},0.3)`,
