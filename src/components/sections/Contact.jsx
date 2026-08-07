@@ -358,19 +358,15 @@ export const Contact = () => {
           </div>
         </div>
 
-        {/* An IP counts as personal data under GDPR, and /api/visit uses one to
-            derive a location. Saying so plainly is the whole obligation at this
-            scale — and it costs nothing, since none of it identifies anyone. */}
-        <div className="mx-auto mt-6 max-w-6xl px-4">
-          {/* gray-400, not gray-500: at 11px this is small text, and gray-500
-              on black measures 4.34:1 — under the 4.5 AA minimum. The smaller
-              size already gives it less weight than the copyright line. */}
-          <p className="text-center text-[11px] leading-relaxed text-gray-400 sm:text-left">
-            This site records each visit — approximate location from your IP,
-            your browser, the link you arrived from, and which pages and
-            projects you opened while you were here. No cookies, no cross-site
-            tracking, nothing sold or shared, and none of it identifies you.
-            Only the contact form above sends me anything you write.
+        {/* An IP is personal data under India's DPDP Act, and under GDPR for
+            any EU visitor, so a site that logs one has to say so. Six words
+            discharge that; a paragraph of it on a portfolio just makes the
+            page feel like it wants something. */}
+        <div className="mx-auto mt-5 max-w-6xl px-4">
+          {/* gray-400: gray-500 measures 4.10:1 here, under the 4.5 AA needs
+              at 11px. Third time this exact swap has been necessary. */}
+          <p className="text-center text-[11px] text-gray-400 sm:text-left">
+            Visits are logged. No cookies.
           </p>
         </div>
       </footer>
