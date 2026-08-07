@@ -391,3 +391,10 @@ export default async function handler(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
+
+/**
+ * Exported for the test suite. Vercel only invokes the default export, so
+ * these cost nothing at runtime and mean the parsing rules can be checked
+ * without standing up a server or mocking a request.
+ */
+export { BOT, HTTP_CLIENT, readAgent, readReferrer, describeDevice, readDuration, readActivity, windowsName };

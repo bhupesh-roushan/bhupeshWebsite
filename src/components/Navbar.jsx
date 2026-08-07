@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import icon from "../assets/logo.svg";
 import { LuLinkedin, LuMenu, LuX, LuCalendarCheck } from "react-icons/lu";
@@ -10,6 +11,9 @@ const LINKS = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
   { id: "projects", label: "Projects" },
+  // A route, not a section, so it needs a Link rather than a hash anchor —
+  // and `to` is what marks it as such below.
+  { to: "/writing", label: "Writing" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -97,24 +101,32 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
 
           {/* Links */}
           <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm md:flex">
-            {LINKS.map((link) => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                className={`relative rounded-full px-3.5 py-1.5 text-sm transition-colors lg:px-4 ${
-                  active === link.id ? "text-white" : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {active === link.id && (
-                  <motion.span
-                    layoutId="nav-active-pill"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    className="absolute inset-0 rounded-full bg-indigo-500/25 ring-1 ring-indigo-400/40"
-                  />
-                )}
-                <span className="relative">{link.label}</span>
-              </a>
-            ))}
+            {LINKS.map((link) => {
+              const cls = `relative rounded-full px-3.5 py-1.5 text-sm transition-colors lg:px-4 ${
+                active === link.id ? "text-white" : "text-gray-400 hover:text-white"
+              }`;
+              const inner = (
+                <>
+                  {active === link.id && (
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      className="absolute inset-0 rounded-full bg-indigo-500/25 ring-1 ring-indigo-400/40"
+                    />
+                  )}
+                  <span className="relative">{link.label}</span>
+                </>
+              );
+              return link.to ? (
+                <Link key={link.to} to={link.to} className={cls}>
+                  {inner}
+                </Link>
+              ) : (
+                <a key={link.id} href={`/#${link.id}`} className={cls}>
+                  {inner}
+                </a>
+              );
+            })}
           </div>
 
           {/* Actions */}
