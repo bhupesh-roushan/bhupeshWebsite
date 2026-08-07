@@ -28,7 +28,27 @@ const EMAILJS_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
  * a wide margin. Without this the mailbox fills with Googlebot and every
  * LinkedIn or WhatsApp link-preview fetch.
  */
-const BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|slackbot|discordbot|embedly|quora|pinterest|vkshare|redditbot|applebot|semrush|ahrefs|mj12|dotbot|petalbot|yandex|duckduck|baidu|sogou|exabot|ia_archiver|headlesschrome|phantomjs|puppeteer|playwright|lighthouse|curl|wget|python-requests|axios|got\/|node-fetch|monitor|uptime|pingdom|statuscake|gtmetrix|vercel-screenshot|prerender/i;
+const BOT =
+  /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegram|slackbot|discordbot|embedly|quora|pinterest|vkshare|redditbot|applebot|semrush|ahrefs|mj12|dotbot|petalbot|yandex|duckduck|baidu|sogou|exabot|ia_archiver|headlesschrome|phantomjs|puppeteer|playwright|lighthouse|curl|wget|python-requests|axios|got\/|node-fetch|monitor|uptime|pingdom|statuscake|gtmetrix|vercel-screenshot|prerender/i;
+
+/**
+ * Server-side HTTP clients. Separate from BOT because these are libraries
+ * rather than named crawlers, and they need anchoring: "java" appears inside
+ * "javascript" and would drop every real visitor, which is the kind of filter
+ * that looks like it works because the inbox goes quiet.
+ *
+ * In practice almost none of these can reach here — the alert is fired by
+ * JavaScript in the page, and an HTTP client that fetches HTML never runs it.
+ * This is the belt to that braces: it costs one regex and it means a direct
+ * POST from a script cannot mail you either.
+ */
+// `[\w.-]*` before the delimiter because several of these continue into a
+// word — PostmanRuntime/7.37 is "postman" plus "Runtime", and requiring the
+// slash immediately after the name let it through. Still anchored at the
+// start, which is what keeps it off real browsers: every one of those begins
+// "Mozilla/5.0".
+const HTTP_CLIENT =
+  /^(java|okhttp|apache-httpclient|go-http-client|python-httpx|httpx|libwww-perl|lwp|ruby|guzzle|reqwest|urllib|scrapy|winhttp|restsharp|postman|insomnia|httpie|dart|axios|undici|hackney|typhoeus|faraday)[\w.-]*[\s/]/i;
 
 /** Trim anything unbounded — a header is attacker-controlled input. */
 const clip = (value, max = 300) =>
@@ -214,7 +234,7 @@ export default async function handler(req, res) {
   }
 
   const ua = clip(req.headers["user-agent"], 400);
-  if (!ua || BOT.test(ua)) {
+  if (!ua || BOT.test(ua) || HTTP_CLIENT.test(ua)) {
     // 204, not an error: the request was handled correctly, it just wasn't a
     // person. Returning 4xx here would fill the function logs with noise.
     res.status(204).end();
