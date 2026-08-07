@@ -138,6 +138,31 @@ for (const id of studies) {
   writeFileSync(resolve(root, "dist/writing", `${id}.html`), html);
 }
 
+// The index too, so /writing is a real page rather than a 404 with a route
+// behind it. Same reason the studies get files: nothing here resolves a path
+// that has no file at it.
+{
+  const pageTitle = "Writing | Bhupesh Roushan";
+  const desc =
+    "Engineering decisions written up from the commits that record them — what was measured, and what was rejected.";
+  const url = `${SITE}/writing`;
+  let html = shell.replace(/<title>[^<]*<\/title>/, `<title>${esc(pageTitle)}</title>`);
+  for (const [re, value, what] of [
+    [metaRe("name", "description"), esc(desc), "description"],
+    [metaRe("property", "og:title"), esc(pageTitle), "og:title"],
+    [metaRe("property", "og:description"), esc(desc), "og:description"],
+    [metaRe("property", "og:url"), url, "og:url"],
+    [metaRe("name", "twitter:title"), esc(pageTitle), "twitter:title"],
+    [metaRe("name", "twitter:description"), esc(desc), "twitter:description"],
+    [/(<link rel="canonical" href=")[^"]*(")/, url, "canonical"],
+  ]) {
+    html = sub(html, re, value, what);
+  }
+  mkdirSync(resolve(root, "dist/writing"), { recursive: true });
+  writeFileSync(resolve(root, "dist/writing/index.html"), html);
+  writeFileSync(resolve(root, "dist/writing.html"), html);
+}
+
 /**
  * Vercel serves 404.html for anything that matches no file. Without one it
  * answers with a 79-byte unstyled default — correct status, but a dead end
@@ -203,6 +228,7 @@ writeFileSync(resolve(root, "dist/404.html"), notFound);
 const urls = [
   { loc: `${SITE}/`, priority: "1.0" },
   ...entries.map((id) => ({ loc: `${SITE}/projects/${id}`, priority: "0.8" })),
+  { loc: `${SITE}/writing`, priority: "0.9" },
   ...studies.map((id) => ({ loc: `${SITE}/writing/${id}`, priority: "0.9" })),
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -218,5 +244,5 @@ ${urls
 writeFileSync(resolve(root, "dist/sitemap.xml"), sitemap);
 
 console.log(
-  `prerendered ${written} project pages + ${studies.length} case ${studies.length === 1 ? "study" : "studies"} + 404 + sitemap (${urls.length} urls)`
+  `prerendered ${written} project pages + ${studies.length} case ${studies.length === 1 ? "study" : "studies"} + writing index + 404 + sitemap (${urls.length} urls)`
 );

@@ -15,6 +15,7 @@ import { Routes, Route } from "react-router-dom";
 import { useVisitAlert } from "./hooks/useVisitAlert";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { CaseStudy } from "./components/sections/CaseStudy";
+import { WritingIndex } from "./components/sections/WritingIndex";
 
 const SECTIONS = [
   { name: "Home", Component: Home },
@@ -65,6 +66,18 @@ function App() {
           <Route path="/projects/:projectId" element={<Page />} />
           {/* Its own page rather than a section: long-form, worth a URL, and
               the thing most likely to be sent to someone else. */}
+          <Route
+            path="/writing"
+            element={
+              <>
+                <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+                <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+                <ErrorBoundary name="WritingIndex">
+                  <WritingIndex />
+                </ErrorBoundary>
+              </>
+            }
+          />
           <Route
             path="/writing/:studyId"
             element={

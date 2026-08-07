@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
-import { LuArrowLeft, LuCircleAlert, LuCheck } from "react-icons/lu";
+import { LuArrowLeft, LuCircleAlert, LuCheck, LuArrowUpRight } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
 
 /**
@@ -35,11 +35,12 @@ export const CaseStudy = () => {
   }
 
   const accent = `rgb(${study.accent})`;
+  const others = Object.entries(CASE_STUDIES).filter(([id]) => id !== studyId);
 
   return (
     <article className="mx-auto max-w-3xl px-4 pb-24 pt-28 sm:pt-32">
       <Link
-        to="/projects/atlas"
+        to={`/projects/${study.projectId}`}
         className="mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
       >
         <LuArrowLeft className="h-3.5 w-3.5" />
@@ -138,6 +139,46 @@ export const CaseStudy = () => {
       <p className="mt-12 border-t border-white/10 pt-6 text-xs leading-relaxed text-gray-500">
         {study.footnote}
       </p>
+
+      {/* Somewhere to go next. Reaching the end of one of these used to be a
+          dead end — the other three existed only behind a project modal. */}
+      {others.length > 0 && (
+        <nav className="mt-14 border-t border-white/10 pt-8">
+          <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
+            More writing
+          </h2>
+          <ul className="space-y-2.5">
+            {others.map(([id, other]) => (
+              <li key={id}>
+                <Link
+                  to={`/writing/${id}`}
+                  className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors hover:border-white/25 hover:bg-white/[0.05]"
+                >
+                  <span
+                    className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: `rgb(${other.accent})` }}
+                  />
+                  <span>
+                    <span className="block text-sm font-semibold text-white">
+                      {other.title}
+                    </span>
+                    <span className="mt-0.5 block text-xs text-gray-400">
+                      {other.project} · {other.readingTime} read
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link
+            to="/writing"
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-white"
+          >
+            All writing
+            <LuArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+        </nav>
+      )}
     </article>
   );
 };

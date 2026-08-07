@@ -4,6 +4,7 @@
       "staticDistDir": "./dist",
       "url": [
         "http://localhost/index.html",
+        "http://localhost/writing/index.html",
         "http://localhost/projects/cloudwatch.html",
         "http://localhost/projects/atlas.html",
         "http://localhost/404.html",
