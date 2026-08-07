@@ -207,6 +207,40 @@ function describeDevice(ua, hint) {
   return { label: `${browser} on ${os}${model ? ` · ${model}` : ""}`, kind };
 }
 
+
+/** "4m 12s" reads faster than 252, and "8s" is its own verdict. */
+function readDuration(seconds) {
+  const n = Number(seconds) || 0;
+  if (n < 60) return `${n}s`;
+  const m = Math.floor(n / 60);
+  const r = n % 60;
+  return r ? `${m}m ${r}s` : `${m}m`;
+}
+
+const list = (v, max = 6) =>
+  Array.isArray(v) ? v.filter(Boolean).map((x) => String(x).slice(0, 40)).slice(0, max) : [];
+
+/**
+ * What they did, in the order it matters when you are skimming a notification.
+ * A contact message outranks everything; time alone is the weakest signal and
+ * goes last, because a long visit with nothing opened is usually a tab someone
+ * forgot about.
+ */
+function readActivity(body) {
+  const projects = list(body.projects);
+  const studies = list(body.studies);
+  const resume = list(body.resume, 2);
+  const parts = [];
+
+  if (body.contact) parts.push("SENT A MESSAGE");
+  if (body.booking) parts.push("opened the booking link");
+  if (resume.length) parts.push(`résumé (${resume.join(", ")})`);
+  if (studies.length) parts.push(`read ${studies.length} case ${studies.length === 1 ? "study" : "studies"}: ${studies.join(", ")}`);
+  if (projects.length) parts.push(`opened ${projects.join(", ")}`);
+
+  return { parts, projects, studies, resume };
+}
+
 export default async function handler(req, res) {
   // Always cheap to reject: this is fired from a page load, and must never
   // become something a visitor can feel.
@@ -284,13 +318,26 @@ export default async function handler(req, res) {
   ].filter(Boolean);
 
   const when = new Date();
+  const duration = readDuration(body.seconds);
+  const { parts } = readActivity(body);
+
+  // A landing tag beats a referrer when there is one: "acme-backend" says
+  // which application produced the visit, where "linkedin.com" only says the
+  // company that hosted the link.
+  const src = clip(body.src, 60);
+  const origin = src || referrer;
+
+  // Where they went, not just where they came in.
+  const path = list(body.path, 8);
+  const journey = path.length > 1 ? path.join(" -> ") : clip(body.page, 200) || "/";
+
   const params = {
     // Named so an EmailJS template can drop them in directly.
     place,
     network,
     ip,
-    referrer,
-    page: clip(body.page, 200) || "/",
+    referrer: src ? `${src} (tagged link)` : referrer,
+    page: journey,
     device: `${agent.label} · ${agent.kind}`,
     agent: ua,
     screen: clip(body.screen, 40),
@@ -298,17 +345,20 @@ export default async function handler(req, res) {
     // Asia/Calcutta is a legacy alias some browsers still report; it's the
     // same zone, and seeing the current name avoids a double-take.
     timezone: clip(body.timezone, 60).replace("Asia/Calcutta", "Asia/Kolkata"),
-    // Their local clock, not UTC — an ISO string in another timezone is a
-    // small subtraction you shouldn't have to do at a glance.
     time: when.toLocaleString("en-GB", {
       timeZone: "Asia/Kolkata",
       dateStyle: "medium",
       timeStyle: "short",
     }) + " IST",
+    duration,
+    activity: parts.length ? parts.join(" · ") : "nothing opened",
     notes: flags.join(" · ") || "—",
-    // The subject line. On a phone this is often all you see, so it carries
-    // the three facts that decide whether the rest is worth opening.
-    summary: `${place} · ${referrer === "direct" ? "direct" : "via " + referrer} · ${clip(body.page, 60) || "/"}`,
+    // The subject line. On a phone this is often all you see, so it leads with
+    // what they did and falls back to where they came from when they did
+    // nothing — which is itself the useful fact about that visit.
+    summary: parts.length
+      ? `${duration} · ${parts[0]}${parts.length > 1 ? ` +${parts.length - 1} more` : ""} · ${origin}`
+      : `${duration} · nothing opened · ${origin} · ${place}`,
   };
 
   try {

@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
 import { LuArrowLeft, LuCircleAlert, LuCheck } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
 
@@ -9,6 +11,14 @@ import { CASE_STUDIES } from "../../data/caseStudies";
 export const CaseStudy = () => {
   const { studyId } = useParams();
   const study = CASE_STUDIES[studyId];
+
+  // Landing here directly — from a shared link — never passes through the
+  // project modal, so the click handler there would miss it entirely.
+  useEffect(() => {
+    if (!study) return;
+    logVisitEvent("case_study_open", studyId);
+    logVisitPath(`/writing/${studyId}`);
+  }, [studyId, study]);
 
   if (!study) {
     return (
