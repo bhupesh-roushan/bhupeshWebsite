@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { LuArrowUpRight, LuArrowLeft } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
+import { TiltCard } from "../ui/TiltCard";
 
 /**
  * Every write-up in one place.
@@ -32,6 +33,7 @@ export const WritingIndex = () => {
       <ul className="mt-12 space-y-4">
         {studies.map(([id, study]) => (
           <li key={id}>
+            <TiltCard>
             <Link
               to={`/writing/${id}`}
               className="group block rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-colors hover:border-white/25 hover:bg-white/[0.05]"
@@ -58,6 +60,7 @@ export const WritingIndex = () => {
               </h2>
               <p className="mt-1.5 text-sm leading-relaxed text-gray-400">{study.dek}</p>
             </Link>
+            </TiltCard>
           </li>
         ))}
       </ul>

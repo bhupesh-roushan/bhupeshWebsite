@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "../../lib/utils";
+import { useTilt } from "../../hooks/useTilt";
 
 /**
  * Aceternity-style bento grid.
@@ -11,6 +12,10 @@ export const BentoGrid = ({ className, children }) => {
     <div
       className={cn(
         "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4",
+        // The shared 3D space. Perspective has to live on the parent — set on
+        // each card instead, every card gets its own vanishing point and the
+        // grid tilts like a sheet of unrelated panels rather than one surface.
+        "[perspective:1400px]",
         className
       )}
     >
@@ -25,6 +30,7 @@ export const BentoGrid = ({ className, children }) => {
  */
 export const BentoCard = ({ className, children, onClick, accent = "99,102,241" }) => {
   const reduceMotion = useReducedMotion();
+  const { ref: tiltRef, apply: tilt, reset: untilt } = useTilt({ max: 6, lift: 12 });
   const ref = useRef(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   // "active" rather than "hovered" — it's now driven by touch as well.
@@ -45,6 +51,7 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
   const handleMove = (e) => {
     if (fromTouch()) return;
     moveTo(e.clientX, e.clientY);
+    tilt(e.clientX, e.clientY);
   };
 
   const handleEnter = () => {
@@ -55,6 +62,7 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
   const endTouch = () => {
     lastTouch.current = Date.now();
     setActive(false);
+    untilt();
   };
 
   // Touch equivalents. Every effect here was hover-driven, so on a phone the
@@ -66,6 +74,7 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
     if (!t) return;
     lastTouch.current = Date.now();
     moveTo(t.clientX, t.clientY);
+    tilt(t.clientX, t.clientY);
     setActive(true);
   };
 
@@ -76,21 +85,31 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
       // Driven by state rather than whileHover, so touch raises the card too.
       animate={{ y: active && !reduceMotion ? -4 : 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      className={cn("group relative", className)}
+      className={cn("group relative [transform-style:preserve-3d]", className)}
     >
       <Tag
-        ref={ref}
+        ref={(node) => {
+          ref.current = node;
+          tiltRef.current = node;
+        }}
         onClick={onClick}
         onMouseMove={handleMove}
         onMouseEnter={handleEnter}
-        onMouseLeave={() => setActive(false)}
+        onMouseLeave={() => {
+          setActive(false);
+          untilt();
+        }}
         onTouchStart={handleTouch}
         onTouchMove={handleTouch}
         onTouchEnd={endTouch}
         onTouchCancel={endTouch}
         className={cn(
           "relative h-full w-full overflow-hidden rounded-2xl border",
-          "bg-white/[0.03] backdrop-blur-sm text-left transition-colors duration-300",
+          "bg-white/[0.03] backdrop-blur-sm text-left",
+          // Transform is written per-frame by the tilt hook, so it must not be
+          // in the transition list — animating it would fight the pointer and
+          // lag a frame behind it. Colour still eases.
+          "transition-colors duration-300 will-change-transform",
           active ? "border-white/20" : "border-white/10",
           onClick && "cursor-pointer"
         )}
@@ -111,7 +130,9 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
             background: `linear-gradient(90deg, transparent, rgba(${accent},0.9), transparent)`,
           }}
         />
-        <div className="relative h-full">{children}</div>
+        <div className="relative h-full [transform:translateZ(28px)] [transform-style:preserve-3d]">
+          {children}
+        </div>
       </Tag>
     </motion.div>
   );

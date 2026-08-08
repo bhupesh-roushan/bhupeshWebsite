@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
 import { LuArrowLeft, LuCircleAlert, LuCheck, LuArrowUpRight } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
+import { TiltCard } from "../ui/TiltCard";
 
 /**
  * A case study is its own page, not a modal. It is long enough to want a URL
@@ -150,6 +151,7 @@ export const CaseStudy = () => {
           <ul className="space-y-2.5">
             {others.map(([id, other]) => (
               <li key={id}>
+                <TiltCard>
                 <Link
                   to={`/writing/${id}`}
                   className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors hover:border-white/25 hover:bg-white/[0.05]"
@@ -167,6 +169,7 @@ export const CaseStudy = () => {
                     </span>
                   </span>
                 </Link>
+                </TiltCard>
               </li>
             ))}
           </ul>
