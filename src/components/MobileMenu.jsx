@@ -4,10 +4,13 @@ import { LuCalendarCheck } from "react-icons/lu";
 import { hiring } from "../data/hiring";
 
 const LINKS = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
+  // Rooted, not bare fragments. On /writing a bare "#about" resolves against
+  // that page — which has no sections — so every menu item was inert there.
+  { href: "/#home", label: "Home" },
+  { href: "/#about", label: "About" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/writing", label: "Writing" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 const SOCIALS = [
