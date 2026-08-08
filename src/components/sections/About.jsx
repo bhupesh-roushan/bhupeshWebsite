@@ -57,7 +57,11 @@ export const About = () => {
               Each card pins 12px lower than the one before, so the deck
               never fully hides what it covers — the edge of every previous
               role stays visible above the current one. */}
-          <div className="mx-auto mb-14 max-w-3xl">
+          {/* Full width, like the skills grid and every other block in this
+              section. As max-w-3xl the deck sat 176px inside them — centred
+              against the container but out of line with everything above and
+              below it. */}
+          <div className="mb-14">
             {journey.map((item, i) => (
               <div
                 key={item.id}
