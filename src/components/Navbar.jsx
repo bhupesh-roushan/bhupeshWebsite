@@ -11,6 +11,9 @@ const LINKS = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
   { id: "projects", label: "Projects" },
+  // Activity sits between Projects and Contact and had no entry, so the bar
+  // held "Projects" through the whole section and then appeared to jump.
+  { id: "activity", label: "Activity" },
   // A route, not a section, so it needs a Link rather than a hash anchor —
   // and `to` is what marks it as such below.
   { to: "/writing", label: "Writing" },
@@ -61,23 +64,56 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Scroll spy — the section crossing the upper-middle band wins.
+  /**
+   * Scroll spy, by position rather than intersection.
+   *
+   * IntersectionObserver cannot describe a stack. Sticky panels overlap, so
+   * several sections intersect the same band at once, and the callback only
+   * fires on a *change* — scrolling back up over a section that was already
+   * intersecting produces no event at all, which is why the bar froze on the
+   * way back. Whichever entry happened to fire last also won, so the highlight
+   * could land on a section buried under the one you were looking at.
+   *
+   * What the visitor sees is simply the last panel to have reached the top, so
+   * that is what this measures: the final section whose top edge has passed
+   * the reference line. Reading positions is O(sections) on a rAF, which for
+   * five elements is cheaper than the observer it replaces.
+   */
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
-        });
-      },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
-    );
+    if (onWriting) return;
+    const ids = LINKS.filter((l) => l.id).map((l) => l.id);
+    let frame = 0;
 
-    LINKS.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
+    const pick = () => {
+      frame = 0;
+      // Just below the bar: the line the eye treats as the top of the page.
+      const line = 96;
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= line) current = id;
+      }
+      // The last section can be too short to ever reach the line; at the
+      // bottom of the page it is unambiguously the one being read.
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
+        current = ids[ids.length - 1];
+      }
+      setActive(current);
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(pick);
+    };
+
+    pick();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [onWriting]);
 
   return (
     <nav
