@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import icon from "../assets/logo.svg";
 import { LuLinkedin, LuMenu, LuX, LuCalendarCheck } from "react-icons/lu";
@@ -27,6 +27,11 @@ const SOCIALS = [
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
   const [indiaTime, setIndiaTime] = useState("");
   const [active, setActive] = useState("home");
+  // The scroll spy watches section ids, and the writing pages have none — so
+  // "home" stayed selected there and the pill sat on the wrong link the whole
+  // time you were reading.
+  const { pathname } = useLocation();
+  const onWriting = pathname.startsWith("/writing");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -90,24 +95,31 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             centred however wide the brand or actions get. */}
         <div className="flex h-16 items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr]">
           {/* Brand */}
-          <a href="#home" className="flex w-fit items-center gap-2 justify-self-start">
+          {/* A route, not an anchor. As href="#home" this resolved against the
+              current page, so on /writing the logo pointed at /writing#home —
+              a link to nowhere, on the one element everyone expects to be a
+              way home. */}
+          <Link to="/" className="flex w-fit items-center gap-2 justify-self-start">
             {/* w-auto, not a square box — the mark is 32x48 and would squash */}
             {/* Dimensions declared so the row cannot reflow once the logo loads. */}
             <img src={icon} alt="" width="32" height="32" className="h-7 w-auto sm:h-8" />
             <span className="font-mono text-sm font-bold text-white sm:text-base">
               bhupesh<span className="text-indigo-500">.blog</span>
             </span>
-          </a>
+          </Link>
 
           {/* Links */}
           <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm md:flex">
             {LINKS.map((link) => {
+              // On a writing page the route link is what's current; elsewhere
+              // the scroll spy decides.
+              const isActive = link.to ? onWriting : !onWriting && active === link.id;
               const cls = `relative rounded-full px-3.5 py-1.5 text-sm transition-colors lg:px-4 ${
-                active === link.id ? "text-white" : "text-gray-400 hover:text-white"
+                isActive ? "text-white" : "text-gray-400 hover:text-white"
               }`;
               const inner = (
                 <>
-                  {active === link.id && (
+                  {isActive && (
                     <motion.span
                       layoutId="nav-active-pill"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
