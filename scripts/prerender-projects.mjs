@@ -124,15 +124,21 @@ for (const id of entries) {
 const studySource = readFileSync(resolve(root, "src/data/caseStudies.js"), "utf8");
 const studies = [...studySource.matchAll(/\n  "([a-z0-9-]+)": \{/g)].map((m) => m[1]);
 
+const studyMeta = [];
+
 for (const id of studies) {
   const at = studySource.indexOf(`"${id}": {`);
   const slice = studySource.slice(at, at + 2000);
   const title = slice.match(/title:\s*"([^"]+)"/)?.[1];
   const dek = slice.match(/dek:\s*\n?\s*"([^"]+)"/)?.[1];
   const project = slice.match(/project:\s*"([^"]+)"/)?.[1];
-  if (!title || !dek || !project) {
-    throw new Error(`prerender: could not read title/dek/project for study "${id}"`);
+  const published = slice.match(/published:\s*"([\d-]+)"/)?.[1];
+  const tags = (slice.match(/tags:\s*\[([^\]]*)\]/)?.[1] || "")
+    .split(",").map((t) => t.trim().replace(/^"|"$/g, "")).filter(Boolean);
+  if (!title || !dek || !project || !published) {
+    throw new Error(`prerender: could not read title/dek/project/published for study "${id}"`);
   }
+  studyMeta.push({ id, title, dek, project, published, tags });
 
   const pageTitle = `${title} | ${project} case study — Bhupesh Roushan`;
   const url = `${SITE}/writing/${id}`;
@@ -152,11 +158,98 @@ for (const id of studies) {
     html = sub(html, re, value, what);
   }
 
+  /**
+   * Article schema. The homepage already carries Person; this is what makes a
+   * write-up eligible to appear as an article under that name rather than as
+   * an anonymous page. Injected into the prerendered <head> because crawlers
+   * do not run the JavaScript that would otherwise add it.
+   */
+  const article = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: title,
+    description: dek,
+    datePublished: published,
+    inLanguage: "en",
+    keywords: tags.join(", "),
+    image: ogImage(`writing-${id}`),
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    author: {
+      "@type": "Person",
+      name: "Bhupesh Roushan",
+      url: `${SITE}/`,
+    },
+    about: { "@type": "SoftwareApplication", name: project },
+  };
+
+  html = html.replace(
+    "</head>",
+    `    <script type="application/ld+json">\n${JSON.stringify(article, null, 2)}\n    </script>\n` +
+      `    <link rel="alternate" type="application/rss+xml" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.xml" />\n` +
+      `    <link rel="alternate" type="application/feed+json" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.json" />\n  </head>`
+  );
+
   const dir = resolve(root, "dist/writing", id);
   mkdirSync(dir, { recursive: true });
   writeFileSync(resolve(dir, "index.html"), html);
   writeFileSync(resolve(root, "dist/writing", `${id}.html`), html);
 }
+
+/**
+ * Feeds. Four pieces with an index and no way to follow them was a dead end
+ * for anyone who read one and wanted the next. RSS for readers, JSON Feed
+ * because it is trivially parseable by anything else.
+ *
+ * Newest first, and month-precision dates become the first of that month —
+ * which is the honest resolution of what the source records.
+ */
+const feedItems = [...studyMeta].sort((a, b) => b.published.localeCompare(a.published));
+const rfc822 = (ym) => new Date(`${ym}-01T09:00:00Z`).toUTCString();
+
+const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Writing — Bhupesh Roushan</title>
+    <link>${SITE}/writing</link>
+    <description>Engineering decisions written up from the commits that record them.</description>
+    <language>en</language>
+    <atom:link href="${SITE}/writing/feed.xml" rel="self" type="application/rss+xml" />
+${feedItems
+  .map(
+    (s) => `    <item>
+      <title>${esc(s.title)}</title>
+      <link>${SITE}/writing/${s.id}</link>
+      <guid isPermaLink="true">${SITE}/writing/${s.id}</guid>
+      <pubDate>${rfc822(s.published)}</pubDate>
+      <description>${esc(s.dek)}</description>
+${s.tags.map((t) => `      <category>${esc(t)}</category>`).join("\n")}
+    </item>`
+  )
+  .join("\n")}
+  </channel>
+</rss>
+`;
+writeFileSync(resolve(root, "dist/writing/feed.xml"), rss);
+
+const jsonFeed = {
+  version: "https://jsonfeed.org/version/1.1",
+  title: "Writing — Bhupesh Roushan",
+  home_page_url: `${SITE}/writing`,
+  feed_url: `${SITE}/writing/feed.json`,
+  description: "Engineering decisions written up from the commits that record them.",
+  authors: [{ name: "Bhupesh Roushan", url: `${SITE}/` }],
+  language: "en",
+  items: feedItems.map((s) => ({
+    id: `${SITE}/writing/${s.id}`,
+    url: `${SITE}/writing/${s.id}`,
+    title: s.title,
+    summary: s.dek,
+    image: ogImage(`writing-${s.id}`),
+    date_published: `${s.published}-01T09:00:00Z`,
+    tags: s.tags,
+  })),
+};
+writeFileSync(resolve(root, "dist/writing/feed.json"), JSON.stringify(jsonFeed, null, 2));
 
 // The index too, so /writing is a real page rather than a 404 with a route
 // behind it. Same reason the studies get files: nothing here resolves a path
@@ -266,5 +359,5 @@ ${urls
 writeFileSync(resolve(root, "dist/sitemap.xml"), sitemap);
 
 console.log(
-  `prerendered ${written} project pages + ${studies.length} case ${studies.length === 1 ? "study" : "studies"} + writing index + 404 + sitemap (${urls.length} urls)`
+  `prerendered ${written} project pages + ${studies.length} case ${studies.length === 1 ? "study" : "studies"} + writing index + feeds + 404 + sitemap (${urls.length} urls)`
 );
