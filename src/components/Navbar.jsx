@@ -197,13 +197,19 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
 
             {/* Booking CTA. From md up — at 768 the bar is already tight, so
                 the clock steps aside for it there and returns at lg. Phones get
-                it in the menu instead. */}
+                it in the menu instead.
+
+                h-9 on this and on the clock, rather than vertical padding.
+                A padded height is whatever the tallest thing inside makes it —
+                an icon and one text size here, two text sizes there — so the
+                two pills came out 44px and 42px and sat 1px off each other at
+                both edges. */}
             {hiring.bookingUrl && (
               <a
                 href={hiring.bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden items-center gap-1.5 rounded-full bg-indigo-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-400 md:inline-flex"
+                className="hidden h-9 items-center gap-1.5 rounded-full bg-indigo-500 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-400 md:inline-flex"
               >
                 <LuCalendarCheck className="h-3.5 w-3.5" />
                 Book a call
@@ -211,7 +217,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             )}
 
             {/* Clock */}
-            <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 sm:flex md:hidden lg:flex">
+            <div className="hidden h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 sm:flex md:hidden lg:flex">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               <span className="text-xs tabular-nums text-gray-300">{indiaTime}</span>
               {/* gray-400: gray-500 measures 4.01:1 on the page background, under the
