@@ -14,6 +14,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Routes, Route } from "react-router-dom";
 import { useVisitAlert } from "./hooks/useVisitAlert";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { useStackOffsets } from "./hooks/useStackOffsets";
 import { CaseStudy } from "./components/sections/CaseStudy";
 import { WritingIndex } from "./components/sections/WritingIndex";
 
@@ -33,6 +34,7 @@ const SECTIONS = [
  */
 function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
+  useStackOffsets();
   return (
     <>
       <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
