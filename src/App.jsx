@@ -43,17 +43,20 @@ function Page() {
           throws should cost you that section, not the whole page. */}
       {SECTIONS.map(({ name, Component }, i) => (
         <ErrorBoundary key={name} name={name}>
-          {i === 0 ? (
+          {/* Every section stacks, the hero included. It sits at the bottom of
+              the deck — pinned, with About sliding up over it — rather than
+              scrolling away and leaving nothing behind the first panel.
+
+              It skips the rounded top and the shadow the others carry: those
+              exist to show a panel sitting on the one it covers, and the base
+              of a deck is covering nothing. Its corners would also be rounding
+              against the very top of the page. */}
+          <div
+            className={i === 0 ? "stack-panel stack-panel--base" : "stack-panel"}
+            style={{ zIndex: i }}
+          >
             <Component />
-          ) : (
-            // Everything after the hero stacks. Sticky at top: 0 with a rising
-            // z-index, so each panel parks under the viewport edge and the next
-            // one scrolls over it. The hero is excluded — it is the thing being
-            // covered, and stacking it would pin it over its own successor.
-            <div className="stack-panel" style={{ zIndex: i }}>
-              <Component />
-            </div>
-          )}
+          </div>
         </ErrorBoundary>
       ))}
     </>

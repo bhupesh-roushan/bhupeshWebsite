@@ -275,6 +275,16 @@ body {
   box-shadow: 0 -30px 70px -20px rgba(0, 0, 0, 0.9);
 }
 
+/* The base of the deck. Nothing covers it, so it needs no lip and no
+   shadow — and it begins at the top of the document, where a rounded
+   corner would be rounding against the edge of the page. */
+.stack-panel--base {
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  box-shadow: none;
+}
+
 /* The corner radius needs something to bite on at the very top edge. */
 .stack-panel > section {
   border-top-left-radius: inherit;
