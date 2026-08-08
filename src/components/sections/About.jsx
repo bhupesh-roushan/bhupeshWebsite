@@ -49,12 +49,22 @@ export const About = () => {
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="mb-10 text-center text-3xl font-bold text-white">About Me</h2>
 
-          {/* ── Journey ─────────────────────────────────────────── */}
-          <BentoGrid className="mb-14">
-            {journey.map((item) => (
-              <BentoCard
+          {/* ── Journey ───────────────────────────────────────────
+              A stack rather than a grid. Five roles in a bento read as five
+              unrelated tiles; dealt as a deck they read in the order they
+              happened, which is the one thing a career section is for.
+
+              Each card pins 12px lower than the one before, so the deck
+              never fully hides what it covers — the edge of every previous
+              role stays visible above the current one. */}
+          <div className="mx-auto mb-14 max-w-3xl">
+            {journey.map((item, i) => (
+              <div
                 key={item.id}
-                className={item.span}
+                className="journey-card"
+                style={{ "--i": i, zIndex: i + 1 }}
+              >
+              <BentoCard
                 accent={item.accent}
                 onClick={() => setActiveId(item.id)}
               >
@@ -90,14 +100,15 @@ export const About = () => {
                     )}
                   </p>
 
-                  <div className="mt-auto flex items-center gap-1 pt-5 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
+                  <div className="mt-5 flex items-center gap-1 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
                     View details
                     <LuArrowUpRight className="h-3.5 w-3.5" />
                   </div>
                 </div>
               </BentoCard>
+              </div>
             ))}
-          </BentoGrid>
+          </div>
 
           {/* ── Technical skills ────────────────────────────────── */}
           <h3 className="mb-6 text-center text-2xl font-bold text-white">
