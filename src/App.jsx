@@ -39,9 +39,19 @@ function Page() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       {/* One boundary per section, not one around the lot: a section that
           throws should cost you that section, not the whole page. */}
-      {SECTIONS.map(({ name, Component }) => (
+      {SECTIONS.map(({ name, Component }, i) => (
         <ErrorBoundary key={name} name={name}>
-          <Component />
+          {i === 0 ? (
+            <Component />
+          ) : (
+            // Everything after the hero stacks. Sticky at top: 0 with a rising
+            // z-index, so each panel parks under the viewport edge and the next
+            // one scrolls over it. The hero is excluded — it is the thing being
+            // covered, and stacking it would pin it over its own successor.
+            <div className="stack-panel" style={{ zIndex: i }}>
+              <Component />
+            </div>
+          )}
         </ErrorBoundary>
       ))}
     </>
