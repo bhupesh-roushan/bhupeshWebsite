@@ -289,3 +289,32 @@ body {
     position: static;
   }
 }
+
+/* ── Journey deck ───────────────────────────────────────────────────────
+   The experience cards, dealt rather than tiled.
+
+   Each pins 12px below the one before it, so the top edge of every card
+   you have already passed stays on screen — the deck reads as a pile you
+   can still see the spines of, not as one card replacing another.
+
+   `top` is clear of the navbar (64px) plus a little breathing room. The
+   cards are ~200px tall, well under any viewport, so unlike the section
+   panels there is no risk of one pinning with its own content unread.
+   ---------------------------------------------------------------------- */
+.journey-card {
+  position: sticky;
+  top: calc(88px + var(--i) * 12px);
+  margin-bottom: 1rem;
+}
+
+/* The last card has nothing coming to cover it, so the gap below it would
+   just be dead space at the end of the deck. */
+.journey-card:last-child {
+  margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-card {
+    position: static;
+  }
+}
