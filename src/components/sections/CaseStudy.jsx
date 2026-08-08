@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
 import { LuArrowLeft, LuCircleAlert, LuCheck, LuArrowUpRight } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
 import { TiltCard } from "../ui/TiltCard";
+import { ReadingProgress } from "../ReadingProgress";
 
 /**
  * A case study is its own page, not a modal. It is long enough to want a URL
@@ -12,6 +13,9 @@ import { TiltCard } from "../ui/TiltCard";
 export const CaseStudy = () => {
   const { studyId } = useParams();
   const study = CASE_STUDIES[studyId];
+  // Declared before the not-found branch below: a hook after a conditional
+  // return runs in a different order on the two paths.
+  const article = useRef(null);
 
   // Landing here directly — from a shared link — never passes through the
   // project modal, so the click handler there would miss it entirely.
@@ -36,10 +40,14 @@ export const CaseStudy = () => {
   }
 
   const accent = `rgb(${study.accent})`;
+  // Stable ids so the contents can link to the headings without the data
+  // having to carry slugs it would otherwise never need.
+  const slug = (h) => h.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const others = Object.entries(CASE_STUDIES).filter(([id]) => id !== studyId);
 
   return (
-    <article className="mx-auto max-w-3xl px-4 pb-24 pt-28 sm:pt-32">
+    <article ref={article} className="mx-auto max-w-3xl px-4 pb-24 pt-28 sm:pt-32">
+      <ReadingProgress targetRef={article} />
       <Link
         to={`/projects/${study.projectId}`}
         className="mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
@@ -74,9 +82,44 @@ export const CaseStudy = () => {
         </p>
       </header>
 
+      {/* Five headings is enough to want a map of the argument before reading
+          it, and enough to want a way back to one afterwards. */}
+      {study.sections.length > 2 && (
+        <nav
+          aria-label="On this page"
+          className="mb-12 rounded-2xl border border-white/10 bg-white/[0.02] p-5"
+        >
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+            On this page
+          </p>
+          <ol className="space-y-1.5">
+            {study.sections.map((section, i) => (
+              <li key={section.heading} className="flex gap-3 text-sm">
+                <span className="w-4 shrink-0 text-right font-mono text-xs text-gray-500">
+                  {i + 1}
+                </span>
+                <a
+                  href={`#${slug(section.heading)}`}
+                  className="text-gray-300 underline-offset-4 transition-colors hover:text-white hover:underline"
+                >
+                  {section.heading}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
       {study.sections.map((section) => (
         <section key={section.heading} className="mb-11">
-          <h2 className="mb-4 text-lg font-bold text-white">{section.heading}</h2>
+          {/* scroll-mt clears the fixed navbar; without it an anchor lands
+              with its own heading hidden behind the bar. */}
+          <h2
+            id={slug(section.heading)}
+            className="mb-4 scroll-mt-28 text-lg font-bold text-white"
+          >
+            {section.heading}
+          </h2>
 
           {section.body?.map((p, i) => (
             <p key={i} className="mb-4 text-sm leading-[1.75] text-gray-300">

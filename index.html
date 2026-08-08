@@ -37,13 +37,6 @@
     />
     <meta name="twitter:image" content="https://www.bhupesh.blog/og/home.png" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-
     <!-- Lets Google render a person rich result rather than a plain blue link -->
     <script type="application/ld+json">
       {
@@ -51,7 +44,7 @@
         "@type": "Person",
         "name": "Bhupesh Roushan",
         "url": "https://www.bhupesh.blog/",
-        "image": "https://www.bhupesh.blog/og-image.png",
+        "image": "https://www.bhupesh.blog/og/home.png",
         "jobTitle": "Curriculum Engineer",
         "worksFor": { "@type": "Organization", "name": "Masai" },
         "address": {
@@ -77,6 +70,10 @@
         ]
       }
     </script>
+    <!-- Same-origin and preloaded: the browser can start fetching these
+         before the stylesheet that references them has even parsed. -->
+    <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <div id="root"></div>

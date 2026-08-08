@@ -1,5 +1,56 @@
 @import "tailwindcss";
 
+/* ── Fonts ──────────────────────────────────────────────────────────────
+   Self-hosted. These came from Google Fonts, where the stylesheet request
+   measured 1384ms of render-blocking time against a server we do not
+   control — two preconnects, a DNS lookup and a TLS handshake before a
+   single glyph could be asked for.
+
+   Variable files, latin subset: one 22KB file covers Space Grotesk 400-700
+   where six static weights would have been six requests, and dropping the
+   rest of Unicode takes JetBrains Mono to 31KB. 54KB total, same origin,
+   cached with everything else.
+
+   `font-display: swap` keeps text readable while they load, which is the
+   same behaviour the Google URL asked for.
+   ---------------------------------------------------------------------- */
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/**
+ * Tailwind's font utilities, pointed at the faces above.
+ *
+ * `font-mono` was never mapped, so every use of it — the wordmark, the loading
+ * screen, demo credentials, the figures in a case study — rendered in the
+ * system monospace stack while JetBrains Mono was downloaded from Google on
+ * every page load and used by nothing.
+ */
+@theme {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
 html,
 body {
   margin: 0;
