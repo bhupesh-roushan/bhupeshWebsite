@@ -25,6 +25,11 @@ jobs:
 
       - run: npm test
 
+      # Local runs use the pinned @lhci/cli from devDependencies. `npx lhci`
+      # without it installed silently fetches an unrelated placeholder package
+      # of that name from the registry and runs it — which happened here, and
+      # reported nothing while looking like a pass.
+
       - run: npm run build
 
       # Audits the built output, not the dev server — dev is unminified and

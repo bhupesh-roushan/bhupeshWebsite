@@ -71,7 +71,7 @@ export const Modal = ({ open, onClose, label, children }) => {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[100] flex justify-center overflow-y-auto p-4 sm:p-8"
+          className="fixed inset-0 z-[100] flex justify-center overflow-y-auto p-4 sm:p-8 [perspective:1200px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -88,14 +88,18 @@ export const Modal = ({ open, onClose, label, children }) => {
             aria-modal="true"
             aria-label={label}
             tabIndex={-1}
-            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 24 }}
-            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: 12 }}
+            // Comes in tilted and settles flat, so it reads as rising out of
+            // the page rather than growing on top of it. rotateX only — adding
+            // Y makes a full-width panel look like it is swinging on a hinge.
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateX: 12, y: 40, scale: 0.97 }}
+            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, rotateX: 0, y: 0, scale: 1 }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateX: 6, y: 16, scale: 0.98 }}
             transition={
               reduceMotion
                 ? { duration: 0.15 }
                 : { type: "spring", stiffness: 260, damping: 26 }
             }
+            style={{ transformOrigin: "50% 0%" }}
             className="relative z-10 my-auto w-full max-w-3xl rounded-2xl border border-white/15
               bg-[#0b0b12]/95 shadow-[0_0_60px_-12px_rgba(99,102,241,0.5)]"
           >

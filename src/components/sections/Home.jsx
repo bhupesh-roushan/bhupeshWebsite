@@ -7,6 +7,7 @@ import {
   LuChevronDown,
   LuMapPin,
 } from "react-icons/lu";
+import { useRef, useCallback } from "react";
 import { TechBackdrop } from "../TechBackdrop";
 import bhupesh from "../../assets/bhupesh.webp";
 
@@ -51,16 +52,54 @@ export const Home = () => {
 
   const typingDone = typed.length >= NAME.length;
 
+  /**
+   * Parallax. The aurora, the grid and the copy each move a different distance
+   * with the pointer, which is the whole trick — depth is read from relative
+   * motion, not from any one layer moving.
+   *
+   * Refs and one rAF rather than state: this fires on every pointer move, and
+   * re-rendering the hero (typewriter, rotator, stats, avatar) sixty times a
+   * second to nudge a background would cost far more than the effect is worth.
+   */
+  const auroraRef = useRef(null);
+  const gridRef = useRef(null);
+  const copyRef = useRef(null);
+  const frame = useRef(0);
+
+  const onPointer = useCallback(
+    (e) => {
+      if (reduceMotion) return;
+      cancelAnimationFrame(frame.current);
+      frame.current = requestAnimationFrame(() => {
+        const x = e.clientX / window.innerWidth - 0.5;
+        const y = e.clientY / window.innerHeight - 0.5;
+        // Furthest layer moves least, nearest most — the opposite reads as the
+        // background sliding over the text.
+        if (auroraRef.current)
+          auroraRef.current.style.transform = `translate3d(${x * 14}px, ${y * 10}px, 0)`;
+        if (gridRef.current)
+          gridRef.current.style.transform = `translate3d(${x * -26}px, ${y * -18}px, 0)`;
+        if (copyRef.current)
+          copyRef.current.style.transform =
+            `perspective(1200px) rotateX(${(-y * 2.2).toFixed(2)}deg) rotateY(${(x * 2.2).toFixed(2)}deg)`;
+      });
+    },
+    [reduceMotion]
+  );
+
+  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:py-28"
+      onPointerMove={onPointer}
+      className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:py-28 [perspective:1200px]"
     >
       {/* Aceternity's Aurora Background. It replaced a 3.9MB looping video —
           the page now paints this on the first frame instead of after a
           multi-megabyte download, and a phone gets the same backdrop as
           fibre rather than a flat gradient. */}
-      <div className="aurora z-0" aria-hidden="true">
+      <div ref={auroraRef} className="aurora z-0 will-change-transform" aria-hidden="true">
         <div className="aurora__layer" />
       </div>
 
@@ -72,7 +111,8 @@ export const Home = () => {
           section joins the next one cleanly. */}
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 via-transparent to-[#0a0a0a]" />
       <div
-        className="absolute inset-0 z-0 opacity-[0.18]"
+        ref={gridRef}
+        className="absolute inset-0 z-0 opacity-[0.18] will-change-transform"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,255,255,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.35) 1px, transparent 1px)",
@@ -85,7 +125,7 @@ export const Home = () => {
       {/* Tech logos behind the copy, lit up around the cursor */}
       <TechBackdrop />
 
-      <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
+      <div ref={copyRef} className="relative z-10 mx-auto w-full max-w-4xl text-center will-change-transform">
         {/* Avatar */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
