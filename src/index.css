@@ -501,11 +501,9 @@ body {
   }
 }
 
-/* Composited animation on a phone is exactly the cost this site has been
-   trimming, and the diagrams sit inside a modal nobody scrolls past. */
-@media (hover: none), (pointer: coarse) {
-  .diagram-flow {
-    animation: none;
-    opacity: 0.4;
-  }
-}
+/* Kept on touch. The earlier mobile work removed full-screen composited
+   layers — a fixed background attachment, thirteen backdrop blurs, three
+   parallax planes — that repainted on every scroll frame. This is a
+   handful of dashed strokes inside a modal that is not scrolling, and
+   switching it off there meant the phone, where most people will open
+   this, was the one place the flow did not show. */
