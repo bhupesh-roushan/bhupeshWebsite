@@ -15,6 +15,8 @@ import {
   LuLock,
   LuBuilding2,
   LuBookOpen,
+  LuChevronLeft,
+  LuChevronRight,
 } from "react-icons/lu";
 import { DIAGRAMS } from "../../data/diagrams";
 
@@ -33,6 +35,12 @@ export const Projects = () => {
   const navigate = useNavigate();
   const active = projects.find((p) => p.id === projectId) ?? null;
 
+  // Neighbours, wrapping at both ends. Seven projects is few enough that
+  // running off the end and stopping feels like a fault rather than a limit.
+  const index = projects.findIndex((p) => p.id === projectId);
+  const prev = index >= 0 ? projects[(index - 1 + projects.length) % projects.length] : null;
+  const next = index >= 0 ? projects[(index + 1) % projects.length] : null;
+
   // Which projects actually get opened is the one thing the page can tell you
   // that a CV can't. Vercel Analytics is cookieless and stores no identifiers,
   // so this counts events, not people.
@@ -50,6 +58,30 @@ export const Projects = () => {
     if (!active) return;
     document.getElementById("projects")?.scrollIntoView({ block: "start" });
   }, [active]);
+
+  /**
+   * Arrow keys move between projects while a modal is open.
+   *
+   * `replace` rather than push: without it, stepping through five projects
+   * buries the page you came from under five history entries, and Back stops
+   * meaning "leave the modal".
+   *
+   * Escape is the Modal's to handle, and this deliberately ignores anything
+   * typed into a field — there is none in this modal today, but a shortcut
+   * that eats keystrokes is a bad thing to leave lying around.
+   */
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = document.activeElement?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable) return;
+      if (e.key === "ArrowRight" && next) navigate(`/projects/${next.id}`, { replace: true });
+      if (e.key === "ArrowLeft" && prev) navigate(`/projects/${prev.id}`, { replace: true });
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [active, next, prev, navigate]);
 
   return (
     <section id="projects" className="min-h-screen py-20">
@@ -355,6 +387,44 @@ export const Projects = () => {
                   </a>
                 )}
               </div>
+
+              {/* Visible, because a keyboard shortcut nobody can see is a
+                  shortcut nobody uses — and these are the only way a mouse
+                  user moves between projects without closing the modal. */}
+              {prev && next && (
+                <nav className="mt-8 flex items-stretch gap-2 border-t border-white/10 pt-5">
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/projects/${prev.id}`, { replace: true })}
+                    className="group flex flex-1 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2.5 text-left transition-colors hover:border-white/25 hover:bg-white/[0.06]"
+                  >
+                    <LuChevronLeft className="h-4 w-4 shrink-0 text-gray-500 transition-colors group-hover:text-white" />
+                    <span className="min-w-0">
+                      <span className="block text-[10px] uppercase tracking-wider text-gray-500">
+                        Previous
+                      </span>
+                      <span className="block truncate text-xs font-semibold text-gray-200">
+                        {prev.title}
+                      </span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/projects/${next.id}`, { replace: true })}
+                    className="group flex flex-1 items-center justify-end gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2.5 text-right transition-colors hover:border-white/25 hover:bg-white/[0.06]"
+                  >
+                    <span className="min-w-0">
+                      <span className="block text-[10px] uppercase tracking-wider text-gray-500">
+                        Next
+                      </span>
+                      <span className="block truncate text-xs font-semibold text-gray-200">
+                        {next.title}
+                      </span>
+                    </span>
+                    <LuChevronRight className="h-4 w-4 shrink-0 text-gray-500 transition-colors group-hover:text-white" />
+                  </button>
+                </nav>
+              )}
             </div>
           </div>
         )}

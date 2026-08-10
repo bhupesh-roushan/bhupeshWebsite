@@ -400,3 +400,53 @@ body {
     backdrop-filter: none;
   }
 }
+
+/* ── Printing a case study ──────────────────────────────────────────────
+   A write-up is the one page here somebody might genuinely print — to
+   read away from a screen, or to bring into a conversation about it.
+
+   What goes: the reading-progress bar, which is a scroll affordance and
+   means nothing on paper; the contents, since the headings are a few
+   inches away rather than a scroll away; the back link and the "more
+   writing" block, which are navigation to pages this sheet cannot reach.
+
+   What stays is the argument, on white, with the measured comparison
+   intact — that table is the whole point of the piece.
+   ---------------------------------------------------------------------- */
+@media print {
+  article nav,
+  article + nav {
+    display: none !important;
+  }
+
+  /* The progress bar is a fixed 2px gradient; in print it becomes a stray
+     line across the top of the first page. */
+  body > div > div[class*="fixed"][class*="top-0"] {
+    display: none !important;
+  }
+
+  article {
+    max-width: none !important;
+    padding-top: 0 !important;
+  }
+
+  /* Keep a heading with the paragraph it introduces rather than stranded
+     at the foot of a page. */
+  article h1,
+  article h2 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* The before/after table is the evidence; splitting it across a page
+     break separates a number from the claim it answers. */
+  article figure {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid #ccc !important;
+  }
+
+  article figure * {
+    color: #000 !important;
+  }
+}
