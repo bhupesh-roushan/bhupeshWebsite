@@ -190,7 +190,7 @@ export const projects = [
     image: atlas,
     accent: "45,212,191",
     featured: true,
-    span: "lg:col-span-3",
+    span: "lg:col-span-4",
     access: "Private repo — internal grading tooling. Walkthrough on request.",
     stack: [
       "Next.js 15",
@@ -258,7 +258,7 @@ export const projects = [
     href: "https://www.cloudwatch.in/",
     accent: "99,102,241",
     featured: true,
-    span: "lg:col-span-3",
+    span: "lg:col-span-2",
     stack: [
       "Next.js 16",
       "TypeScript",
