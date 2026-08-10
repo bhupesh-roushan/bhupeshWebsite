@@ -342,6 +342,17 @@ body {
   margin-bottom: 0;
 }
 
+/* Opaque, because these overlap. The card's own bg-white/[0.03] is three
+   per cent white — fine for a tile sitting on the page, see-through for
+   one sitting on another card. Desktop hid it behind a backdrop blur,
+   which only ever blurred the card underneath rather than concealing it,
+   and turning that blur off for touch made it plain.
+   The same reason the section panels are opaque: a stack you can see
+   through reads as a rendering fault, not as depth. */
+.journey-card > div > * {
+  background-color: #101017;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .journey-card {
     position: static;
