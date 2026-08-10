@@ -68,7 +68,10 @@ export const Home = () => {
 
   const onPointer = useCallback(
     (e) => {
-      if (reduceMotion) return;
+      // Mouse only. On a phone this fires mid-scroll-drag, scheduling a frame
+      // that moves three full-screen layers — work that buys nothing, since
+      // there is no cursor for the parallax to track.
+      if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
       cancelAnimationFrame(frame.current);
       frame.current = requestAnimationFrame(() => {
         const x = e.clientX / window.innerWidth - 0.5;

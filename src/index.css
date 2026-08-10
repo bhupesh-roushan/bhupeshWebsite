@@ -328,3 +328,45 @@ body {
     position: static;
   }
 }
+
+/* ── Touch devices ──────────────────────────────────────────────────────
+   Everything switched off below is a mouse affordance. A phone gets none
+   of the benefit and all of the cost, and the cost lands on the one thing
+   a phone does constantly: scroll.
+
+   `background-attachment: fixed` is the worst of them. It anchors the
+   gradient to the viewport rather than the element, so the compositor has
+   to repaint that layer on every scroll frame — it is the classic cause
+   of exactly this jank, and iOS historically refused to implement it for
+   the same reason.
+
+   `backdrop-filter` is next: thirteen blurred card backgrounds, each its
+   own composited layer, on a GPU with a fraction of a laptop's memory.
+
+   `will-change` promotes layers permanently. Useful when a transform is
+   about to change every frame under a cursor; pure memory pressure when
+   nothing is going to move.
+   ---------------------------------------------------------------------- */
+@media (hover: none), (pointer: coarse) {
+  .aurora__layer::after {
+    background-attachment: scroll;
+  }
+
+  .aurora,
+  .aurora__layer,
+  .hero-aurora > span,
+  [class*="will-change"] {
+    will-change: auto;
+  }
+
+  /* The cards keep their translucent background; only the blur behind it
+     goes, which on a dark surface is close to invisible anyway. */
+  /* Prefixed first, standard last. Written the other way round the
+     minifier kept only the -webkit- form, so Chrome went on honouring
+     Tailwind's unprefixed backdrop-filter and the blur never lifted. */
+  .backdrop-blur-sm,
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

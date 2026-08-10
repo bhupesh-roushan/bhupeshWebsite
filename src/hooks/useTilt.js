@@ -23,7 +23,10 @@ export function useTilt({ max = 7, lift = 14 } = {}) {
 
   const apply = useCallback(
     (clientX, clientY) => {
-      if (reduceMotion) return;
+      // A tilt tracks a cursor. On touch the same handler runs off touchmove
+      // during a scroll, writing a transform per frame to a card the finger is
+      // only passing over.
+      if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
       cancelAnimationFrame(frame.current);
       frame.current = requestAnimationFrame(() => {
         const node = ref.current;
