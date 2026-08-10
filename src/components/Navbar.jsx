@@ -119,7 +119,11 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
     <nav
       className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
         scrolled
-          ? "border-b border-white/10 bg-[#0a0a0a]/85 backdrop-blur-md"
+          // Opaque once off the hero. At /85 it read as solid only because of
+          // the blur behind it, so on touch — where that blur is off for
+          // scrolling cost — the page scrolled visibly through the bar. Over
+          // an opaque background the blur does nothing, so it goes too.
+          ? "border-b border-white/10 bg-[#0a0a0a]"
           : "border-b border-transparent bg-transparent"
       }`}
     >
