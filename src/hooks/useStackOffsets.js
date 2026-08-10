@@ -18,6 +18,12 @@ import { useEffect } from "react";
  */
 export function useStackOffsets(selector = ".stack-panel") {
   useEffect(() => {
+    // The CSS drops these to static on touch, so there is no sticky `top` to
+    // compute — and measuring anyway would mean a ResizeObserver reading
+    // offsetHeight off every panel, which forces layout, on the devices this
+    // was slowing down.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
     const panels = () => Array.from(document.querySelectorAll(selector));
 
     const measure = () => {

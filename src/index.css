@@ -300,6 +300,25 @@ body {
   }
 }
 
+/* Off on touch, where it is nearly all cost and almost no effect.
+   The deck reads as a deck when a panel is close to the height of the
+   window. On a phone About is 3065px against 844 — it pins at -2222px,
+   which means it scrolls almost the whole way and is then immediately
+   covered, so you perceive very little of it. What you do get is five
+   full-page sticky layers held in compositor memory on the device least
+   able to spare it.
+
+   The journey cards keep their deck: 192px in an 844px window, so the
+   effect is plainly visible and the layers are small. */
+@media (hover: none), (pointer: coarse) {
+  .stack-panel {
+    position: static;
+    border-top: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
 /* ── Journey deck ───────────────────────────────────────────────────────
    The experience cards, dealt rather than tiled.
 
