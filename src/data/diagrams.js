@@ -35,17 +35,17 @@ export const DIAGRAMS = {
   cloudwatch: {
     layers: [
       [{ title: "Next.js 16 client", sub: "TypeScript · Tailwind · Aceternity", accent: true }],
-      [{ title: "Express API", sub: "requireAuth · role-based access" }],
+      [{ title: "Express API", sub: "requireAuth · role-based access", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/middleware/requireAuth.ts" }],
       [
         { title: "/ai", sub: "listing · SEO" },
         { title: "/checkout", sub: "orders · library" },
         { title: "/products", sub: "catalog · media" },
       ],
       [
-        { title: "Gemini 2.0 Flash", sub: "listing copy" },
-        { title: "Firecrawl · SerpAPI", sub: "competitors · pricing" },
-        { title: "Razorpay", sub: "checkout" },
-        { title: "Cloudinary", sub: "media" },
+        { title: "Gemini 2.0 Flash", sub: "listing copy", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/ai-intelligence.ts" },
+        { title: "Firecrawl · SerpAPI", sub: "competitors · pricing", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/firecrawl.ts" },
+        { title: "Razorpay", sub: "checkout", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/razorpay.ts" },
+        { title: "Cloudinary", sub: "media", href: "https://github.com/bhupesh-roushan/cloudwatch-digital/blob/main/backend/src/lib/cloudinary.ts" },
       ],
     ],
     store: "MongoDB — users, products, orders",
@@ -54,16 +54,16 @@ export const DIAGRAMS = {
 
   buildingblocks: {
     layers: [
-      [{ title: "React client", sub: "route-guard · role dashboards", accent: true }],
-      [{ title: "Express API", sub: "auth-middleware" }],
+      [{ title: "React client", sub: "route-guard · role dashboards", accent: true, href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/client/src/components/route-guard/index.jsx" }],
+      [{ title: "Express API", sub: "auth-middleware", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/middleware/auth-middleware.js" }],
       [
         { title: "/instructor", sub: "courses · media" },
-        { title: "/student", sub: "courses · progress" },
+        { title: "/student", sub: "courses · progress", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/controllers/student-controller/course-progress-controller.js" },
         { title: "/order", sub: "checkout" },
       ],
       [
-        { title: "Cloudinary", sub: "video upload" },
-        { title: "PayPal", sub: "payments" },
+        { title: "Cloudinary", sub: "video upload", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/helpers/cloudinary.js" },
+        { title: "PayPal", sub: "payments", href: "https://github.com/bhupesh-roushan/BuildingBlocks/blob/main/server/helpers/paypal.js" },
       ],
     ],
     store: "MongoDB — users, courses, orders, progress",
@@ -73,15 +73,15 @@ export const DIAGRAMS = {
   hourglass: {
     layers: [
       [{ title: "React client", sub: "Redux Toolkit · RTK hooks", accent: true }],
-      [{ title: "Express API + Socket.io", sub: "isAuthenticated · multer" }],
+      [{ title: "Express API + Socket.io", sub: "isAuthenticated · multer", href: "https://github.com/bhupesh-roushan/hourglass/blob/main/backend/index.js" }],
       [
         { title: "/user", sub: "profile · follow" },
-        { title: "/post", sub: "feed · comments" },
-        { title: "/message", sub: "realtime chat" },
+        { title: "/post", sub: "feed · comments", href: "https://github.com/bhupesh-roushan/hourglass/blob/main/backend/controllers/post.controller.js" },
+        { title: "/message", sub: "realtime chat", href: "https://github.com/bhupesh-roushan/hourglass/blob/main/backend/controllers/message.controller.js" },
       ],
       [
         { title: "Cloudinary", sub: "images" },
-        { title: "Socket registry", sub: "online users" },
+        { title: "Socket registry", sub: "online users", href: "https://github.com/bhupesh-roushan/hourglass/blob/main/backend/socket/socket.js" },
       ],
     ],
     store: "MongoDB — users, posts, messages, conversations",
@@ -91,12 +91,12 @@ export const DIAGRAMS = {
   cubekit: {
     layers: [
       [{ title: "React SPA (Vite)", sub: "protected routes · onboarding", accent: true }],
-      [{ title: "Clerk", sub: "session · getToken with the supabase template" }],
-      [{ title: "useFetch", sub: "one loading/error pair per call" }],
+      [{ title: "Clerk", sub: "session · getToken with the supabase template", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/hooks/useFetch.jsx" }],
+      [{ title: "useFetch", sub: "one loading/error pair per call", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/utils/supabase.js" }],
       [
-        { title: "api/jobs", sub: "search · filter · save" },
-        { title: "api/companies", sub: "listings · logos" },
-        { title: "api/applications", sub: "apply · status" },
+        { title: "api/jobs", sub: "search · filter · save", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/api/apijobs.js" },
+        { title: "api/companies", sub: "listings · logos", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/api/apiCompanies.js" },
+        { title: "api/applications", sub: "apply · status", href: "https://github.com/bhupesh-roushan/cubekit-hiring/blob/master/src/api/apiApplications.js" },
       ],
     ],
     store: "Supabase Postgres — jobs, companies, applications, saved_jobs",
@@ -106,10 +106,10 @@ export const DIAGRAMS = {
   frequencii: {
     layers: [
       [{ title: "React SPA", sub: "Vite · React Router", accent: true }],
-      [{ title: "Redux Toolkit store", sub: "cart · product slices" }],
+      [{ title: "Redux Toolkit store", sub: "cart · product slices", href: "https://github.com/bhupesh-roushan/frequencii/blob/master/src/redux/CartSlice.jsx" }],
       [
         { title: "Bundled catalogue", sub: "JSON fixtures" },
-        { title: "Cart → Checkout", sub: "order confirmation" },
+        { title: "Cart → Checkout", sub: "order confirmation", href: "https://github.com/bhupesh-roushan/frequencii/blob/master/src/pages/Checkout.jsx" },
         { title: "EmailJS", sub: "newsletter · contact" },
       ],
     ],
@@ -119,8 +119,8 @@ export const DIAGRAMS = {
   pictelai: {
     layers: [
       [{ title: "React SPA", sub: "sidebar history · prompt panel", accent: true }],
-      [{ title: "Context provider", sub: "prompt · response · recent prompts" }],
-      [{ title: "config/gemini.js", sub: "@google/generative-ai · startChat" }],
+      [{ title: "Context provider", sub: "prompt · response · recent prompts", href: "https://github.com/bhupesh-roushan/PictelAI-Powered-by-Gemini/blob/master/src/context/Context.jsx" }],
+      [{ title: "config/gemini.js", sub: "@google/generative-ai · startChat", href: "https://github.com/bhupesh-roushan/PictelAI-Powered-by-Gemini/blob/master/src/config/gemini.js" }],
       [{ title: "Gemini 1.5 Flash", sub: "temp 1 · topP 0.95 · 8192 max tokens" }],
     ],
     note: "Single page, no server: the SDK is called straight from the browser and chat history lives in React context, so nothing survives a refresh. The key comes from a Vite env var, which means it ships inside the bundle — the price of having no backend to hide it behind.",

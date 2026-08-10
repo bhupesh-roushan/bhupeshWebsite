@@ -450,3 +450,62 @@ body {
     color: #000 !important;
   }
 }
+
+/* ── Architecture diagrams ──────────────────────────────────────────────
+   Boxes that link to the file behind them, and connectors that show which
+   way the request runs.
+   ---------------------------------------------------------------------- */
+.diagram-box-link {
+  cursor: pointer;
+}
+
+/* The whole shape lifts, not just the label — the rect is the target. */
+.diagram-box-link rect {
+  transition: stroke 0.2s, fill 0.2s;
+}
+
+.diagram-box-link:hover rect,
+.diagram-box-link:focus-visible rect {
+  stroke: #818cf8;
+  fill: #191926;
+}
+
+.diagram-box-link:focus-visible {
+  outline: none;
+}
+
+.diagram-box-link:focus-visible rect {
+  stroke-width: 2;
+}
+
+/* The flow. A dashed copy of each connector, drifting along it — the solid
+   line underneath keeps the structure readable, and this only carries
+   direction. 12 units of pattern, so one full cycle lands the dashes back
+   where they started and the loop is invisible. */
+.diagram-flow {
+  stroke-dasharray: 3 9;
+  opacity: 0.75;
+  animation: diagram-flow 1.1s linear infinite;
+}
+
+@keyframes diagram-flow {
+  from { stroke-dashoffset: 12; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Direction is the whole point of the animation, and an arrowhead already
+   states it. Someone who asked for less motion keeps the arrow. */
+@media (prefers-reduced-motion: reduce) {
+  .diagram-flow {
+    display: none;
+  }
+}
+
+/* Composited animation on a phone is exactly the cost this site has been
+   trimming, and the diagrams sit inside a modal nobody scrolls past. */
+@media (hover: none), (pointer: coarse) {
+  .diagram-flow {
+    animation: none;
+    opacity: 0.4;
+  }
+}

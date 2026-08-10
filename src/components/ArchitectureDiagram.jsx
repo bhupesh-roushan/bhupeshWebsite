@@ -39,8 +39,17 @@ const layout = (count, i) => {
   return { x, width, centre: x + width / 2 };
 };
 
-const Box = ({ x, y, w, h, title, sub, accent }) => (
-  <g>
+/**
+ * A box, and a link to the file that implements it where one exists.
+ *
+ * SVG has its own <a>, so the whole shape becomes the target rather than just
+ * the label — a 267x58 hit area instead of a line of text. Only paths verified
+ * against each repository's tree are linked; Atlas is private, so none of its
+ * boxes are, because a diagram that 404s is worse than one that only draws.
+ */
+const Box = ({ x, y, w, h, title, sub, accent, href }) => {
+  const shape = (
+    <>
     <rect
       x={x}
       y={y}
@@ -66,8 +75,23 @@ const Box = ({ x, y, w, h, title, sub, accent }) => (
         {sub}
       </text>
     )}
-  </g>
-);
+    </>
+  );
+
+  if (!href) return <g>{shape}</g>;
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="diagram-box-link"
+      aria-label={`${title} — open the source on GitHub`}
+    >
+      {shape}
+    </a>
+  );
+};
 
 export const ArchitectureDiagram = ({ id }) => {
   const spec = DIAGRAMS[id];
@@ -143,6 +167,36 @@ export const ArchitectureDiagram = ({ id }) => {
                         strokeWidth="1.5"
                       />
                     )}
+                    {/* The same drops again, dashed and drifting downward.
+                        Drawn over the solid lines rather than replacing them,
+                        so the structure stays legible and the motion only says
+                        which way it runs. */}
+                    {row.map((_, bi) => (
+                      <line
+                        key={`f${bi}`}
+                        className="diagram-flow"
+                        x1={layout(row.length, bi).centre}
+                        y1={y + BOX_H}
+                        x2={layout(row.length, bi).centre}
+                        y2={y + BOX_H + GAP_Y / 2}
+                        stroke={ACCENT}
+                        strokeWidth="1.5"
+                        style={{ animationDelay: `${li * 0.18}s` }}
+                      />
+                    ))}
+                    {next.map((_, bi) => (
+                      <line
+                        key={`fu${bi}`}
+                        className="diagram-flow"
+                        x1={layout(next.length, bi).centre}
+                        y1={y + BOX_H + GAP_Y / 2}
+                        x2={layout(next.length, bi).centre}
+                        y2={rowY[li + 1] - 2}
+                        stroke={ACCENT}
+                        strokeWidth="1.5"
+                        style={{ animationDelay: `${li * 0.18 + 0.09}s` }}
+                      />
+                    ))}
                     {row.map((_, bi) => (
                       <line
                         key={`d${bi}`}
