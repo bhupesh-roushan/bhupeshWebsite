@@ -105,12 +105,12 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
         onTouchCancel={endTouch}
         className={cn(
           "relative h-full w-full overflow-hidden rounded-2xl border",
-          // Opaque, not translucent-over-a-blur. At three per cent white the
-          // card only ever looked solid because a backdrop blur sat behind
-          // it, so the moment that blur went — on touch, for scrolling cost —
-          // the page showed straight through every card. And over an opaque
-          // background the blur was doing nothing anyway.
-          "bg-[#101017] text-left",
+          // Glass: translucent over a blur, on every device. The earlier
+          // opaque version was a performance compromise that removed the
+          // look entirely — the blur is the point, not a decoration on top
+          // of it. /75 rather than the old /03, so the card still reads as a
+          // surface if a browser ever declines the filter.
+          "bg-[#101017]/75 backdrop-blur-xl text-left",
           // Transform is written per-frame by the tilt hook, so it must not be
           // in the transition list — animating it would fight the pointer and
           // lag a frame behind it. Colour still eases.

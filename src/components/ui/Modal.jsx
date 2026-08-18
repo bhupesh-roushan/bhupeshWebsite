@@ -100,11 +100,12 @@ export const Modal = ({ open, onClose, label, children }) => {
                 : { type: "spring", stiffness: 260, damping: 26 }
             }
             style={{ transformOrigin: "50% 0%" }}
-            // Fully opaque. At /95 it leaned on the backdrop blur behind it to
-            // hide the page, and touch devices no longer get that blur — so
-            // the project details were readable through to the grid beneath.
+            // Translucent over its own blur, so the page behind reads as
+            // frosted rather than either sharp or hidden. The blur is what
+            // makes this legible at /80 — without one it would be the
+            // see-through panel this replaced.
             className="relative z-10 my-auto w-full max-w-3xl rounded-2xl border border-white/15
-              bg-[#0b0b12] shadow-[0_0_60px_-12px_rgba(99,102,241,0.5)]"
+              bg-[#0b0b12]/80 backdrop-blur-2xl shadow-[0_0_60px_-12px_rgba(99,102,241,0.5)]"
           >
             <button
               onClick={onClose}

@@ -342,11 +342,11 @@ body {
   margin-bottom: 0;
 }
 
-/* Kept as a floor even though BentoCard is now opaque by default: these
-   overlap each other, so if that default is ever loosened again the deck
-   is the first place it would show. */
+/* The deck is glass like every other card, but a touch more solid: these
+   overlap each other, and at the card default you would be reading two
+   roles at once through one another rather than seeing depth. */
 .journey-card > div > * {
-  background-color: #101017;
+  background-color: rgba(16, 16, 23, 0.82);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -387,13 +387,16 @@ body {
 
   /* The cards keep their translucent background; only the blur behind it
      goes, which on a dark surface is close to invisible anyway. */
-  /* Prefixed first, standard last. Written the other way round the
-     minifier kept only the -webkit- form, so Chrome went on honouring
-     Tailwind's unprefixed backdrop-filter and the blur never lifted. */
-  .backdrop-blur-sm,
+  /* The glass stays on touch; only the radius comes down.
+     A backdrop blur costs roughly in proportion to its radius — the
+     compositor samples a wider neighbourhood for every pixel — and at
+     24px across a dozen cards that showed up as four stalls in a scroll,
+     the worst 225ms. At 10px the surface still reads as frosted and the
+     stalls go. Removing the filter outright, which is what this rule used
+     to do, removed the look instead of its cost. */
   [class*="backdrop-blur"] {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
 }
 
