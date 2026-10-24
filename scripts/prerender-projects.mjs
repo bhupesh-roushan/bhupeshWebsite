@@ -15,6 +15,15 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { loadSiteData } from "./load-site-data.mjs";
+import {
+  stripJsonLd,
+  injectJsonLd,
+  homeBlocks,
+  projectBlocks,
+  writingBlocks,
+  writingIndexBlocks,
+} from "./structured-data.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.bhupesh.blog";
@@ -45,7 +54,11 @@ const titleFor = (id) => {
   return { title, tagline };
 };
 
-const shell = readFileSync(resolve(root, "dist/index.html"), "utf8");
+// Stripped of JSON-LD on the way in: structured data is generated per page from
+// the data (see structured-data.mjs), so whatever the shell carries — nothing
+// today, but also a copy left behind by a previous run of this script — must not
+// leak into pages that need different blocks.
+const shell = stripJsonLd(readFileSync(resolve(root, "dist/index.html"), "utf8"));
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
 /**
@@ -79,6 +92,8 @@ const ogImage = (name) => {
   return `${SITE}/og/${name}.png`;
 };
 
+const data = await loadSiteData();
+
 let written = 0;
 for (const id of entries) {
   const { title, tagline } = titleFor(id);
@@ -104,6 +119,13 @@ for (const id of entries) {
   ]) {
     html = sub(html, re, value, what);
   }
+
+  const project = data.projects.find((p) => p.id === id);
+  if (!project) throw new Error(`prerender: no project data for "${id}"`);
+  html = injectJsonLd(
+    html,
+    projectBlocks(project, { image: ogImage(`project-${id}`), studies: data.caseStudies })
+  );
 
   // Written in both shapes on purpose. Static hosts disagree about how a
   // extensionless path resolves — some map /projects/x to x/index.html, others
@@ -162,32 +184,15 @@ for (const id of studies) {
   }
 
   /**
-   * Article schema. The homepage already carries Person; this is what makes a
-   * write-up eligible to appear as an article under that name rather than as
-   * an anonymous page. Injected into the prerendered <head> because crawlers
-   * do not run the JavaScript that would otherwise add it.
+   * Article schema and breadcrumbs. The homepage carries Person; this is what
+   * makes a write-up eligible to appear as an article under that name rather
+   * than as an anonymous page. Injected into the prerendered <head> because
+   * crawlers do not run the JavaScript that would otherwise add it.
    */
-  const article = {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    headline: title,
-    description: dek,
-    datePublished: published,
-    inLanguage: "en",
-    keywords: tags.join(", "),
-    image: ogImage(`writing-${id}`),
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    author: {
-      "@type": "Person",
-      name: "Bhupesh Roushan",
-      url: `${SITE}/`,
-    },
-    about: { "@type": "SoftwareApplication", name: project },
-  };
-
+  html = injectJsonLd(html, writingBlocks(id, study, { image: ogImage(`writing-${id}`) }));
   html = html.replace(
     "</head>",
-    `    <script type="application/ld+json">\n${JSON.stringify(article, null, 2)}\n    </script>\n` +
+    () =>
       `    <link rel="alternate" type="application/rss+xml" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.xml" />\n` +
       `    <link rel="alternate" type="application/feed+json" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.json" />\n  </head>`
   );
@@ -312,10 +317,20 @@ writeFileSync(resolve(root, "dist/writing/feed.json"), JSON.stringify(jsonFeed, 
   ]) {
     html = sub(html, re, value, what);
   }
+  html = injectJsonLd(
+    html,
+    writingIndexBlocks(CASE_STUDIES, { description: desc, image: ogImage("writing") })
+  );
   mkdirSync(resolve(root, "dist/writing"), { recursive: true });
   writeFileSync(resolve(root, "dist/writing/index.html"), html);
   writeFileSync(resolve(root, "dist/writing.html"), html);
 }
+
+// The home page last, now that every other page has been cut from the bare
+// shell. Its Person, WebSite and ProfilePage used to be hand-written in
+// index.html; they are generated here so jobTitle, sameAs and the rest come from
+// the same data the page renders.
+writeFileSync(resolve(root, "dist/index.html"), injectJsonLd(shell, homeBlocks(data)));
 
 /**
  * Vercel serves 404.html for anything that matches no file. Without one it

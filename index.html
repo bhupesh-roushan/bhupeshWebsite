@@ -57,39 +57,11 @@
     />
     <meta name="twitter:image" content="https://www.bhupesh.blog/og/home.png" />
 
-    <!-- Lets Google render a person rich result rather than a plain blue link -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Bhupesh Roushan",
-        "url": "https://www.bhupesh.blog/",
-        "image": "https://www.bhupesh.blog/og/home.png",
-        "jobTitle": "Curriculum Engineer",
-        "worksFor": { "@type": "Organization", "name": "Masai" },
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Bangalore",
-          "addressCountry": "IN"
-        },
-        "email": "mailto:roushan.bhupesh@gmail.com",
-        "sameAs": [
-          "https://github.com/bhupesh-roushan",
-          "https://www.linkedin.com/in/roushanb",
-          "https://x.com/roushanwa",
-          "https://www.instagram.com/roushanwa"
-        ],
-        "knowsAbout": [
-          "Full Stack Development",
-          "React",
-          "Node.js",
-          "TypeScript",
-          "MongoDB",
-          "Generative AI",
-          "Prompt Engineering"
-        ]
-      }
-    </script>
+    <!-- Structured data (Person, WebSite, ProfilePage) is not written here. It is
+         generated from src/data by scripts/structured-data.mjs and injected by the
+         prerender step, so jobTitle, sameAs and knowsAbout can't drift from what
+         the page shows. Anything placed in a ld+json script in this file is
+         removed at build time. -->
     <!-- Same-origin and preloaded: the browser can start fetching these
          before the stylesheet that references them has even parsed. -->
     <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
