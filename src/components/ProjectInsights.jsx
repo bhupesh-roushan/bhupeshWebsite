@@ -66,11 +66,14 @@ export const ProjectInsights = ({ projects, onOpenStudy }) => {
           <p className="eyebrow mb-4">By the numbers</p>
           <dl className="grid flex-1 grid-cols-2 gap-x-4 gap-y-5">
             {figures.map((f) => (
-              <div key={f.label}>
+              // dt before dd, as a definition list requires — the figure is
+              // the definition, so it is flipped back on top visually. In
+              // source order a screen reader said "6" and then "projects".
+              <div key={f.label} className="flex flex-col-reverse justify-end">
+                <dt className="mt-1.5 text-xs text-gray-400">{f.label}</dt>
                 <dd className="text-4xl font-bold leading-none tracking-tight text-white tabular-nums sm:text-5xl">
                   <NumberTicker value={f.value} />
                 </dd>
-                <dt className="mt-1.5 text-xs text-gray-400">{f.label}</dt>
               </div>
             ))}
           </dl>

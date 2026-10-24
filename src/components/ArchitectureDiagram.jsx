@@ -107,17 +107,28 @@ export const ArchitectureDiagram = ({ id }) => {
   const storeY = store ? lastRowBottom + GAP_Y + 6 : null;
   const height = (store ? storeY + 34 : lastRowBottom) + 8;
   const marker = `arrow-${id}`;
+  // An img role makes everything inside it presentational — including the
+  // links, which stay in the tab order but vanish from the accessibility tree.
+  // A diagram with linked boxes is a group of links instead.
+  const linked = layers.some((l) => l.some((b) => b.href));
 
   return (
     <div>
       {/* Only the drawing scrolls. Sized to a phone-width modal the whole
           880-unit frame scales to ~0.32, putting box labels under 5px — but
           the note must stay put, or it slides off as you pan the diagram. */}
-      <div className="overflow-x-auto">
+      <div
+        className="overflow-x-auto"
+        // Where it scrolls, the keyboard has to be able to reach the overflow.
+        // (A linked diagram already has tab stops inside it.)
+        tabIndex={linked ? undefined : 0}
+        role={linked ? undefined : "region"}
+        aria-label={linked ? undefined : "Architecture diagram, scrolls sideways on small screens"}
+      >
         <svg
           viewBox={`0 0 ${W} ${height}`}
           className="h-auto w-full min-w-[640px]"
-          role="img"
+          role={linked ? "group" : "img"}
           aria-label={`${id} architecture: ${layers
             .map((l) => l.map((b) => b.title).join(", "))
             .join(" then ")}${store ? `, persisting to ${store}` : ""}.`}

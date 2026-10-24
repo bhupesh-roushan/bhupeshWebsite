@@ -85,12 +85,14 @@ export const JdMatcher = () => {
         <LuSearch className="h-4 w-4 text-indigo-300" />
         <h3 className="text-sm font-bold text-white">Role fit check</h3>
       </div>
-      <p className="mb-4 text-xs text-gray-400">
+      <p id="jd-help" className="mb-4 text-xs text-gray-400">
         Paste a job description — it&apos;s matched against my skill list in your
         browser. Nothing is uploaded.
       </p>
 
       <textarea
+        aria-label="Job description"
+        aria-describedby="jd-help"
         value={jd}
         onChange={(e) => setJd(e.target.value)}
         rows={4}
@@ -99,17 +101,22 @@ export const JdMatcher = () => {
       />
 
       {/* Said out loud. Below the threshold this used to render nothing at
-          all, which is indistinguishable from a tool that is broken. */}
+          all, which is indistinguishable from a tool that is broken. Not a
+          live region: it recounts on every keystroke. */}
       {!result && typed > 0 && (
-        <p className="mt-3 text-xs text-gray-400" role="status">
+        <p className="mt-3 text-xs text-gray-400">
           Keep going — paste at least a sentence or two ({MIN_CHARS - typed} more
           characters) and the match appears here.
         </p>
       )}
 
-      {result && (
-        <div className="mt-5" role="status">
-          <div className="mb-3 flex items-baseline gap-2">
+      {/* Mounted from the start, so it is already in the page when the first
+          result lands — a region that appears with its text in it is often not
+          announced. It holds only the one-line count; the skill chips below sit
+          outside it, or every keystroke would read out the whole list. */}
+      <div role="status">
+        {result && (
+          <div className="mt-5 flex items-baseline gap-2">
             <span className="text-2xl font-bold text-white">
               {result.matched.length}
             </span>
@@ -117,7 +124,11 @@ export const JdMatcher = () => {
               of my {result.total} listed skills appear in this role
             </span>
           </div>
+        )}
+      </div>
 
+      {result && (
+        <div className="mt-3">
           {result.matched.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
               {result.matched.map((s) => (

@@ -19,7 +19,7 @@ export const WritingIndex = () => {
     <section className="mx-auto max-w-3xl px-4 pb-24 pt-28 sm:pt-32">
       <Link viewTransition
         to="/"
-        className="mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
+        className="tap mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
       >
         <LuArrowLeft className="h-3.5 w-3.5" />
         Back to the site

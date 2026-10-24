@@ -119,6 +119,9 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
 
   return (
     <nav
+      // Named, because the write-ups carry two more <nav>s (contents, more
+      // writing) and landmarks of the same kind must be told apart.
+      aria-label="Primary"
       className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
         scrolled
           // Frosted once off the hero: the page shows through, blurred. It
@@ -149,7 +152,9 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               // the scroll spy decides.
               const isActive = link.to ? onWriting : !onWriting && !onInsights && active === link.id;
               const cls = `relative rounded-full px-2 py-1.5 text-[13px] transition-colors lg:px-4 lg:text-sm ${
-                isActive ? "text-white" : "text-gray-400 hover:text-white"
+                // gray-300, not 400: over the hero's brightest aurora bands the
+                // lighter grey measured 3.4:1 in the dark theme.
+                isActive ? "text-white" : "text-gray-300 hover:text-white"
               }`;
               const inner = (
                 <>
@@ -164,11 +169,11 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
                 </>
               );
               return link.to ? (
-                <Link key={link.to} to={link.to} viewTransition className={cls}>
+                <Link key={link.to} to={link.to} viewTransition className={cls} aria-current={isActive ? "page" : undefined}>
                   {inner}
                 </Link>
               ) : (
-                <a key={link.id} href={`/#${link.id}`} className={cls}>
+                <a key={link.id} href={`/#${link.id}`} className={cls} aria-current={isActive ? "location" : undefined}>
                   {inner}
                 </a>
               );
@@ -185,7 +190,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-gray-400 transition-all hover:scale-110 hover:text-white"
+                  className="tap text-gray-400 transition-all hover:scale-110 hover:text-white"
                 >
                   <Icon className="h-[18px] w-[18px]" />
                 </a>
@@ -224,9 +229,9 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
             <div className="hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 sm:max-md:flex min-[1200px]:flex">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               <span className="text-xs tabular-nums text-gray-300">{indiaTime}</span>
-              {/* gray-400: gray-500 measures 4.01:1 on the page background, under the
-                  4.5 needed at 11px. */}
-              <span className="hidden text-[11px] text-gray-400 min-[1200px]:inline">IST</span>
+              {/* gray-300: gray-500 measured 4.01:1 on the page background and
+                  gray-400 3.5:1 over the aurora, both under the 4.5 needed at 11px. */}
+              <span className="hidden text-[11px] text-gray-300 min-[1200px]:inline">IST</span>
             </div>
 
             {/* Search / ⌘K. Wide screens only — below 1200px the bar has no
@@ -249,6 +254,8 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              data-menu-toggle
               className="cursor-pointer rounded-md p-2.5 text-white transition-colors hover:bg-white/10 md:hidden"
             >
               {menuOpen ? <LuX className="h-6 w-6" /> : <LuMenu className="h-6 w-6" />}

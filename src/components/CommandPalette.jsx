@@ -63,7 +63,9 @@ export default function CommandPalette({ onClose }) {
   const listRef = useRef(null);
 
   const goToSection = (id) => {
-    const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const scroll = () =>
+      document.getElementById(id)?.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "start" });
     if (pathname === "/") return scroll();
     navigate("/");
     // The home sections load a moment after the route does; wait for the target.
@@ -160,6 +162,17 @@ export default function CommandPalette({ onClose }) {
     listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }, [index, results]);
 
+  // Rows grouped for the listbox: an option's group has to be an ancestor
+  // (role="group", named by its heading), not a paragraph interleaved with the
+  // options. `i` stays the flat index, which is what the highlight, the ids and
+  // aria-activedescendant all use.
+  const groups = [];
+  results.forEach((item, i) => {
+    const last = groups[groups.length - 1];
+    if (last && last.name === item.group) last.rows.push({ item, i });
+    else groups.push({ name: item.group, rows: [{ item, i }] });
+  });
+
   const choose = (item) => {
     onClose();
     // After the dialog has closed and returned focus, so the action isn't undone by it.
@@ -169,6 +182,9 @@ export default function CommandPalette({ onClose }) {
   const onKeyDown = (e) => {
     if (e.key === "Escape") {
       e.preventDefault();
+      // Stopped here: opened from a project modal, the modal's own document-level
+      // Escape handler would otherwise close both at once.
+      e.stopPropagation();
       onClose();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -184,8 +200,6 @@ export default function CommandPalette({ onClose }) {
     }
   };
 
-  let lastGroup = null;
-
   return createPortal(
     <div className="fixed inset-0 z-[110] flex items-start justify-center px-4 pt-[14vh]" onKeyDown={onKeyDown}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
@@ -196,15 +210,18 @@ export default function CommandPalette({ onClose }) {
         aria-label="Command palette"
         className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-white/15 bg-panel/95 shadow-2xl backdrop-blur-xl"
       >
-        <div className="flex items-center gap-3 border-b border-white/10 px-4">
+        {/* focus-within: the input draws no outline of its own, so the row does. */}
+        <div className="flex items-center gap-3 border-b border-white/10 px-4 focus-within:bg-white/[0.04]">
           <LuSearch className="h-4 w-4 shrink-0 text-gray-400" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             role="combobox"
-            aria-expanded="true"
-            aria-controls="palette-list"
+            aria-label="Search the site"
+            aria-autocomplete="list"
+            aria-expanded={results.length > 0}
+            aria-controls={results.length > 0 ? "palette-list" : undefined}
             aria-activedescendant={results[index] ? `palette-${index}` : undefined}
             placeholder="Search projects, writing, actions…"
             className="h-14 w-full bg-transparent text-sm text-white placeholder:text-gray-500 focus:outline-none"
@@ -212,38 +229,62 @@ export default function CommandPalette({ onClose }) {
           <kbd className="hidden shrink-0 rounded border border-white/15 px-1.5 py-0.5 text-[10px] text-gray-400 sm:block">esc</kbd>
         </div>
 
-        <ul id="palette-list" role="listbox" ref={listRef} className="max-h-[50vh] overflow-y-auto p-2">
-          {results.length === 0 && (
-            <li className="px-3 py-8 text-center text-sm text-gray-400">Nothing matches &ldquo;{query}&rdquo;.</li>
-          )}
-          {results.map((item, i) => {
-            const header = item.group !== lastGroup;
-            lastGroup = item.group;
-            const selected = i === index;
-            return (
-              <li key={`${item.group}-${item.label}`} role="presentation">
-                {header && (
-                  <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500">{item.group}</p>
-                )}
-                <div
-                  id={`palette-${i}`}
-                  role="option"
-                  aria-selected={selected}
-                  onMouseMove={() => setIndex(i)}
-                  onClick={() => choose(item)}
-                  className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
-                    selected ? "bg-white/10 text-white" : "text-gray-300"
-                  }`}
-                >
-                  <item.Icon className="h-4 w-4 shrink-0 text-gray-400" />
-                  <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                  {item.hint && <span className="hidden max-w-[40%] truncate text-xs text-gray-500 sm:block">{item.hint}</span>}
-                  {selected && <LuCornerDownLeft className="h-3.5 w-3.5 shrink-0 text-gray-400" />}
-                </div>
-              </li>
-            );
-          })}
+        {/* Said, not just shown: the list changes under the typing, and nothing
+            else tells a screen reader how many rows are left or that none are. */}
+        <p role="status" className="sr-only">
+          {results.length === 0 ? "No results" : `${results.length} result${results.length === 1 ? "" : "s"}`}
+        </p>
+
+        {/* Mouse-down on the list must not pull focus off the input: Escape and
+            the arrow keys are handled on the dialog, and a click on padding
+            would otherwise strand focus on <body> where they do nothing. */}
+        {/* Outside the listbox, which with no options in it is invalid — so it is
+            only rendered when there is something to list. */}
+        {results.length === 0 && (
+          <p className="px-3 py-10 text-center text-sm text-gray-400">Nothing matches &ldquo;{query}&rdquo;.</p>
+        )}
+        {results.length > 0 && (
+        <ul
+          id="palette-list"
+          role="listbox"
+          aria-label="Results"
+          ref={listRef}
+          onMouseDown={(e) => e.preventDefault()}
+          className="max-h-[50vh] overflow-y-auto p-2"
+        >
+          {groups.map(({ name, rows }) => (
+            <li key={name} role="presentation">
+              <ul role="group" aria-labelledby={`palette-group-${name}`}>
+                <li role="presentation">
+                  <p id={`palette-group-${name}`} className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-gray-500">{name}</p>
+                </li>
+                {rows.map(({ item, i }) => {
+                  const selected = i === index;
+                  return (
+                    <li key={`${item.group}-${item.label}`} role="presentation">
+                      <div
+                        id={`palette-${i}`}
+                        role="option"
+                        aria-selected={selected}
+                        onMouseMove={() => setIndex(i)}
+                        onClick={() => choose(item)}
+                        className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
+                          selected ? "bg-white/10 text-white" : "text-gray-300"
+                        }`}
+                      >
+                        <item.Icon className="h-4 w-4 shrink-0 text-gray-400" />
+                        <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                        {item.hint && <span className="hidden max-w-[40%] truncate text-xs text-gray-500 sm:block">{item.hint}</span>}
+                        {selected && <LuCornerDownLeft className="h-3.5 w-3.5 shrink-0 text-gray-400" />}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          ))}
         </ul>
+        )}
 
         <div className="flex items-center gap-4 border-t border-white/10 px-4 py-2.5 text-[11px] text-gray-500">
           <span><kbd className="font-sans">↑↓</kbd> move</span>

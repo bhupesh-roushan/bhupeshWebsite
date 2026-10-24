@@ -32,6 +32,7 @@ function toWeeks(days) {
 /** Presentational only — the section above owns fetching. */
 export const GithubHeatmap = ({ days }) => {
   const weeks = toWeeks(days);
+  const total = days.reduce((n, d) => n + d.count, 0);
 
   // Label a column when its month differs from the column before it.
   const monthLabels = weeks.map((week, i) => {
@@ -46,7 +47,15 @@ export const GithubHeatmap = ({ days }) => {
   return (
     <>
       {/* 53 columns never fit a phone — scroll the grid, not the page. */}
-      <div className="-mx-1 overflow-x-auto px-1 pb-1">
+      <div
+        className="-mx-1 overflow-x-auto px-1 pb-1"
+        // A grid of 371 unlabelled squares means nothing to a screen reader, and
+        // the per-day `title`s are mouse-only. The total says what it shows.
+        // Focusable so a keyboard can scroll it where it overflows.
+        tabIndex={0}
+        role="img"
+        aria-label={`Contribution calendar for the last year: ${total} contributions.`}
+      >
         <div className="inline-flex flex-col gap-1">
           <div className="flex gap-[3px]">
             {monthLabels.map((label, i) => (
@@ -83,7 +92,7 @@ export const GithubHeatmap = ({ days }) => {
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-end gap-1.5 text-[10px] text-gray-500">
+      <div className="mt-4 flex items-center justify-end gap-1.5 text-[10px] text-gray-500" aria-hidden="true">
         <span>Less</span>
         {LEVEL_COLORS.map((c) => (
           <span

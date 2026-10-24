@@ -50,7 +50,15 @@ const DailyChart = ({ series }) => {
 
   return (
     <div className="viz-root">
-      <div className="relative flex gap-2" style={{ height: 180 }}>
+      {/* One image with a sentence for a name: the bars answer to a mouse and
+          nothing else, so what they say is said here, and "View as table" below
+          has every figure. */}
+      <div
+        className="relative flex gap-2"
+        style={{ height: 180 }}
+        role="img"
+        aria-label={`Bar chart of page views per day, ${dayLabel(series[0].date)} to ${dayLabel(series[n - 1].date)}. Busiest day ${nf.format(Math.max(...series.map((d) => d.views)))} views. The same figures are in the table below.`}
+      >
         {/* Axis values sit in their own column, so no bar ever runs under one. */}
         <div className="flex w-8 flex-col justify-between text-right text-[10px] tabular-nums text-gray-400" aria-hidden="true">
           {ticks.map((t) => (
@@ -92,7 +100,6 @@ const DailyChart = ({ series }) => {
 
           {point && (
             <div
-              role="status"
               className="pointer-events-none absolute z-10 rounded-lg border border-white/15 bg-[var(--surface-solid)] px-3 py-2 text-xs text-white shadow-lg"
               style={{
                 left: `${((hover + 0.5) / n) * 100}%`,
@@ -117,8 +124,15 @@ const DailyChart = ({ series }) => {
       {/* The same numbers as text — for a screen reader, and for anyone who
           wants the exact figure rather than a bar's height. */}
       <details className="mt-4 text-xs text-gray-400">
-        <summary className="cursor-pointer select-none hover:text-white">View as table</summary>
-        <div className="mt-2 max-h-56 overflow-auto rounded-lg border border-white/10">
+        <summary className="tap cursor-pointer select-none hover:text-white">View as table</summary>
+        {/* Focusable, because a scrolling region a keyboard cannot reach is a
+            table nobody on one can read past its first rows. */}
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Daily views, as a table"
+          className="mt-2 max-h-56 overflow-auto rounded-lg border border-white/10"
+        >
           <table className="w-full text-left">
             <thead className="sticky top-0 bg-[var(--surface-solid)] text-[11px] uppercase tracking-wider text-gray-300">
               <tr><th className="px-3 py-2">Day</th><th className="px-3 py-2 text-right">Views</th><th className="px-3 py-2 text-right">Visitors</th></tr>
@@ -144,7 +158,7 @@ const Ranked = ({ title, rows, format = (s) => s, empty = "Nothing recorded yet.
   const top = Math.max(1, ...rows.map((r) => r.count));
   return (
     <section className="viz-root rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-      <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-300">{title}</h3>
+      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-300">{title}</h2>
       {rows.length === 0 ? (
         <p className="text-xs text-gray-400">{empty}</p>
       ) : (
@@ -201,7 +215,7 @@ export const Insights = () => {
     <section className="mx-auto max-w-4xl px-4 pb-24 pt-28 sm:pt-32">
       <Link
         to="/"
-        className="mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
+        className="tap mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
       >
         <LuArrowLeft className="h-3.5 w-3.5" />
         Back to the site
@@ -233,7 +247,17 @@ export const Insights = () => {
         </div>
       </div>
 
-      <div className="mt-8" aria-live="polite">
+      {/* The only live region on the page, and one line long. This used to be
+          aria-live on the whole dashboard, so the swap from skeleton to figures
+          would have been read out in full. */}
+      <p role="status" className="sr-only">
+        {state.status === "loading" && "Loading the numbers."}
+        {state.status === "ready" && `Showing the last ${data.days} days.`}
+        {state.status === "error" && "Couldn't load the numbers."}
+        {state.status === "off" && "No store is connected yet."}
+      </p>
+
+      <div className="mt-8">
         {state.status === "loading" && (
           <div className="space-y-4" aria-busy="true">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

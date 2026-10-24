@@ -29,7 +29,7 @@ export const CaseStudy = () => {
   if (!study) {
     return (
       <section className="mx-auto max-w-3xl px-4 py-32 text-center">
-        <p className="text-sm text-gray-400">That write-up doesn&rsquo;t exist.</p>
+        <h1 className="text-sm text-gray-400">That write-up doesn&rsquo;t exist.</h1>
         <Link viewTransition
           to="/"
           className="mt-4 inline-flex items-center gap-2 text-sm text-white underline underline-offset-4"
@@ -51,7 +51,7 @@ export const CaseStudy = () => {
       <ReadingProgress targetRef={article} />
       <Link viewTransition
         to={`/projects/${study.projectId}`}
-        className="mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
+        className="tap mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
       >
         <LuArrowLeft className="h-3.5 w-3.5" />
         {study.project}
@@ -188,8 +188,8 @@ export const CaseStudy = () => {
       {/* Somewhere to go next. Reaching the end of one of these used to be a
           dead end — the other three existed only behind a project modal. */}
       {others.length > 0 && (
-        <nav className="mt-14 border-t border-white/10 pt-8">
-          <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
+        <nav aria-labelledby="more-writing" className="mt-14 border-t border-white/10 pt-8">
+          <h2 id="more-writing" className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
             More writing
           </h2>
           <ul className="space-y-2.5">
@@ -217,7 +217,7 @@ export const CaseStudy = () => {
           </ul>
           <Link viewTransition
             to="/writing"
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-white"
+            className="tap mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-white"
           >
             All writing
             <LuArrowUpRight className="h-3.5 w-3.5" />

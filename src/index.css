@@ -99,10 +99,15 @@
   --color-emerald-200: var(--color-emerald-800);
   --color-emerald-300: var(--color-emerald-700);
   --color-emerald-400: var(--color-emerald-600);
+  /* red and pink 400 sit on 700, not 600: 600 measured 4.27:1 and 4.20:1 on the
+     tinted card fills, a hair under the 4.5 body text needs. */
   --color-red-300: var(--color-red-700);
-  --color-red-400: var(--color-red-600);
+  --color-red-400: var(--color-red-700);
   --color-pink-300: var(--color-pink-700);
-  --color-pink-400: var(--color-pink-600);
+  --color-pink-400: var(--color-pink-700);
+  /* The middle of the hero's name gradient. blue-400 on white is 2.5:1, under
+     the 3:1 large text needs, and it is the stop the eye lands on in "Roushan". */
+  --color-blue-400: var(--color-blue-600);
   --color-orange-300: var(--color-orange-700);
   --color-orange-400: var(--color-orange-600);
   --color-sky-300: var(--color-sky-700);
@@ -110,6 +115,8 @@
 
   /* Fixed-colour things with no Tailwind name. */
   --accent-ink: 52%;            /* how much of an accent survives in text; see lib/accent.js */
+  --accent-lift: 0%;
+  --focus-ring: #4338ca;        /* indigo-700: 8:1 on the page */
   --icon-neutral: #334155;      /* skill icons that are near-white on dark */
   --heat-0: rgba(12, 18, 34, 0.07);
   --heat-1: #9be9a8;
@@ -153,6 +160,15 @@
    var(--heat-1) without caring which theme it is in. */
 :root {
   --accent-ink: 100%;
+  /* The indigo accent as text measures 3.9-4.4:1 on the tinted chips it labels
+     (the brighter accents clear 4.5 without help). A twelfth of white takes
+     indigo past 4.7 and barely moves the others; see lib/accent.js. */
+  --accent-lift: 12%;
+  --focus-ring: #818cf8;        /* indigo-400: 6.7:1 on the page */
+  /* gray-500 was #6a7282, which is 3.9-4.3:1 on cards and the page — under 4.5
+     for the 10-12px labels it is used on. Re-stepped here once, instead of
+     swapping the class at forty call sites; it still sits below gray-400. */
+  --color-gray-500: #838c9c;
   --icon-neutral: #e2e8f0;
   --heat-0: rgba(255, 255, 255, 0.06);
   --heat-1: #0e4429;
@@ -219,6 +235,56 @@ body {
   font-family: "Space Grotesk", sans-serif;
   background: var(--color-page);
   color: var(--color-gray-100, #f3f4f6);
+}
+
+/* One focus ring for every control, in both themes. Zero specificity (:where),
+   so a component that draws its own indicator — the diagram boxes — still wins;
+   unlayered, so it also beats Tailwind's focus:outline-none on form fields,
+   which otherwise left the border colour as the only sign of focus. The
+   palette's combobox is left out: it is the only control in that dialog and its
+   row carries the indicator instead. */
+:where(a, button, summary, select, textarea, input:not([role="combobox"]), [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Small links and icons keep their size and gain a hit area: an invisible 8px
+   margin on each side. 18-20px icons and 16px text links are fiddly on a phone
+   and under the 24px minimum on their own; this takes them to 34-36px without
+   moving anything on the page. (Neighbours are 16px+ apart, so the margins
+   touch but never overlap.) */
+.tap {
+  position: relative;
+}
+.tap::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}
+
+/* Off-screen until it receives focus, then the first thing on the page. Fixed
+   colours rather than theme tokens: white on this indigo is 6.3:1 in both. */
+.skip-link {
+  position: fixed;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 300;
+  transform: translateY(-200%);
+  border-radius: 0.5rem;
+  background: #4f46e5;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* The target of the skip link. It is focused programmatically, never by Tab,
+   so it needs no ring of its own. */
+main:focus {
+  outline: none;
 }
 
 /* Moving between themes eases rather than flashing — but only after the first
@@ -297,6 +363,22 @@ html.theme-fade *::after {
     animation: reveal-in linear both;
     animation-timeline: view();
     animation-range: entry 0px entry 280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Pulsing is decoration (the clock's dot, the loading skeletons); the page
+     already says "loading" in words where it matters. Route changes use the
+     View Transitions API, whose default cross-fade is the one animation here
+     that is not ours to switch off in a component. */
+  .animate-pulse,
+  .animate-blink {
+    animation: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 
@@ -449,7 +531,10 @@ html.theme-fade *::after {
   background-size: 300%, 200%;
   background-position: 50% 50%, 50% 50%;
   filter: blur(10px);
-  opacity: 0.75;
+  /* 0.75 put the brightest band under the headline's sky-blue end at 2.3:1,
+     under the 3:1 large text needs. At 0.6 the headline measured above it at
+     six points around the 60s cycle (the light theme sets its own below). */
+  opacity: 0.6;
   will-change: transform;
   -webkit-mask-image: radial-gradient(ellipse at 55% 0%, #000 18%, transparent 80%);
   mask-image: radial-gradient(ellipse at 55% 0%, #000 18%, transparent 80%);

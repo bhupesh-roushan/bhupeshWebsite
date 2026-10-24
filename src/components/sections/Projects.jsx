@@ -581,7 +581,7 @@ export const Projects = () => {
                   shortcut nobody uses — and these are the only way a mouse
                   user moves between projects without closing the modal. */}
               {prev && next && (
-                <nav className="mt-8 flex items-stretch gap-2 border-t border-white/10 pt-5">
+                <nav aria-label="Other projects" className="mt-8 flex items-stretch gap-2 border-t border-white/10 pt-5">
                   <button
                     type="button"
                     onClick={() => navigate(`/projects/${prev.id}`, { replace: true })}

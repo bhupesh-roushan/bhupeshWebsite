@@ -16,6 +16,13 @@ const FOCUSABLE =
 export const Modal = ({ open, onClose, label, children }) => {
   const panelRef = useRef(null);
   const reduceMotion = useReducedMotion();
+  // Callers pass a fresh onClose on every render. Left in the effect's
+  // dependencies it re-ran the whole open sequence each time — returning focus
+  // to the page behind, then pulling it back to the close button — whenever the
+  // parent re-rendered, which stepping between projects does. Read through a
+  // ref, the effect depends on `open` alone.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -26,7 +33,7 @@ export const Modal = ({ open, onClose, label, children }) => {
 
     const onKey = (e) => {
       if (e.key === "Escape") {
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key !== "Tab") return;
@@ -65,7 +72,7 @@ export const Modal = ({ open, onClose, label, children }) => {
       document.body.style.overflow = previousOverflow;
       if (opener instanceof HTMLElement) opener.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   return createPortal(
     <AnimatePresence>

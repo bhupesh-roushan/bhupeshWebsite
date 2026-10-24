@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { LuCalendarCheck } from "react-icons/lu";
@@ -21,13 +22,52 @@ const SOCIALS = [
   { href: "https://x.com/roushanwa", Icon: FaXTwitter, label: "X" },
 ];
 
+const FOCUSABLE = "a[href], button:not([disabled])";
+
 export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
+  const ref = useRef(null);
+
+  // While the menu is open: Escape closes it and hands focus back to the
+  // button that opened it, and Tab cycles between that button and the menu's
+  // own links rather than walking on into a page the overlay is covering.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const toggle = document.querySelector("[data-menu-toggle]");
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        toggle?.focus();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = [toggle, ...(ref.current?.querySelectorAll(FOCUSABLE) ?? [])].filter(Boolean);
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menuOpen, setMenuOpen]);
+
   return (
-    <div
+    <nav
+      ref={ref}
+      id="mobile-menu"
+      aria-label="Mobile"
       // z-40 sits under the navbar (z-50) so the toggle button stays clickable.
+      // `invisible` while closed: opacity and pointer-events alone left every
+      // link here focusable and readable by a screen reader, off-screen in
+      // effect but not in the tab order. Visibility transitions with the rest,
+      // so the fade out still plays before it takes effect.
       className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-2
         bg-page/98 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden
-        ${menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        ${menuOpen ? "pointer-events-auto visible opacity-100" : "pointer-events-none invisible opacity-0"}`}
     >
       {LINKS.map((link, i) => (
         <a
@@ -71,12 +111,12 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={label}
-            className="text-gray-400 transition-colors hover:text-white"
+            className="tap text-gray-400 transition-colors hover:text-white"
           >
             <Icon className="h-6 w-6" />
           </a>
         ))}
       </div>
-    </div>
+    </nav>
   );
 };

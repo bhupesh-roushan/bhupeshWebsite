@@ -1,9 +1,10 @@
 import { useState, useEffect, lazy, Suspense } from "react";
-import { LazyMotion } from "framer-motion";
+import { LazyMotion, MotionConfig } from "framer-motion";
 import "./App.css";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { Navbar } from "./components/Navbar";
 import { MobileMenu } from "./components/MobileMenu";
+import { Footer } from "./components/Footer";
 import { Home } from "./components/sections/Home";
 import "./index.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -96,6 +97,7 @@ function Page() {
     <>
       <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <main id="main" tabIndex={-1}>
       {/* One boundary per section, not one around the lot: a section that
           throws should cost you that section, not the whole page. */}
       {SECTIONS.map(({ name, Component }, i) => (
@@ -113,6 +115,8 @@ function Page() {
           </div>
         </ErrorBoundary>
       ))}
+      </main>
+      <Footer />
     </>
   );
 }
@@ -143,7 +147,16 @@ function App() {
   }, []);
 
   return (
+    // reducedMotion="user": under prefers-reduced-motion, framer drops every
+    // transform and layout animation (the nav pill, the card lift, the hero
+    // entrances) and keeps opacity fades, without each component having to ask.
+    <MotionConfig reducedMotion="user">
     <LazyMotion features={() => import("./lib/motionFeatures").then((m) => m.default)} strict>
+      {/* First stop for the keyboard: the navbar is a dozen tab stops before
+          any content. */}
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
       {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}{" "}
       <ScrollProgress />
       <div
@@ -162,11 +175,13 @@ function App() {
               <>
                 <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                 <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-                <ErrorBoundary name="WritingIndex">
-                  <Suspense fallback={<RouteFallback />}>
-                    <WritingIndex />
-                  </Suspense>
-                </ErrorBoundary>
+                <main id="main" tabIndex={-1}>
+                  <ErrorBoundary name="WritingIndex">
+                    <Suspense fallback={<RouteFallback />}>
+                      <WritingIndex />
+                    </Suspense>
+                  </ErrorBoundary>
+                </main>
               </>
             }
           />
@@ -176,11 +191,13 @@ function App() {
               <>
                 <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                 <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-                <ErrorBoundary name="CaseStudy">
-                  <Suspense fallback={<RouteFallback />}>
-                    <CaseStudy />
-                  </Suspense>
-                </ErrorBoundary>
+                <main id="main" tabIndex={-1}>
+                  <ErrorBoundary name="CaseStudy">
+                    <Suspense fallback={<RouteFallback />}>
+                      <CaseStudy />
+                    </Suspense>
+                  </ErrorBoundary>
+                </main>
               </>
             }
           />
@@ -190,11 +207,13 @@ function App() {
               <>
                 <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                 <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-                <ErrorBoundary name="Insights">
-                  <Suspense fallback={<RouteFallback />}>
-                    <Insights />
-                  </Suspense>
-                </ErrorBoundary>
+                <main id="main" tabIndex={-1}>
+                  <ErrorBoundary name="Insights">
+                    <Suspense fallback={<RouteFallback />}>
+                      <Insights />
+                    </Suspense>
+                  </ErrorBoundary>
+                </main>
               </>
             }
           />
@@ -210,6 +229,7 @@ function App() {
         )}
       </div>
     </LazyMotion>
+    </MotionConfig>
   );
 }
 

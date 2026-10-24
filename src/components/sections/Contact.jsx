@@ -4,8 +4,6 @@ import { HiringFacts } from "../HiringFacts";
 import { logVisitEvent } from "../../lib/visitLog";
 import { MAIL_SUBJECT, EMAIL } from "../../data/hiring";
 import { notify } from "../../lib/toast";
-import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 import {
   LuMail,
   LuPhone,
@@ -18,13 +16,6 @@ import { SectionHeader } from "../ui/SectionHeader";
 import { ShimmerButton } from "../magic/ShimmerButton";
 
 const PHONE = "+91 7992302851";
-
-const SOCIALS = [
-  { href: "https://www.linkedin.com/in/roushanb", Icon: FaLinkedin, label: "LinkedIn" },
-  { href: "https://github.com/bhupesh-roushan", Icon: FaGithub, label: "GitHub" },
-  { href: "https://www.instagram.com/roushanwa", Icon: FaInstagram, label: "Instagram" },
-  { href: "https://x.com/roushanwa", Icon: FaXTwitter, label: "X" },
-];
 
 const inputClass =
   "w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white " +
@@ -107,7 +98,8 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 sm:py-28">
+    // No bottom padding: it moved to the footer, which is no longer inside.
+    <section id="contact" className="pt-20 sm:pt-28">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
           <SectionHeader index="04" label="Contact" title="Get In Touch">
@@ -154,6 +146,11 @@ export const Contact = () => {
                       <LuCopy className="h-3.5 w-3.5" />
                     )}
                   </button>
+                  {/* The button's name never changes, so the icon swap says
+                      nothing to a screen reader; this does. */}
+                  <span role="status" className="sr-only">
+                    {copied ? "Email address copied" : ""}
+                  </span>
                 </div>
 
                 <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.04]">
@@ -328,41 +325,6 @@ export const Contact = () => {
           </div>
         </div>
       </RevealOnScroll>
-
-      {/* Footer */}
-      <footer className="mt-16 border-t border-white/10 pt-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 sm:flex-row sm:justify-between">
-          <p className="text-center text-xs text-gray-400 sm:text-left sm:text-sm">
-            © {new Date().getFullYear()} Bhupesh Roushan. All rights reserved.
-          </p>
-          <div className="flex items-center gap-5">
-            {SOCIALS.map(({ href, Icon, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="text-gray-400 transition-colors hover:text-white"
-              >
-                <Icon className="h-5 w-5" />
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* An IP is personal data under India's DPDP Act, and under GDPR for
-            any EU visitor, so a site that logs one has to say so. Six words
-            discharge that; a paragraph of it on a portfolio just makes the
-            page feel like it wants something. */}
-        <div className="mx-auto mt-5 max-w-6xl px-4">
-          {/* gray-400: gray-500 measures 4.10:1 here, under the 4.5 AA needs
-              at 11px. Third time this exact swap has been necessary. */}
-          <p className="text-center text-[11px] text-gray-400 sm:text-left">
-            Visits are logged. No cookies.
-          </p>
-        </div>
-      </footer>
     </section>
   );
 };
