@@ -45,6 +45,7 @@ import { CgWebsite } from "react-icons/cg";
 // Component references plus a hex colour, rather than ready-made JSX, so each
 // consumer can size and style them: the skills grid renders small inline chips,
 // the hero backdrop renders large scattered glyphs from this same list.
+/** @type {import("./types").SkillGroup[]} */
 export const skillGroups = [
   {
     title: "Frontend",
@@ -144,5 +145,8 @@ export const skillGroups = [
   },
 ];
 
-/** Every skill, flattened — used to populate the hero backdrop. */
+/**
+ * Every skill, flattened — used to populate the hero backdrop.
+ * @type {import("./types").Skill[]}
+ */
 export const allSkills = skillGroups.flatMap((group) => group.items);

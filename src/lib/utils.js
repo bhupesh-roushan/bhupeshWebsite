@@ -5,6 +5,7 @@ import { clsx } from "clsx";
 // classes for different properties (a grid span onto a card, a layout class
 // onto a wrapper), so there is never a later class overriding an earlier one.
 // If that ever changes, this is the one place to put twMerge back.
+/** @param {import("clsx").ClassValue[]} inputs */
 export function cn(...inputs) {
   return clsx(inputs);
 }

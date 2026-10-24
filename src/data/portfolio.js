@@ -15,6 +15,7 @@ import pictelAi from "../assets/pictelAi.webp";
 /**
  * Experience, education and internship, newest first.
  * `span` drives the bento footprint on the 6-column desktop grid.
+ * @type {import("./types").JourneyItem[]}
  */
 export const journey = [
   {
@@ -177,6 +178,7 @@ export const journey = [
  * hover over the card's screenshot. Put the file in /public/previews and point
  * at it, e.g. video: "/previews/cloudwatch.mp4". None have been recorded yet, so
  * no card shows one.
+ * @type {import("./types").Project[]}
  */
 export const projects = [
   {

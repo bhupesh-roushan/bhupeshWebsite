@@ -9,6 +9,10 @@
  */
 let host = null;
 
+/**
+ * @param {"success" | "error" | "info" | "warning"} kind
+ * @param {string} message
+ */
 export async function notify(kind, message) {
   const { toast, mountToasts } = await import("./toastRuntime.jsx");
   host ??= mountToasts();

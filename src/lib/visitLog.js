@@ -13,7 +13,9 @@ const SRC_KEY = "visit-src";
 
 const log = {
   start: Date.now(),
+  /** @type {{ name: string, detail: string, at: number }[]} */
   events: [],
+  /** @type {string[]} */
   path: [],
 };
 
@@ -31,7 +33,11 @@ function readSrc() {
   }
 }
 
-/** Anything worth knowing they did. Called from the components that do it. */
+/**
+ * Anything worth knowing they did. Called from the components that do it.
+ * @param {string} name
+ * @param {string} [detail]
+ */
 export function logVisitEvent(name, detail = "") {
   if (log.events.length >= 40) return; // a bored clicker shouldn't write an essay
   log.events.push({ name, detail: String(detail).slice(0, 60), at: Date.now() });
@@ -40,6 +46,7 @@ export function logVisitEvent(name, detail = "") {
   collect(name, detail);
 }
 
+/** @param {string} path */
 export function logVisitPath(path) {
   const last = log.path[log.path.length - 1];
   if (last === path) return;
@@ -48,6 +55,7 @@ export function logVisitPath(path) {
 
 export function visitSummary() {
   const seconds = Math.round((Date.now() - log.start) / 1000);
+  /** @param {string} name */
   const pick = (name) =>
     log.events.filter((e) => e.name === name).map((e) => e.detail).filter(Boolean);
 

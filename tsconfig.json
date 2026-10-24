@@ -1,0 +1,54 @@
+{
+  // Type-checks the plain-JS sources through their JSDoc, without renaming a
+  // file: scripts/*.mjs, the tests and Vercel's function build all load these
+  // .js files by path. Nothing is emitted — Vite and Vercel still do the build.
+  "compilerOptions": {
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": true,
+    "strict": true,
+
+    // Beyond `strict`. Each of these was already clean or took a one-line fix,
+    // and each catches something a handler can get wrong without anyone noticing:
+    // a code path that forgets to answer, a switch that falls into the next case.
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+
+    // Vite's resolution rules (extensionless and .jsx imports, asset imports)
+    // are what "Bundler" models. The api/ files import with explicit .js
+    // extensions, which it accepts too.
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+
+    // DOM for src/, Node for api/ and scripts/. One program checks both, so a
+    // browser-only global used inside api/ would not be caught here; ESLint's
+    // per-directory env covers that case.
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node", "vite/client"],
+
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "api/**/*.js",
+    "src/data/**/*",
+    "src/lib/**/*",
+    "src/hooks/**/*",
+    "scripts/*.mjs",
+    "tests/**/*.js",
+    "types/**/*.d.ts"
+  ],
+  // prerender-projects.mjs is left out for now, not because it cannot be
+  // checked (it needs about thirty parameter annotations) but because other
+  // work is editing that file and annotations scattered through it would turn
+  // every one of those changes into a merge conflict. Remove it from this list
+  // once it is quiet and add the annotations.
+  "exclude": ["node_modules", "dist", "scripts/prerender-projects.mjs"]
+}

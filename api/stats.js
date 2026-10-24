@@ -6,9 +6,22 @@
 
 import { configured, pipeline, dayKey } from "./_store.js";
 
+/** @typedef {import("../types/api").ApiRequest} ApiRequest */
+/** @typedef {import("../types/api").ApiResponse} ApiResponse */
+/** @typedef {import("./_store.js").RedisValue} RedisValue */
+
+/**
+ * One day's counters, field to count — the shape HGETALL is folded into.
+ * @typedef {Record<string, number>} DayCounts
+ */
+
 const MAX_DAYS = 90;
 
-/** The N most recent UTC days, oldest first. */
+/**
+ * The N most recent UTC days, oldest first.
+ * @param {number} n
+ * @param {Date} [now]
+ */
 export function lastDays(n, now = new Date()) {
   return Array.from({ length: n }, (_, i) => {
     const d = new Date(now);
@@ -17,16 +30,29 @@ export function lastDays(n, now = new Date()) {
   });
 }
 
-/** HGETALL arrives as a flat [field, value, field, value, …] list. */
+/**
+ * HGETALL arrives as a flat [field, value, field, value, …] list.
+ * @param {RedisValue} flat
+ * @returns {DayCounts}
+ */
 const toObject = (flat) => {
+  const list = /** @type {(string | number)[] | null} */ (flat);
+  /** @type {DayCounts} */
   const o = {};
-  for (let i = 0; i < (flat?.length ?? 0); i += 2) o[flat[i]] = Number(flat[i + 1]);
+  for (let i = 0; i < (list?.length ?? 0); i += 2) o[String(list?.[i])] = Number(list?.[i + 1]);
   return o;
 };
 
-/** Fold per-day hashes into totals. Pure, so it is testable without a store. */
+/**
+ * Fold per-day hashes into totals. Pure, so it is testable without a store.
+ * @param {string[]} days   oldest first, as lastDays returns them
+ * @param {DayCounts[]} hashes     one per day, same order
+ * @param {number[]} visitors  distinct-visitor count per day, same order
+ */
 export function aggregate(days, hashes, visitors) {
+  /** @param {string} prefix @param {number} [limit] */
   const rank = (prefix, limit = 8) => {
+    /** @type {Record<string, number>} */
     const totals = {};
     hashes.forEach((h) => {
       for (const [k, v] of Object.entries(h)) {
@@ -45,8 +71,11 @@ export function aggregate(days, hashes, visitors) {
     visitors: visitors[i] || 0,
   }));
 
+  /** @param {"views" | "visitors"} key */
   const sum = (key) => series.reduce((n, d) => n + d[key], 0);
+  /** @param {string} name */
   const events = (name) => rank(`ev:${name}:`, 10);
+  /** @param {string} name */
   const eventTotal = (name) =>
     hashes.reduce((n, h) => n + Object.entries(h).reduce((m, [k, v]) => (k === `ev:${name}` || k.startsWith(`ev:${name}:`) ? m + v : m), 0), 0);
 
@@ -77,6 +106,10 @@ export function aggregate(days, hashes, visitors) {
   };
 }
 
+/**
+ * @param {ApiRequest} req
+ * @param {ApiResponse} res
+ */
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -88,7 +121,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ configured: false });
   }
 
-  const n = Math.min(MAX_DAYS, Math.max(1, parseInt(req.query?.days, 10) || 30));
+  const n = Math.min(MAX_DAYS, Math.max(1, parseInt(String(req.query?.days), 10) || 30));
   const days = lastDays(n);
 
   try {
@@ -102,7 +135,7 @@ export default async function handler(req, res) {
     res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
     return res.status(200).json({ configured: true, ...aggregate(days, hashes, visitors) });
   } catch (err) {
-    console.error("stats:", err.message);
+    console.error("stats:", err instanceof Error ? err.message : err);
     return res.status(502).json({ error: "store unavailable" });
   }
 }

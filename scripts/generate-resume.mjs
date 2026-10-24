@@ -26,6 +26,7 @@ const entry = `
 // megabyte of escaped binary, and leaving react-icons external broke the
 // import because a bare specifier can't resolve from a generated module.
 // Neither is actually read here — only names, dates and bullets are.
+/** @type {import("esbuild").Plugin} */
 const stub = {
   name: "stub-non-data",
   setup(b) {
@@ -65,8 +66,21 @@ const mod = await import(
   `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`
 );
 
-const { journey, projects, skillGroups, hiring } = mod;
+// The bundle is loaded from a data: URL, which the checker cannot follow, so
+// the shapes are stated here — they are the same ones the entry above re-exports.
+const { journey, projects, skillGroups, hiring } =
+  /** @type {{
+   *   journey: import("../src/data/types").JourneyItem[],
+   *   projects: import("../src/data/types").Project[],
+   *   skillGroups: import("../src/data/types").SkillGroup[],
+   *   hiring: import("../src/data/types").HiringConfig,
+   * }} */ (mod);
 
+/**
+ * @param {string} text
+ * @param {number} [width]
+ * @param {string} [indent]
+ */
 const wrap = (text, width = 78, indent = "  ") =>
   text
     .split(" ")

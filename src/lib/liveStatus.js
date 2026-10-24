@@ -13,6 +13,16 @@ const URL = `https://api.github.com/users/${USER}/repos?sort=pushed&per_page=1&t
 const CACHE_KEY = "live-status-v2";
 const TTL_MS = 15 * 60 * 1000;
 
+/**
+ * @typedef {object} LastPush
+ * @property {string} repo
+ * @property {string} at  ISO timestamp of the push
+ */
+
+/**
+ * @returns {LastPush | null | undefined} undefined when nothing fresh is cached,
+ *   null when the cached answer was "no public push to show".
+ */
 const read = () => {
   try {
     const hit = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
@@ -22,6 +32,7 @@ const read = () => {
   }
 };
 
+/** @param {LastPush | null} value */
 const write = (value) => {
   try {
     sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), value }));
@@ -30,9 +41,14 @@ const write = (value) => {
   }
 };
 
-/** "3 hours ago", in the largest unit that is not zero. */
+/**
+ * "3 hours ago", in the largest unit that is not zero.
+ * @param {string | number | Date} date
+ * @param {number} [now]
+ */
 export function ago(date, now = Date.now()) {
   const s = Math.max(0, Math.round((now - new Date(date).getTime()) / 1000));
+  /** @type {[string, number][]} */
   const units = [
     ["year", 31536000],
     ["month", 2592000],

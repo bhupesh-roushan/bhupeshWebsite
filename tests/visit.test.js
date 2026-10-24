@@ -10,6 +10,7 @@ import {
   windowsName,
 } from "../api/visit.js";
 
+/** @param {string} ua */
 const blocked = (ua) => BOT.test(ua) || HTTP_CLIENT.test(ua);
 
 describe("visitor filtering", () => {

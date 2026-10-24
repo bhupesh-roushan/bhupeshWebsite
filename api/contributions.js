@@ -10,8 +10,24 @@
 // PAT belonging to the profile itself — private contributions are only visible
 // to the authenticated user.
 
+/** @typedef {import("../types/api").ApiRequest} ApiRequest */
+/** @typedef {import("../types/api").ApiResponse} ApiResponse */
+
+/**
+ * The part of GitHub's GraphQL reply this reads. `data.user` is null for a
+ * login that does not exist, and `errors` replaces `data` on a bad query, so
+ * both are optional rather than assumed.
+ * @typedef {object} GitHubReply
+ * @property {{ message: string }[]} [errors]
+ * @property {{ user: null | { contributionsCollection: { contributionCalendar: {
+ *   totalContributions: number,
+ *   weeks: { contributionDays: { date: string, contributionCount: number, contributionLevel: string }[] }[]
+ * } } } }} [data]
+ */
+
 const LOGIN = process.env.GITHUB_LOGIN || "bhupesh-roushan";
 
+/** @type {Record<string, number>} */
 const LEVELS = {
   NONE: 0,
   FIRST_QUARTILE: 1,
@@ -39,7 +55,11 @@ const QUERY = `
   }
 `;
 
-export default async function handler(req, res) {
+/**
+ * @param {ApiRequest} _req  unused — this route takes no input
+ * @param {ApiResponse} res
+ */
+export default async function handler(_req, res) {
   const token = process.env.GITHUB_TOKEN;
 
   // No token configured — tell the client to use its fallback rather than
@@ -64,6 +84,7 @@ export default async function handler(req, res) {
       return;
     }
 
+    /** @type {GitHubReply} */
     const json = await ghRes.json();
     if (json.errors?.length) {
       res.status(502).json({ error: json.errors[0].message });
@@ -101,6 +122,6 @@ export default async function handler(req, res) {
       source: "graphql",
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
   }
 }

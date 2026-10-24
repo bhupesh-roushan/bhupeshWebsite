@@ -9,6 +9,7 @@
  * `store` is optional — three of these have no database at all, and drawing an
  * empty persistence band under them would be a lie about what they are.
  * `note` carries the thing boxes can't: what the arrows actually carry.
+ * @type {Record<string, import("./types").DiagramSpec>}
  */
 export const DIAGRAMS = {
   atlas: {

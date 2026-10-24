@@ -21,6 +21,39 @@
 // Missing any required one and this reports 501 naming it, rather than
 // failing silently.
 
+/** @typedef {import("../types/api").ApiRequest} ApiRequest */
+/** @typedef {import("../types/api").ApiResponse} ApiResponse */
+
+/**
+ * Client Hints as the page sends them, already optional: a browser without
+ * `userAgentData` sends none of this, and the handler then reads the UA string.
+ * @typedef {object} ClientHint
+ * @property {string} [platform]
+ * @property {string} [platformVersion]
+ * @property {string} [model]
+ * @property {string} [browser]
+ * @property {boolean} [mobile]
+ */
+
+/**
+ * A device as the alert states it: a readable label and a coarse class.
+ * @typedef {object} Device
+ * @property {string} label
+ * @property {"Phone" | "Tablet" | "Desktop"} kind
+ */
+
+/**
+ * The part of ipwho.is's reply this reads. Every field is optional because the
+ * service omits what it does not know.
+ * @typedef {object} IpLookup
+ * @property {boolean} [success]
+ * @property {string} [city]
+ * @property {string} [region]
+ * @property {string} [country]
+ * @property {string} [type]
+ * @property {{ org?: string, isp?: string, asn?: number | string }} [connection]
+ */
+
 const EMAILJS_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
 
 /**
@@ -50,10 +83,15 @@ const BOT =
 const HTTP_CLIENT =
   /^(java|okhttp|apache-httpclient|go-http-client|python-httpx|httpx|libwww-perl|lwp|ruby|guzzle|reqwest|urllib|scrapy|winhttp|restsharp|postman|insomnia|httpie|dart|axios|undici|hackney|typhoeus|faraday)[\w.-]*[\s/]/i;
 
-/** Trim anything unbounded — a header is attacker-controlled input. */
+/**
+ * Trim anything unbounded — a header is attacker-controlled input.
+ * @param {unknown} value
+ * @param {number} [max]
+ */
 const clip = (value, max = 300) =>
   typeof value === "string" ? value.slice(0, max) : "";
 
+/** @param {unknown} header */
 const firstIp = (header) => clip(String(header || "").split(",")[0].trim(), 60);
 
 /**
@@ -64,6 +102,9 @@ const firstIp = (header) => clip(String(header || "").split(",")[0].trim(), 60);
  *
  * Best-effort by design. It runs on the alert path, so a slow or dead lookup
  * service must cost the visitor nothing and must never lose the email.
+ *
+ * @param {string} ip
+ * @returns {Promise<IpLookup | null>}
  */
 async function lookupIp(ip) {
   if (!ip || ip.startsWith("127.") || ip.startsWith("::")) return null;
@@ -83,8 +124,12 @@ async function lookupIp(ip) {
  * A raw user-agent is 120 characters of boilerplate wrapped around three facts.
  * Order matters: Edge and Opera both claim to be Chrome, and every iPad claims
  * to be a Mac, so the more specific test has to run first.
+ *
+ * @param {string} ua
+ * @returns {Device}
  */
 function readAgent(ua) {
+  /** @param {string} s */
   const has = (s) => ua.toLowerCase().includes(s);
 
   const browser =
@@ -100,10 +145,12 @@ function readAgent(ua) {
     /(?:edg[ea]?|opr|firefox|chrome|version)\/(\d+)/i
   )?.[1];
 
+  const androidVersion = ua.match(/android (\d+)/i)?.[1];
+
   const os =
     has("iphone") ? "iPhone"
     : has("ipad") ? "iPad"
-    : /android/i.test(ua) ? `Android${ua.match(/android (\d+)/i)?.[1] ? " " + ua.match(/android (\d+)/i)[1] : ""}`
+    : /android/i.test(ua) ? `Android${androidVersion ? " " + androidVersion : ""}`
     : has("mac os x") ? "macOS"
     : has("windows") ? "Windows"
     : has("cros") ? "ChromeOS"
@@ -126,6 +173,7 @@ function readAgent(ua) {
  * Google app arrived as "com.google.android.googlequicksearchbox" — accurate
  * and unreadable. These are the ones a portfolio link actually travels through.
  */
+/** @type {Record<string, string>} */
 const APPS = {
   "com.google.android.googlequicksearchbox": "Google app",
   "com.google.android.gm": "Gmail app",
@@ -144,7 +192,10 @@ const APPS = {
   "com.google.android.apps.docs": "Google Drive",
 };
 
-/** "linkedin.com" reads better in a subject line than the full tracking URL. */
+/**
+ * "linkedin.com" reads better in a subject line than the full tracking URL.
+ * @param {string} raw
+ */
 function readReferrer(raw) {
   if (!raw || raw === "direct") return "direct";
 
@@ -154,6 +205,7 @@ function readReferrer(raw) {
   // "com.whatsapp" from a hostname like "whatsapp.com" — matching on segment
   // count alone would read "google.com" as an app called "com". So the test
   // is that it starts with a TLD rather than ending with one.
+  /** @param {string} s */
   const looksLikePackage = (s) =>
     /^(com|org|net|io|co|app|android|dev|me|tv|in)\.[a-zA-Z]/.test(s) &&
     /^[a-zA-Z0-9_.]+$/.test(s);
@@ -178,13 +230,20 @@ function readReferrer(raw) {
   }
 }
 
-/** Windows reports 13+ for Windows 11; the platform version is not the name. */
+/**
+ * Windows reports 13+ for Windows 11; the platform version is not the name.
+ * @param {string} v
+ */
 const windowsName = (v) => (parseInt(v, 10) >= 13 ? "Windows 11" : "Windows 10");
 
 /**
  * Client Hints when the browser offered them, the user-agent otherwise.
  * The hints are the only route to a true Android version or a device model —
  * Chrome reports "Android 10" in the UA for every device on every version.
+ *
+ * @param {string} ua
+ * @param {ClientHint} [hint]
+ * @returns {Device}
  */
 function describeDevice(ua, hint) {
   const parsed = readAgent(ua);
@@ -208,7 +267,10 @@ function describeDevice(ua, hint) {
 }
 
 
-/** "4m 12s" reads faster than 252, and "8s" is its own verdict. */
+/**
+ * "4m 12s" reads faster than 252, and "8s" is its own verdict.
+ * @param {unknown} seconds
+ */
 function readDuration(seconds) {
   const n = Number(seconds) || 0;
   if (n < 60) return `${n}s`;
@@ -217,6 +279,11 @@ function readDuration(seconds) {
   return r ? `${m}m ${r}s` : `${m}m`;
 }
 
+/**
+ * @param {unknown} v
+ * @param {number} [max]
+ * @returns {string[]}
+ */
 const list = (v, max = 6) =>
   Array.isArray(v) ? v.filter(Boolean).map((x) => String(x).slice(0, 40)).slice(0, max) : [];
 
@@ -225,6 +292,8 @@ const list = (v, max = 6) =>
  * A contact message outranks everything; time alone is the weakest signal and
  * goes last, because a long visit with nothing opened is usually a tab someone
  * forgot about.
+ *
+ * @param {Record<string, unknown>} body
  */
 function readActivity(body) {
   const projects = list(body.projects);
@@ -241,6 +310,10 @@ function readActivity(body) {
   return { parts, projects, studies, resume };
 }
 
+/**
+ * @param {ApiRequest} req
+ * @param {ApiResponse} res
+ */
 export default async function handler(req, res) {
   // Always cheap to reject: this is fired from a page load, and must never
   // become something a visitor can feel.
@@ -275,7 +348,11 @@ export default async function handler(req, res) {
     return;
   }
 
-  const body = typeof req.body === "object" && req.body ? req.body : {};
+  // The page's own JSON, but nothing stops anyone else posting here, so every
+  // field is `unknown` until it has been clipped or listed below.
+  const body = /** @type {Record<string, unknown>} */ (
+    typeof req.body === "object" && req.body ? req.body : {}
+  );
   const ip = firstIp(req.headers["x-forwarded-for"]);
 
   const geo = await lookupIp(ip);
@@ -388,7 +465,7 @@ export default async function handler(req, res) {
   } catch (err) {
     // Never surface a failure to the page — a broken alert must not become a
     // broken visit.
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
   }
 }
 

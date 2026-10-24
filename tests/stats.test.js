@@ -2,24 +2,60 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import collect, { commandsFor, refHost } from "../api/collect.js";
 import stats, { aggregate, lastDays } from "../api/stats.js";
 
+/** @typedef {import("../types/api").ApiRequest} ApiRequest */
+/** @typedef {import("../types/api").ApiResponse} ApiResponse */
+
+/**
+ * What the response double exposes beyond the handler's own interface: the
+ * header, status and body the handler set. `body` is `any` because each test
+ * reads a different part of a different handler's reply.
+ * @typedef {ApiResponse & { headers: Record<string, string>, code: number, body: any }} MockRes
+ */
+
 const CHROME =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
 
-/** A response double that records what the handler did. */
+/**
+ * The handlers read a handful of request fields, so the doubles carry only
+ * those. The one cast lives here rather than in every test, instead of
+ * faking the whole of Node's IncomingMessage.
+ * @param {{ method: string, headers?: Record<string, unknown>, query?: Record<string, unknown>, body?: unknown }} partial
+ * @returns {ApiRequest}
+ */
+const req = (partial) => /** @type {ApiRequest} */ (/** @type {unknown} */ (partial));
+
+/**
+ * A response double that records what the handler did.
+ * @returns {MockRes}
+ */
 const mockRes = () => {
-  const res = { headers: {}, code: 0, body: undefined };
-  res.setHeader = (k, v) => { res.headers[k] = v; };
-  res.status = (c) => { res.code = c; return res; };
-  res.json = (b) => { res.body = b; return res; };
-  res.end = () => res;
-  return res;
+  const res = {
+    /** @type {Record<string, string>} */
+    headers: {},
+    code: 0,
+    /** @type {any} */
+    body: undefined,
+    /**
+     * @param {string} k
+     * @param {string} v
+     */
+    setHeader(k, v) { this.headers[k] = v; },
+    /** @param {number} c */
+    status(c) { this.code = c; return this; },
+    /** @param {unknown} b */
+    json(b) { this.body = b; return this; },
+    end() { return this; },
+  };
+  return /** @type {MockRes} */ (/** @type {unknown} */ (res));
 };
 
 /** The few Redis commands the counters use, in memory. */
 function fakeRedis() {
   const hashes = new Map();
   const sets = new Map();
+  /** @type {(string | number)[][]} */
   const log = [];
+  /** @param {[string, string, ...(string | number)[]]} command */
   const run = ([cmd, key, ...args]) => {
     log.push([cmd, key, ...args]);
     switch (cmd) {
@@ -40,20 +76,31 @@ function fakeRedis() {
       default: return { error: `unsupported ${cmd}` };
     }
   };
-  const fetch = vi.fn(async (_url, init) => ({
+  /**
+   * @param {string} _url
+   * @param {{ body: string }} init
+   */
+  const store = async (_url, init) => ({
     ok: true,
     json: async () => JSON.parse(init.body).map(run),
-  }));
+  });
+  const fetch = vi.fn(store);
   return { fetch, log };
 }
 
-const hit = (body, headers = {}) => ({
-  method: "POST",
-  headers: { "user-agent": CHROME, host: "www.bhupesh.blog", "x-forwarded-for": "203.0.113.7", ...headers },
-  body,
-});
+/**
+ * @param {Record<string, unknown>} body
+ * @param {Record<string, string>} [headers]  overrides the defaults
+ */
+const hit = (body, headers = {}) =>
+  req({
+    method: "POST",
+    headers: { "user-agent": CHROME, host: "www.bhupesh.blog", "x-forwarded-for": "203.0.113.7", ...headers },
+    body,
+  });
 
 describe("collect", () => {
+  /** @type {ReturnType<typeof fakeRedis>} */
   let redis;
   beforeEach(() => {
     redis = fakeRedis();
@@ -110,7 +157,7 @@ describe("collect", () => {
 
   it("rejects non-POST", async () => {
     const res = mockRes();
-    await collect({ method: "GET", headers: {} }, res);
+    await collect(req({ method: "GET", headers: {} }), res);
     expect(res.code).toBe(405);
   });
 
@@ -128,7 +175,7 @@ describe("collect", () => {
     await collect(hit({ event: "pageview", path: "/" }, { "x-forwarded-for": "198.51.100.9" }), mockRes());
 
     const res = mockRes();
-    await stats({ method: "GET", query: { days: "1" } }, res);
+    await stats(req({ method: "GET", query: { days: "1" } }), res);
     expect(res.body.totals.views).toBe(3);
     expect(res.body.totals.visitorDays).toBe(2);
   });
@@ -140,7 +187,7 @@ describe("collect", () => {
     await collect(hit({ event: "project_open", detail: "hourglass" }), mockRes());
 
     const res = mockRes();
-    await stats({ method: "GET", query: { days: "1" } }, res);
+    await stats(req({ method: "GET", query: { days: "1" } }), res);
     expect(res.body.projects).toEqual([
       { name: "atlas", count: 2 },
       { name: "hourglass", count: 1 },
@@ -185,7 +232,7 @@ describe("commandsFor", () => {
 describe("stats", () => {
   it("answers 200 with configured:false when there is no store", async () => {
     const res = mockRes();
-    await stats({ method: "GET", query: {} }, res);
+    await stats(req({ method: "GET", query: {} }), res);
     expect(res.code).toBe(200);
     expect(res.body).toEqual({ configured: false });
   });
@@ -201,7 +248,7 @@ describe("stats", () => {
     process.env.UPSTASH_REDIS_REST_URL = "https://redis.example";
     process.env.UPSTASH_REDIS_REST_TOKEN = "t";
     const res = mockRes();
-    await stats({ method: "GET", query: { days: "100000" } }, res);
+    await stats(req({ method: "GET", query: { days: "100000" } }), res);
     expect(res.body.days).toBe(90);
     vi.unstubAllGlobals();
     delete process.env.UPSTASH_REDIS_REST_URL;

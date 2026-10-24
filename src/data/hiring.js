@@ -6,6 +6,7 @@
 // or what you'll relocate for. Correct them before sharing the site widely.
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** @type {import("./types").HiringConfig} */
 export const hiring = {
   // PLACEHOLDER — set to whatever your contract actually says.
   noticePeriod: "30 days",

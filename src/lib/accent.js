@@ -9,6 +9,7 @@
  * as written) and about half in light (the same hue, deep enough to read).
  *
  * Takes the "r,g,b" string the data already stores.
+ * @param {string} rgb
  */
 export const accentText = (rgb) =>
   `color-mix(in srgb, rgb(${rgb}) var(--accent-ink, 100%), black)`;

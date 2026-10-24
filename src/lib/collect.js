@@ -19,6 +19,7 @@ function allowed() {
   return true;
 }
 
+/** @param {Record<string, string>} payload */
 function send(payload) {
   const body = JSON.stringify(payload);
   try {
@@ -31,7 +32,11 @@ function send(payload) {
   }
 }
 
-/** A named action — project opened, résumé downloaded, and so on. */
+/**
+ * A named action — project opened, résumé downloaded, and so on.
+ * @param {string} event
+ * @param {string} [detail]
+ */
 export function collect(event, detail = "") {
   if (!allowed()) return;
   send({ event, detail });
@@ -41,6 +46,9 @@ export function collect(event, detail = "") {
  * A page view. The referrer and ?src= tag go with the first one of the visit
  * only: later views in the same tab are navigation within the site, and
  * counting their referrer as "direct" would drown the real sources.
+ *
+ * @param {string} path
+ * @param {string} [src]
  */
 export function collectPageview(path, src = "") {
   if (!allowed()) return;

@@ -9,9 +9,13 @@
  */
 const WORDS_PER_MINUTE = 220;
 
+/** @param {unknown} text */
 const words = (text) => (String(text).match(/\S+/g) ?? []).length;
 
-/** Every word a reader is actually shown, in the order the page shows them. */
+/**
+ * Every word a reader is actually shown, in the order the page shows them.
+ * @param {import("../data/types").CaseStudy} study
+ */
 export function studyWords(study) {
   let total = words(study.title) + words(study.dek);
   for (const section of study.sections ?? []) {
@@ -27,7 +31,10 @@ export function studyWords(study) {
   return total;
 }
 
-/** "4 min" — never below one, since "0 min read" reads as an error. */
+/**
+ * "4 min" — never below one, since "0 min read" reads as an error.
+ * @param {import("../data/types").CaseStudy} study
+ */
 export function readingTime(study) {
   const minutes = Math.max(1, Math.round(studyWords(study) / WORDS_PER_MINUTE));
   return `${minutes} min`;

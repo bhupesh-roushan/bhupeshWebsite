@@ -1,13 +1,22 @@
 import { useSyncExternalStore } from "react";
 
+/** @typedef {"light" | "dark"} Theme */
+
 const KEY = "theme";
 const COLORS = { light: "#f6f7fb", dark: "#0a0a0a" }; // the browser UI colour, per theme
 
 const listeners = new Set();
 
-/** The theme actually on the page — set before first paint by the inline script in index.html. */
+/**
+ * The theme actually on the page — set before first paint by the inline script in index.html.
+ * @returns {Theme}
+ */
 const current = () => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
 
+/**
+ * @param {Theme} theme
+ * @param {{ animate: boolean }} options
+ */
 function apply(theme, { animate }) {
   const root = document.documentElement;
 
@@ -23,7 +32,10 @@ function apply(theme, { animate }) {
   listeners.forEach((fn) => fn());
 }
 
-/** A choice the visitor made, which is remembered; the default is not stored. */
+/**
+ * A choice the visitor made, which is remembered; the default is not stored.
+ * @param {Theme} theme
+ */
 function choose(theme) {
   try {
     localStorage.setItem(KEY, theme);
@@ -33,6 +45,7 @@ function choose(theme) {
   apply(theme, { animate: true });
 }
 
+/** @param {() => void} fn */
 const subscribe = (fn) => {
   listeners.add(fn);
   return () => listeners.delete(fn);

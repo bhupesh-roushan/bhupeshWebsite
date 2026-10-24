@@ -24,6 +24,25 @@ import { createHash } from "node:crypto";
 import { BOT, HTTP_CLIENT, readAgent } from "./visit.js";
 import { configured, pipeline, dayKey } from "./_store.js";
 
+/** @typedef {import("../types/api").ApiRequest} ApiRequest */
+/** @typedef {import("../types/api").ApiResponse} ApiResponse */
+/** @typedef {import("./_store.js").RedisCommand} RedisCommand */
+
+/**
+ * One hit after validation, as commandsFor consumes it. Only `event` and
+ * `visitor` are always present; the rest are empty strings when the browser
+ * sent nothing usable, and omitted entirely by callers that have no use for them.
+ * @typedef {object} Hit
+ * @property {string} event
+ * @property {string} visitor  the daily-rotating hash, never an address
+ * @property {string} [detail]
+ * @property {string} [path]
+ * @property {string} [ref]
+ * @property {string} [src]
+ * @property {string} [device]
+ * @property {string} [country]
+ */
+
 // A closed list. Anything else is dropped, so the endpoint can't be used to
 // write arbitrary keys into the store.
 const EVENTS = new Set([
@@ -40,9 +59,17 @@ const SAFE_DETAIL = /^[a-z0-9][a-z0-9._ -]{0,59}$/i;
 const SAFE_PATH = /^\/[a-z0-9/_-]{0,80}$/i;
 const SAFE_HOST = /^[a-z0-9.-]{1,80}$/i;
 
+/**
+ * @param {unknown} v
+ * @param {number} n
+ */
 const clip = (v, n) => (typeof v === "string" ? v.slice(0, n) : "");
 
-/** The referring site's host with no scheme, path or query — or "". */
+/**
+ * The referring site's host with no scheme, path or query — or "".
+ * @param {string} raw
+ * @param {string} [ownHost]
+ */
 export function refHost(raw, ownHost) {
   try {
     const host = new URL(raw).hostname.replace(/^www\./, "").toLowerCase();
@@ -53,10 +80,17 @@ export function refHost(raw, ownHost) {
   }
 }
 
-/** Build the Redis commands for one validated hit. Pure, so it is testable. */
+/**
+ * Build the Redis commands for one validated hit. Pure, so it is testable.
+ * @param {Hit} hit
+ * @param {string} day  from dayKey()
+ * @returns {RedisCommand[]}
+ */
 export function commandsFor({ event, detail, path, ref, src, device, country, visitor }, day) {
   const a = `a:${day}`;
+  /** @type {RedisCommand[]} */
   const cmds = [];
+  /** @param {string} field */
   const bump = (field) => cmds.push(["HINCRBY", a, field, 1]);
 
   if (event === "pageview") {
@@ -75,6 +109,10 @@ export function commandsFor({ event, detail, path, ref, src, device, country, vi
   return cmds;
 }
 
+/**
+ * @param {ApiRequest} req
+ * @param {ApiResponse} res
+ */
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -91,11 +129,17 @@ export default async function handler(req, res) {
   // Crawlers and previewers would otherwise be most of the "visitors".
   if (!ua || BOT.test(ua) || HTTP_CLIENT.test(ua)) return res.status(204).end();
 
-  let body = req.body;
-  if (typeof body === "string") {
-    try { body = JSON.parse(body); } catch { body = null; }
+  // Vercel hands over an object for application/json and a string for
+  // text/plain; either way it is the caller's input, so every field is
+  // `unknown` until it has been clipped or tested below.
+  /** @type {unknown} */
+  let parsed = req.body;
+  if (typeof parsed === "string") {
+    try { parsed = JSON.parse(parsed); } catch { parsed = null; }
   }
-  if (!body || !EVENTS.has(body.event)) return res.status(400).json({ error: "unknown event" });
+  const body = /** @type {Partial<Record<string, unknown>> | null} */ (parsed);
+  const event = body?.event;
+  if (!body || typeof event !== "string" || !EVENTS.has(event)) return res.status(400).json({ error: "unknown event" });
 
   const detail = clip(body.detail, 60);
   if (detail && !SAFE_DETAIL.test(detail)) return res.status(400).json({ error: "bad detail" });
@@ -111,26 +155,25 @@ export default async function handler(req, res) {
     .slice(0, 24);
 
   const src = clip(body.src, 60);
+  const country = String(req.headers["x-vercel-ip-country"] || "");
   const hit = {
-    event: body.event,
+    event,
     detail,
     path: SAFE_PATH.test(path) ? path : "",
     ref: refHost(clip(body.ref, 300), ownHost),
     src: SAFE_DETAIL.test(src) ? src.toLowerCase() : "",
     device: readAgent(ua).kind,
-    country: /^[A-Z]{2}$/.test(String(req.headers["x-vercel-ip-country"] || ""))
-      ? req.headers["x-vercel-ip-country"]
-      : "",
+    country: /^[A-Z]{2}$/.test(country) ? country : "",
     visitor,
   };
 
   try {
     await pipeline(commandsFor(hit, day));
-    res.status(204).end();
+    return res.status(204).end();
   } catch (err) {
     // The visitor must never see this, and a failing counter must never block
     // anything — it is a 502 in the log and a 204 to the browser.
-    console.error("collect:", err.message);
-    res.status(204).end();
+    console.error("collect:", err instanceof Error ? err.message : err);
+    return res.status(204).end();
   }
 }

@@ -13,6 +13,7 @@
  * eleven commits of building and tidying, with no failure found and fixed and
  * no approach tried and rejected. A case study invented to fill a slot is
  * worse than an empty slot, because someone will ask about it.
+ * @type {Record<string, import("./types").CaseStudy>}
  */
 export const CASE_STUDIES = {
   "atlas-false-failures": {
