@@ -27,5 +27,11 @@ module.exports = {
       files: ['api/**/*.js'],
       env: { node: true, browser: false },
     },
+    {
+      // Tests drive those same functions, and set the environment variables
+      // they read, so they need Node's globals too.
+      files: ['tests/**/*.js'],
+      env: { node: true },
+    },
   ],
 }

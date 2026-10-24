@@ -1,9 +1,11 @@
+// Theme tokens, so the greens step the right way on each background: darker is
+// "more" on a light page and lighter is "more" on a dark one.
 const LEVEL_COLORS = [
-  "rgba(255,255,255,0.06)",
-  "#0e4429",
-  "#006d32",
-  "#26a641",
-  "#39d353",
+  "var(--heat-0)",
+  "var(--heat-1)",
+  "var(--heat-2)",
+  "var(--heat-3)",
+  "var(--heat-4)",
 ];
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];

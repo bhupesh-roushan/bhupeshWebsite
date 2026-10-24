@@ -28,7 +28,7 @@ export const journey = [
     period: "May 2026 - Present",
     current: true,
     logo: masai,
-    logoClass: "h-8 w-auto object-contain",
+    logoClass: "logo-chip h-8 w-auto object-contain",
     accent: "99,102,241",
     span: "lg:col-span-3",
     stack: [
@@ -99,7 +99,7 @@ export const journey = [
     role: "Sports Analyst",
     period: "June 2023 - November 2023",
     logo: hudl,
-    logoClass: "h-8 w-auto object-contain rounded-md",
+    logoClass: "logo-chip h-8 w-auto object-contain rounded-md",
     accent: "249,115,22",
     span: "lg:col-span-2",
     stack: [
@@ -192,6 +192,22 @@ export const projects = [
     featured: true,
     span: "lg:col-span-4",
     access: "Private repo — internal grading tooling. Walkthrough on request.",
+    // The shape of each project's case in three lines, written only from what
+    // the bullets, diagram notes and write-ups below already say — nothing here
+    // is a new claim. `outcome` carries numbers that appear elsewhere in this
+    // file; a project with no recorded figure has no outcome rather than an
+    // invented one.
+    story: {
+      problem:
+        "Student submissions had to be graded against per-question rubrics, with the scores landing back in the previous grader's spreadsheet format — on model infrastructure that could change, or vanish mid-batch.",
+      approach:
+        "One adapter over six model backends, a queue per user drained by a standalone worker, routing to the endpoint with the fewest jobs in flight, and a human review queue for anything the model flags.",
+      outcome: [
+        { value: "6", label: "model backends behind one adapter" },
+        { value: "219", label: "commits, 16 Jul – 3 Aug 2026" },
+        { value: "470 / 964", label: "rows wrongly marked failed — found and fixed" },
+      ],
+    },
     stack: [
       "Next.js 15",
       "React 19",
@@ -259,6 +275,18 @@ export const projects = [
     accent: "99,102,241",
     featured: true,
     span: "lg:col-span-2",
+    story: {
+      problem:
+        "Creators selling digital products had to write every listing, research competitors and settle on a price by hand.",
+      approach:
+        "Gemini drafts the listing from a scraped competitor snapshot, a human edits it, and checkout runs through Razorpay — with generation, scraping and payments all server-side behind role-based auth.",
+      outcome: [
+        { value: "60%", label: "less manual listing effort" },
+        { value: "45%", label: "faster product upload" },
+        { value: "40%", label: "better SEO efficiency" },
+        { value: "30%", label: "better workflow efficiency" },
+      ],
+    },
     stack: [
       "Next.js 16",
       "TypeScript",
@@ -306,6 +334,17 @@ export const projects = [
     href: "https://buildingblocks.cloud",
     accent: "56,189,248",
     span: "lg:col-span-3",
+    story: {
+      problem:
+        "Instructors and students needed different dashboards and different permissions on one platform — with paid courses, lecture video and progress that resumes where it stopped.",
+      approach:
+        "One route tree for both roles: a route guard picks the dashboard and the server's auth middleware re-checks the role, with progress written per video so a resumed course resumes in the right place.",
+      outcome: [
+        { value: "60%", label: "less video upload time" },
+        { value: "40%", label: "better course-management efficiency" },
+        { value: "25%", label: "higher payment success rate" },
+      ],
+    },
     stack: [
       "Node.js",
       "Express.js",
@@ -344,6 +383,12 @@ export const projects = [
     href: "https://hourglass-0e3w.onrender.com/",
     accent: "236,72,153",
     span: "lg:col-span-3",
+    story: {
+      problem:
+        "A chat message has to reach someone who may or may not be online at that moment.",
+      approach:
+        "REST persists the message and the socket delivers it, with a registry of user id to socket id so a send can find the recipient's live connection.",
+    },
     stack: [
       "React.js",
       "Node.js",
@@ -382,6 +427,13 @@ export const projects = [
     href: "https://cubekit.vercel.app/",
     accent: "34,197,94",
     span: "lg:col-span-2",
+    story: {
+      problem:
+        "Recruiters needed to post jobs and candidates needed to apply and track them, each with their own view of the same data.",
+      approach:
+        "Clerk for authentication with role-based dashboards, Supabase queries that add a filter for every field the user sets, and a posting form validated with React Hook Form and Zod.",
+      outcome: [{ value: "40%", label: "less time to post a job" }],
+    },
     stack: [
       "React.js",
       "Tailwind CSS",

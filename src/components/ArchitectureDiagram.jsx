@@ -10,11 +10,13 @@
 import { DIAGRAMS } from "../data/diagrams";
 
 const W = 880;
-const BORDER = "#2a2a3a";
-const SURFACE = "#12121a";
-const TEXT = "#e2e8f0";
-const MUTED = "#94a3b8";
-const ACCENT = "#818cf8";
+// Theme tokens (see index.css) rather than hex, so the diagram follows the theme.
+// var() is valid in an SVG presentation attribute, which is how these are used.
+const BORDER = "var(--diagram-border)";
+const SURFACE = "var(--diagram-surface)";
+const TEXT = "var(--diagram-text)";
+const MUTED = "var(--diagram-muted)";
+const ACCENT = "var(--diagram-accent)";
 
 const BOX_H = 58;
 const GAP_Y = 34;

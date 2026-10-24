@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { HiringFacts } from "../HiringFacts";
 import { logVisitEvent } from "../../lib/visitLog";
 import { MAIL_SUBJECT } from "../../data/hiring";
-import { toast } from "react-toastify";
+import { notify } from "../../lib/toast";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import {
@@ -47,7 +48,7 @@ export const Contact = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
-      toast.error("Couldn't copy — please copy it manually.");
+      notify("error", "Couldn't copy — please copy it manually.");
     }
   };
 
@@ -59,7 +60,7 @@ export const Contact = () => {
     // fills it gets a success message and nothing gets sent, so the bot has no
     // signal that it was caught.
     if (e.target.company?.value) {
-      toast.success("Message Sent Successfully!");
+      notify("success", "Message Sent Successfully!");
       return;
     }
 
@@ -84,7 +85,7 @@ export const Contact = () => {
         templateParams,
         import.meta.env.VITE_PUBLIC_KEY
       );
-      toast.success("Message Sent Successfully!");
+      notify("success", "Message Sent Successfully!");
       logVisitEvent("contact_sent");
       setFormData({
         name: "",
@@ -95,7 +96,7 @@ export const Contact = () => {
         isCustomCode: false,
       });
     } catch (error) {
-      toast.error("Oops! Something went wrong. Please try again.");
+      notify("error", "Oops! Something went wrong. Please try again.");
       console.error("EmailJS Error:", error);
     } finally {
       setLoading(false);
@@ -365,8 +366,17 @@ export const Contact = () => {
         <div className="mx-auto mt-5 max-w-6xl px-4">
           {/* gray-400: gray-500 measures 4.10:1 here, under the 4.5 AA needs
               at 11px. Third time this exact swap has been necessary. */}
-          <p className="text-center text-[11px] text-gray-400 sm:text-left">
-            Visits are logged. No cookies.
+          <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[11px] text-gray-400 sm:justify-start sm:text-left">
+            <span>Visits are logged. No cookies.</span>
+            <Link to="/insights" className="underline-offset-4 transition-colors hover:text-white hover:underline">
+              Public stats
+            </Link>
+            <Link to="/writing" className="underline-offset-4 transition-colors hover:text-white hover:underline">
+              Writing
+            </Link>
+            <a href="/writing/feed.xml" className="underline-offset-4 transition-colors hover:text-white hover:underline">
+              RSS
+            </a>
           </p>
         </div>
       </footer>

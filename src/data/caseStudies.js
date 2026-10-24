@@ -19,7 +19,6 @@ export const CASE_STUDIES = {
     dek: "An absent record is not a failure record — and what a timed-out read actually tells you.",
     date: "July 2026",
     published: "2026-07",
-    readingTime: "5 min",
     tags: ["Failure modes", "Fail closed", "Data integrity"],
 
     sections: [
@@ -75,7 +74,6 @@ export const CASE_STUDIES = {
     dek: "Cloudinary hands back two URLs for every upload. Only one of them works on an HTTPS page.",
     date: "January 2025",
     published: "2025-01",
-    readingTime: "3 min",
     tags: ["Mixed content", "Media pipeline", "Boundaries"],
 
     sections: [
@@ -125,7 +123,6 @@ export const CASE_STUDIES = {
     dek: "Forty commits chasing a cross-subdomain auth cookie, and the reason none of them could have worked.",
     date: "February 2026",
     published: "2026-02",
-    readingTime: "5 min",
     tags: ["Auth", "Cookies", "Serverless deploys"],
 
     sections: [
@@ -200,7 +197,6 @@ export const CASE_STUDIES = {
     dek: "Why Atlas stopped forcing the model to emit valid JSON — and what it cost to find out.",
     date: "July 2026",
     published: "2026-07",
-    readingTime: "4 min",
     tags: ["LLM evaluation", "Constrained decoding", "Failure modes"],
 
     sections: [

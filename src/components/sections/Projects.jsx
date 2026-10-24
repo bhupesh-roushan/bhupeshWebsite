@@ -19,6 +19,7 @@ import {
   LuChevronRight,
 } from "react-icons/lu";
 import { DIAGRAMS } from "../../data/diagrams";
+import { accentText } from "../../lib/accent";
 
 // Only reachable once a project modal is open, so it has no business being in
 // the first download. DIAGRAMS itself stays eager — it's plain data, and the
@@ -119,7 +120,7 @@ export const Projects = () => {
                         className="absolute inset-0"
                         style={{
                           background:
-                            "linear-gradient(to top, rgba(11,11,18,0.95) 0%, rgba(11,11,18,0.25) 55%, rgba(11,11,18,0) 100%)",
+                            "linear-gradient(to top, color-mix(in srgb, var(--color-panel) 95%, transparent) 0%, color-mix(in srgb, var(--color-panel) 25%, transparent) 55%, transparent 100%)",
                         }}
                       />
                     </div>
@@ -142,7 +143,7 @@ export const Projects = () => {
                     </div>
                     <p
                       className="mb-3 text-xs font-semibold"
-                      style={{ color: `rgb(${project.accent})` }}
+                      style={{ color: accentText(project.accent) }}
                     >
                       {project.tagline}
                     </p>
@@ -189,7 +190,7 @@ export const Projects = () => {
             {active.image && (
               <div className="relative overflow-hidden rounded-t-2xl">
                 <img src={active.image} alt="" className="max-h-72 w-full object-cover object-top" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b12] to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-panel to-transparent" />
               </div>
             )}
 
@@ -202,7 +203,7 @@ export const Projects = () => {
               </div>
               <p
                 className="mb-5 text-sm font-semibold"
-                style={{ color: `rgb(${active.accent})` }}
+                style={{ color: accentText(active.accent) }}
               >
                 {active.tagline}
               </p>
@@ -228,7 +229,7 @@ export const Projects = () => {
                     key={tech}
                     className="rounded-lg border px-2.5 py-1 text-xs font-medium"
                     style={{
-                      color: `rgb(${active.accent})`,
+                      color: accentText(active.accent),
                       borderColor: `rgba(${active.accent},0.3)`,
                       backgroundColor: `rgba(${active.accent},0.08)`,
                     }}
@@ -237,6 +238,52 @@ export const Projects = () => {
                   </span>
                 ))}
               </div>
+
+              {/* The case in three lines, before the detail. A reader deciding
+                  whether this project is worth the next two screens gets the
+                  problem, the approach and any recorded numbers up front. */}
+              {active.story && (
+                <section
+                  aria-label="Case study summary"
+                  className="mb-7 rounded-xl border p-4 sm:p-5"
+                  style={{
+                    borderColor: `rgba(${active.accent},0.28)`,
+                    backgroundColor: `rgba(${active.accent},0.05)`,
+                  }}
+                >
+                  <dl className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <dt
+                        className="mb-1 text-[11px] font-bold uppercase tracking-wider"
+                        style={{ color: accentText(active.accent) }}
+                      >
+                        The problem
+                      </dt>
+                      <dd className="text-sm leading-relaxed text-gray-300">{active.story.problem}</dd>
+                    </div>
+                    <div>
+                      <dt
+                        className="mb-1 text-[11px] font-bold uppercase tracking-wider"
+                        style={{ color: accentText(active.accent) }}
+                      >
+                        The approach
+                      </dt>
+                      <dd className="text-sm leading-relaxed text-gray-300">{active.story.approach}</dd>
+                    </div>
+                  </dl>
+
+                  {active.story.outcome?.length > 0 && (
+                    <ul className="mt-4 grid grid-cols-2 gap-2.5 border-t border-white/10 pt-4 sm:grid-cols-3 lg:grid-cols-4">
+                      {active.story.outcome.map((o) => (
+                        <li key={o.label} className="min-w-0">
+                          <span className="block text-xl font-bold text-white">{o.value}</span>
+                          <span className="block text-[11px] leading-snug text-gray-400">{o.label}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              )}
 
               <ul className="space-y-4">
                 {active.bullets.map((bullet, i) => (
@@ -334,7 +381,7 @@ export const Projects = () => {
                     >
                       <LuBookOpen
                         className="mt-0.5 h-4 w-4 shrink-0"
-                        style={{ color: `rgb(${active.accent})` }}
+                        style={{ color: accentText(active.accent) }}
                       />
                       <span>
                         <span className="block text-sm font-semibold text-white">

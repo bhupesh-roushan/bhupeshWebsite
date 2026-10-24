@@ -36,6 +36,134 @@
 @theme {
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* The four surfaces the dark design is built from, named so a theme can swap
+     them. They were arbitrary hex values scattered through the components —
+     bg-[#101017] in one file, bg-[#0b0b12] in another — which is a colour you
+     cannot change without finding every copy. `bg-surface/75` still takes an
+     opacity, because these are real theme colours. */
+  --color-page: #0a0a0a;    /* the page */
+  --color-panel: #0b0b12;   /* modals, popovers */
+  --color-surface: #101017; /* cards */
+  --color-deep: #08080c;    /* the loading screen */
+}
+
+/* ── Light theme ─────────────────────────────────────────────────────────
+   The site was written dark: white text, white-at-low-opacity borders and
+   fills, grey for secondary text. Rather than touch two thousand class names,
+   the light theme redefines what those names *mean*. Tailwind compiles
+   `text-white` to `color: var(--color-white)` and `border-white/10` to a
+   colour-mix of the same variable, so pointing --color-white at the ink colour
+   turns every white-on-dark pairing into ink-on-light — headings, hairlines and
+   tinted fills together — and `bg-black/90` (the modal scrim) into a pale veil.
+
+   Two exceptions are handled where they occur rather than here: a solid
+   indigo button keeps white text (see .bg-indigo-500 below), and the few
+   places that carry a colour of their own use the tokens at the end of this
+   block rather than a theme-less hex.
+   ---------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-page: #f6f7fb;
+  --color-panel: #ffffff;
+  --color-surface: #ffffff;
+  --color-deep: #eef0f6;
+
+  --color-white: #0c1222; /* ink */
+  --color-black: #f6f7fb; /* the page, for scrims and fades */
+
+  /* Secondary text, re-stepped to hold 4.5:1 against #f6f7fb and white. */
+  --color-gray-100: #1e2433;
+  --color-gray-200: #1e2433;
+  --color-gray-300: #333c4d;
+  --color-gray-400: #4a5468;
+  --color-gray-500: #5b657a;
+  --color-gray-600: #6b7488;
+
+  /* Pastel accents that read on black are unreadable on white. Each hue's light
+     steps point at its dark ones, so text-indigo-300 on this theme is the
+     indigo-700 it would have been written as. Solid fills (the 500s) are left
+     alone — they are meant to be saturated. */
+  --color-indigo-200: var(--color-indigo-800);
+  --color-indigo-300: var(--color-indigo-700);
+  --color-indigo-400: var(--color-indigo-600);
+  --color-emerald-200: var(--color-emerald-800);
+  --color-emerald-300: var(--color-emerald-700);
+  --color-emerald-400: var(--color-emerald-600);
+  --color-red-300: var(--color-red-700);
+  --color-red-400: var(--color-red-600);
+  --color-pink-300: var(--color-pink-700);
+  --color-pink-400: var(--color-pink-600);
+  --color-orange-300: var(--color-orange-700);
+  --color-orange-400: var(--color-orange-600);
+  --color-sky-300: var(--color-sky-700);
+  --color-sky-400: var(--color-sky-600);
+
+  /* Fixed-colour things with no Tailwind name. */
+  --accent-ink: 52%;            /* how much of an accent survives in text; see lib/accent.js */
+  --icon-neutral: #334155;      /* skill icons that are near-white on dark */
+  --heat-0: rgba(12, 18, 34, 0.07);
+  --heat-1: #9be9a8;
+  --heat-2: #40c463;
+  --heat-3: #30a14e;
+  --heat-4: #216e39;
+  --series-1: #2a78d6;
+  --viz-grid: rgba(12, 18, 34, 0.12);
+  --viz-track: rgba(12, 18, 34, 0.08);
+  --surface-solid: #ffffff;
+  --diagram-border: #c9cfdd;
+  --diagram-surface: #ffffff;
+  --diagram-text: #1e2433;
+  --diagram-muted: #5b657a;
+  --diagram-accent: #4f46e5;
+  --diagram-hover: #eef0ff;
+}
+
+/* Artwork drawn for a dark page. A white mark inverts to black; a wordmark that
+   mixes colours (an orange icon beside white lettering) can't be inverted
+   without turning the orange blue, so it sits on a dark chip instead. */
+:root[data-theme="light"] .invert-on-light {
+  filter: invert(1);
+}
+:root[data-theme="light"] .logo-chip {
+  background: #0b0b12;
+  padding: 6px 10px;
+  box-sizing: content-box;
+  border-radius: 8px;
+}
+
+/* A solid indigo or gradient button has a saturated fill in both themes, so
+   its label must stay white — redefining the variable here, on the element,
+   undoes the ink for it and everything inside it. */
+:root[data-theme="light"] :is(.bg-indigo-500, .from-indigo-500) {
+  --color-white: #ffffff;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+/* Dark values for the tokens above. Declared on :root so a component can use
+   var(--heat-1) without caring which theme it is in. */
+:root {
+  --accent-ink: 100%;
+  --icon-neutral: #e2e8f0;
+  --heat-0: rgba(255, 255, 255, 0.06);
+  --heat-1: #0e4429;
+  --heat-2: #006d32;
+  --heat-3: #26a641;
+  --heat-4: #39d353;
+  --series-1: #3987e5;
+  --viz-grid: rgba(255, 255, 255, 0.1);
+  --viz-track: rgba(255, 255, 255, 0.08);
+  --surface-solid: #0b0b12;
+  --diagram-border: #2a2a3a;
+  --diagram-surface: #12121a;
+  --diagram-text: #e2e8f0;
+  --diagram-muted: #94a3b8;
+  --diagram-accent: #818cf8;
+  --diagram-hover: #191926;
 }
 
 
@@ -56,8 +184,18 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Space Grotesk", sans-serif;
-  background: #0a0a0a;
-  color: #f3f4f6;
+  background: var(--color-page);
+  color: var(--color-gray-100, #f3f4f6);
+}
+
+/* Moving between themes eases rather than flashing — but only after the first
+   paint (the class is added by the toggle), so loading the page in either theme
+   never animates from the other. */
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease, fill 250ms ease, stroke 250ms ease !important;
 }
 
 @layer utilities {
@@ -200,6 +338,19 @@ body {
   background: #000;
 }
 
+/* The original does the same: its light theme is the dark one inverted. The
+   hue-rotate puts the blues back where invert would have swung them to orange,
+   so the page keeps its indigo-to-sky identity on white. */
+:root[data-theme="light"] .aurora {
+  filter: invert(1) hue-rotate(180deg);
+}
+/* The bands carry the text-contrast problem: at full strength a dark headline
+   crosses saturated colour. Lighter on white, where the same opacity reads far
+   heavier than it does on black. */
+:root[data-theme="light"] .aurora__layer {
+  opacity: 0.42;
+}
+
 .aurora__layer {
   --gradient: repeating-linear-gradient(
     100deg,
@@ -267,12 +418,16 @@ body {
 .stack-panel {
   position: sticky;
   top: 0;
-  background: #0a0a0a;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--color-page);
+  border-top: 1px solid color-mix(in srgb, var(--color-white) 8%, transparent);
   border-top-left-radius: 28px;
   border-top-right-radius: 28px;
   /* Cast upward, so a panel visibly sits on top of the one it is covering. */
-  box-shadow: 0 -30px 70px -20px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 -30px 70px -20px var(--stack-shadow, rgba(0, 0, 0, 0.9));
+}
+
+:root[data-theme="light"] .stack-panel {
+  --stack-shadow: rgba(12, 18, 34, 0.28);
 }
 
 /* The base of the deck. Nothing covers it, so it needs no lip and no
@@ -306,52 +461,13 @@ body {
    which means it scrolls almost the whole way and is then immediately
    covered, so you perceive very little of it. What you do get is five
    full-page sticky layers held in compositor memory on the device least
-   able to spare it.
-
-   The journey cards keep their deck: 192px in an 844px window, so the
-   effect is plainly visible and the layers are small. */
+   able to spare it. */
 @media (hover: none), (pointer: coarse) {
   .stack-panel {
     position: static;
     border-top: 0;
     border-radius: 0;
     box-shadow: none;
-  }
-}
-
-/* ── Journey deck ───────────────────────────────────────────────────────
-   The experience cards, dealt rather than tiled.
-
-   Each pins 12px below the one before it, so the top edge of every card
-   you have already passed stays on screen — the deck reads as a pile you
-   can still see the spines of, not as one card replacing another.
-
-   `top` is clear of the navbar (64px) plus a little breathing room. The
-   cards are ~200px tall, well under any viewport, so unlike the section
-   panels there is no risk of one pinning with its own content unread.
-   ---------------------------------------------------------------------- */
-.journey-card {
-  position: sticky;
-  top: calc(88px + var(--i) * 12px);
-  margin-bottom: 1rem;
-}
-
-/* The last card has nothing coming to cover it, so the gap below it would
-   just be dead space at the end of the deck. */
-.journey-card:last-child {
-  margin-bottom: 0;
-}
-
-/* The deck is glass like every other card, but a touch more solid: these
-   overlap each other, and at the card default you would be reading two
-   roles at once through one another rather than seeing depth. */
-.journey-card > div > * {
-  background-color: rgba(16, 16, 23, 0.82);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .journey-card {
-    position: static;
   }
 }
 
@@ -465,8 +581,8 @@ body {
 
 .diagram-box-link:hover rect,
 .diagram-box-link:focus-visible rect {
-  stroke: #818cf8;
-  fill: #191926;
+  stroke: var(--diagram-accent);
+  fill: var(--diagram-hover);
 }
 
 .diagram-box-link:focus-visible {

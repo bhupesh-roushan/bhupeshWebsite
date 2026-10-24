@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   LuArrowRight,
   LuDownload,
   LuMail,
   LuChevronDown,
   LuMapPin,
+  LuCalendarCheck,
 } from "react-icons/lu";
 import { useRef, useCallback } from "react";
 import { TechBackdrop } from "../TechBackdrop";
 import bhupesh from "../../assets/bhupesh.webp";
+import { hiring } from "../../data/hiring";
+import { ago, useLastPush } from "../../lib/liveStatus";
+
+const PILL =
+  "inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-medium text-gray-300 backdrop-blur-sm sm:text-xs";
 
 const NAME = "Bhupesh Roushan";
 // Kept to a similar length so the centred rotator doesn't visibly jump width
@@ -29,6 +35,7 @@ const STATS = [
 ];
 
 export const Home = () => {
+  const lastPush = useLastPush();
   const reduceMotion = useReducedMotion();
   const [typed, setTyped] = useState(reduceMotion ? NAME : "");
   const [roleIndex, setRoleIndex] = useState(0);
@@ -112,13 +119,13 @@ export const Home = () => {
           middle third, where this is transparent anyway, so nothing is lost
           for legibility; the bottom still fades to the page colour so the
           section joins the next one cleanly. */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 via-transparent to-[#0a0a0a]" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 via-transparent to-page" />
       <div
         ref={gridRef}
         className="absolute inset-0 z-0 opacity-[0.18] will-change-transform"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.35) 1px, transparent 1px)",
+            "linear-gradient(color-mix(in srgb, var(--color-white) 35%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-white) 35%, transparent) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
           maskImage: "radial-gradient(ellipse at center, black 10%, transparent 72%)",
           WebkitMaskImage: "radial-gradient(ellipse at center, black 10%, transparent 72%)",
@@ -130,7 +137,7 @@ export const Home = () => {
 
       <div ref={copyRef} className="relative z-10 mx-auto w-full max-w-4xl text-center will-change-transform">
         {/* Avatar */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -144,20 +151,48 @@ export const Home = () => {
               className="relative h-28 w-28 rounded-full object-cover ring-2 ring-white/20 sm:h-32 sm:w-32 md:h-36 md:w-36"
             />
           </div>
-        </motion.div>
+        </m.div>
 
-        {/* Location, in the theme's own palette. This slot used to hold a
-            pulsing green "Open to new opportunities" pill, which read as
-            asking rather than stating. */}
-        <motion.div
+        {/* Status row: where, and — when there is something true to say — when
+            I'm available and when I last pushed. Every item is a statement of
+            fact in the theme's own palette; this slot used to hold a pulsing
+            green "Open to new opportunities" pill, which read as asking rather
+            than stating. */}
+        <m.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.5 }}
-          className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-medium text-gray-300 backdrop-blur-sm sm:text-xs"
+          className="mb-5 flex flex-wrap items-center justify-center gap-2"
         >
-          <LuMapPin className="h-3.5 w-3.5 text-indigo-400" />
-          Bangalore, India
-        </motion.div>
+          <span className={PILL}>
+            <LuMapPin className="h-3.5 w-3.5 text-indigo-400" />
+            Bangalore, India
+          </span>
+          {hiring.availability && (
+            <span className={PILL}>
+              <LuCalendarCheck className="h-3.5 w-3.5 text-emerald-400" />
+              {hiring.availability}
+            </span>
+          )}
+          {lastPush && (
+            <a
+              href={`https://github.com/bhupesh-roushan/${lastPush.repo}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Most recent push to a public repository. Most of my work is in private repos, so this undercounts."
+              className={`${PILL} transition-colors hover:border-white/30 hover:text-white`}
+            >
+              {/* Green inside a week, grey after — a dot that is always green
+                  would claim activity the date underneath contradicts. */}
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  Date.now() - new Date(lastPush.at) < 7 * 864e5 ? "bg-emerald-400" : "bg-gray-500"
+                }`}
+              />
+              Last public push {ago(lastPush.at)} · {lastPush.repo}
+            </a>
+          )}
+        </m.div>
 
         {/* Name */}
         <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
@@ -173,7 +208,7 @@ export const Home = () => {
         {/* Rotating role */}
         <div className="mb-5 flex h-7 items-center justify-center sm:h-8">
           <AnimatePresence mode="wait">
-            <motion.p
+            <m.p
               key={roleIndex}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -182,11 +217,11 @@ export const Home = () => {
               className="text-sm font-semibold text-white sm:text-lg md:text-xl"
             >
               {ROLES[roleIndex]}
-            </motion.p>
+            </m.p>
           </AnimatePresence>
         </div>
 
-        <motion.p
+        <m.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
@@ -195,10 +230,10 @@ export const Home = () => {
           I build scalable web applications and AI-powered workflows — turning
           complex, manual processes into fast, reliable products people
           actually enjoy using.
-        </motion.p>
+        </m.p>
 
         {/* CTAs — visible at every breakpoint */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -229,10 +264,10 @@ export const Home = () => {
             <LuMail className="h-4 w-4" />
             Contact
           </a>
-        </motion.div>
+        </m.div>
 
         {/* Stats */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
@@ -244,12 +279,12 @@ export const Home = () => {
               <div className="text-[11px] text-gray-400 sm:text-xs">{s.label}</div>
             </div>
           ))}
-        </motion.div>
+        </m.div>
 
       </div>
 
       {/* Scroll cue */}
-      <motion.a
+      <m.a
         href="#about"
         aria-label="Scroll to About"
         animate={reduceMotion ? {} : { y: [0, 8, 0] }}
@@ -257,7 +292,7 @@ export const Home = () => {
         className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 text-gray-400 transition-colors hover:text-white sm:block"
       >
         <LuChevronDown className="h-6 w-6" />
-      </motion.a>
+      </m.a>
     </section>
   );
 };

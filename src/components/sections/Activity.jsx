@@ -4,6 +4,7 @@ import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { GithubHeatmap } from "../GithubHeatmap";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuArrowUpRight, LuBook, LuGitBranch, LuHistory } from "react-icons/lu";
+import { accentText } from "../../lib/accent";
 
 const USER = "bhupesh-roushan";
 
@@ -197,7 +198,7 @@ export const Activity = () => {
                 key={label}
                 className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5"
               >
-                <Icon className="mb-2 h-4 w-4" style={{ color: `rgb(${accent})` }} />
+                <Icon className="mb-2 h-4 w-4" style={{ color: accentText(accent) }} />
                 <div className="text-xl font-bold text-white sm:text-2xl">
                   {loading ? "—" : value ?? "—"}
                 </div>

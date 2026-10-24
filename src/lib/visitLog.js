@@ -7,6 +7,8 @@
  * that. It is per page-load, holds no identifiers, and never leaves the tab
  * except in the single summary sent when the visitor goes.
  */
+import { collect } from "./collect";
+
 const SRC_KEY = "visit-src";
 
 const log = {
@@ -33,6 +35,9 @@ function readSrc() {
 export function logVisitEvent(name, detail = "") {
   if (log.events.length >= 40) return; // a bored clicker shouldn't write an essay
   log.events.push({ name, detail: String(detail).slice(0, 60), at: Date.now() });
+  // Same moment, second audience: the per-visit summary above goes to me when
+  // the visitor leaves; this adds to the public day totals.
+  collect(name, detail);
 }
 
 export function logVisitPath(path) {

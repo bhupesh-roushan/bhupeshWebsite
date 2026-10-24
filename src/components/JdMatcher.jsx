@@ -13,7 +13,8 @@ const ALIASES = {
   "Next.js": ["next", "nextjs", "next.js"],
   "Node.js": ["node", "nodejs", "node.js"],
   "Express.js": ["express", "expressjs"],
-  "REST APIs": ["rest", "restful", "rest api", "api"],
+  // Not bare "api": nearly every JD contains it, so it matched on all of them.
+  "REST APIs": ["rest", "restful", "rest api", "rest apis"],
   TypeScript: ["typescript", "ts"],
   JavaScript: ["javascript", "js", "es6"],
   MongoDB: ["mongo", "mongodb"],
@@ -53,12 +54,15 @@ const mentions = (haystack, term) => {
   return new RegExp(`(^|[^a-z0-9])${esc}([^a-z0-9]|$)`, "i").test(haystack);
 };
 
+const MIN_CHARS = 40;
+
 export const JdMatcher = () => {
   const [jd, setJd] = useState("");
+  const typed = jd.trim().length;
 
   const result = useMemo(() => {
     const text = jd.toLowerCase();
-    if (text.trim().length < 40) return null;
+    if (text.trim().length < MIN_CHARS) return null;
 
     const matched = [];
     const missing = [];
@@ -94,8 +98,17 @@ export const JdMatcher = () => {
         className="w-full resize-y rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 transition-colors focus:border-indigo-500 focus:outline-none"
       />
 
+      {/* Said out loud. Below the threshold this used to render nothing at
+          all, which is indistinguishable from a tool that is broken. */}
+      {!result && typed > 0 && (
+        <p className="mt-3 text-xs text-gray-400" role="status">
+          Keep going — paste at least a sentence or two ({MIN_CHARS - typed} more
+          characters) and the match appears here.
+        </p>
+      )}
+
       {result && (
-        <div className="mt-5">
+        <div className="mt-5" role="status">
           <div className="mb-3 flex items-baseline gap-2">
             <span className="text-2xl font-bold text-white">
               {result.matched.length}

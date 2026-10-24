@@ -12,7 +12,31 @@
     />
     <meta name="author" content="Bhupesh Roushan" />
     <link rel="canonical" href="https://www.bhupesh.blog/" />
+
+    <!-- Feed autodiscovery on every page, so a reader app pointed at any URL on
+         the site finds the writing feed rather than needing the feed address. -->
+    <link rel="alternate" type="application/rss+xml" title="Writing — Bhupesh Roushan" href="https://www.bhupesh.blog/writing/feed.xml" />
+    <link rel="alternate" type="application/feed+json" title="Writing — Bhupesh Roushan" href="https://www.bhupesh.blog/writing/feed.json" />
     <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Runs before the stylesheet, so the page paints in the right theme the
+         first time instead of flashing dark and switching. Dark is the default:
+         it is the look the site was designed in, and a visitor who prefers the
+         light one makes that choice once and it is remembered. -->
+    <script>
+      (function () {
+        var t = "dark";
+        try {
+          if (localStorage.getItem("theme") === "light") t = "light";
+        } catch (e) {}
+        document.documentElement.setAttribute("data-theme", t);
+        if (t === "light") {
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute("content", "#f6f7fb");
+        }
+      })();
+    </script>
 
     <!-- Link previews: without these, sharing the URL on LinkedIn, WhatsApp or
          Slack renders a bare link with no title, blurb or image. -->

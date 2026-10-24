@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import { LuArrowUpRight, LuArrowLeft } from "react-icons/lu";
+import { LuArrowUpRight, LuArrowLeft, LuRss } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
 import { TiltCard } from "../ui/TiltCard";
+import { readingTime } from "../../lib/readingTime";
+import { accentText } from "../../lib/accent";
 
 /**
  * Every write-up in one place.
@@ -30,6 +32,24 @@ export const WritingIndex = () => {
         that record them. Each one names what was measured and what was rejected.
       </p>
 
+      {/* The feed existed but nothing on the site pointed at it, so the only
+          people who could subscribe were the ones who already knew the URL. */}
+      <div className="mt-5 flex flex-wrap items-center gap-2.5">
+        <a
+          href="/writing/feed.xml"
+          className="inline-flex h-9 items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3.5 text-xs font-semibold text-gray-200 transition-colors hover:border-white/30 hover:text-white"
+        >
+          <LuRss className="h-3.5 w-3.5 text-orange-400" />
+          Subscribe via RSS
+        </a>
+        <a
+          href="/writing/feed.json"
+          className="text-xs text-gray-400 underline-offset-4 transition-colors hover:text-white hover:underline"
+        >
+          JSON Feed
+        </a>
+      </div>
+
       <ul className="mt-12 space-y-4">
         {studies.map(([id, study]) => (
           <li key={id}>
@@ -42,7 +62,7 @@ export const WritingIndex = () => {
                 <span
                   className="rounded-md border px-2 py-0.5 text-[11px] font-semibold"
                   style={{
-                    color: `rgb(${study.accent})`,
+                    color: accentText(study.accent),
                     borderColor: `rgba(${study.accent},0.3)`,
                     backgroundColor: `rgba(${study.accent},0.08)`,
                   }}
@@ -50,7 +70,7 @@ export const WritingIndex = () => {
                   {study.project}
                 </span>
                 <span className="text-[11px] text-gray-500">
-                  {study.date} · {study.readingTime} read
+                  {study.date} · {readingTime(study)} read
                 </span>
               </div>
 

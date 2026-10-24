@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import icon from "../assets/logo.svg";
 import { LuLinkedin, LuMenu, LuX, LuCalendarCheck } from "react-icons/lu";
 import { hiring } from "../data/hiring";
 import { FaGithub, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS = [
   { id: "home", label: "Home" },
@@ -35,6 +36,8 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
   // time you were reading.
   const { pathname } = useLocation();
   const onWriting = pathname.startsWith("/writing");
+  // Same for /insights: a page of its own, so no section link should look current.
+  const onInsights = pathname.startsWith("/insights");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -80,7 +83,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
    * five elements is cheaper than the observer it replaces.
    */
   useEffect(() => {
-    if (onWriting) return;
+    if (onWriting || onInsights) return;
     const ids = LINKS.filter((l) => l.id).map((l) => l.id);
     let frame = 0;
 
@@ -113,7 +116,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [onWriting]);
+  }, [onWriting, onInsights]);
 
   return (
     <nav
@@ -123,7 +126,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           // was briefly opaque while backdrop-filter was disabled on touch,
           // which is not the look — a solid bar over a moving page reads as
           // a lid rather than as glass.
-          ? "border-b border-white/10 bg-[#0a0a0a]/70 backdrop-blur-xl"
+          ? "border-b border-white/10 bg-page/70 backdrop-blur-xl"
           : "border-b border-transparent bg-transparent"
       }`}
     >
@@ -142,25 +145,25 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           <Link to="/" className="flex w-fit items-center gap-2 justify-self-start">
             {/* w-auto, not a square box — the mark is 32x48 and would squash */}
             {/* Dimensions declared so the row cannot reflow once the logo loads. */}
-            <img src={icon} alt="" width="32" height="32" className="h-7 w-auto sm:h-8" />
+            <img src={icon} alt="" width="32" height="32" className="invert-on-light h-7 w-auto sm:h-8" />
             <span className="font-mono text-sm font-bold text-white sm:text-base">
               bhupesh<span className="text-indigo-500">.blog</span>
             </span>
           </Link>
 
           {/* Links */}
-          <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm md:flex">
+          <div className="hidden items-center gap-0.5 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm md:flex lg:gap-1">
             {LINKS.map((link) => {
               // On a writing page the route link is what's current; elsewhere
               // the scroll spy decides.
-              const isActive = link.to ? onWriting : !onWriting && active === link.id;
-              const cls = `relative rounded-full px-3.5 py-1.5 text-sm transition-colors lg:px-4 ${
+              const isActive = link.to ? onWriting : !onWriting && !onInsights && active === link.id;
+              const cls = `relative rounded-full px-2 py-1.5 text-[13px] transition-colors lg:px-4 lg:text-sm ${
                 isActive ? "text-white" : "text-gray-400 hover:text-white"
               }`;
               const inner = (
                 <>
                   {isActive && (
-                    <motion.span
+                    <m.span
                       layoutId="nav-active-pill"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       className="absolute inset-0 rounded-full bg-indigo-500/25 ring-1 ring-indigo-400/40"
@@ -183,7 +186,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
 
           {/* Actions */}
           <div className="flex items-center gap-3 justify-self-end lg:gap-4">
-            <div className="hidden items-center gap-4 lg:flex">
+            <div className="hidden items-center gap-4 min-[1200px]:flex">
               {SOCIALS.map(({ href, Icon, label }) => (
                 <a
                   key={label}
@@ -213,21 +216,29 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
                 href={hiring.bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden h-9 items-center gap-1.5 rounded-full bg-indigo-500 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-400 md:inline-flex"
+                aria-label="Book a call"
+                className="hidden h-9 w-9 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-indigo-500 text-xs font-semibold text-white transition-colors hover:bg-indigo-400 md:inline-flex lg:w-auto lg:px-3.5"
               >
                 <LuCalendarCheck className="h-3.5 w-3.5" />
-                Book a call
+                {/* Icon alone from md to lg: with the theme switch added, the
+                    label is what no longer fits at 768–1023. */}
+                <span className="hidden lg:inline">Book a call</span>
               </a>
             )}
 
-            {/* Clock */}
-            <div className="hidden h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 sm:flex md:hidden lg:flex">
+            {/* Clock. From 1200px, not lg: between 1024 and 1200 the links, the
+                call button and the clock together are wider than the bar, so the
+                clock ran off the edge or squeezed the logo. Never wrapped, either —
+                a shrinking pill broke "11:58 pm" across two lines. */}
+            <div className="hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 sm:max-md:flex min-[1200px]:flex">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               <span className="text-xs tabular-nums text-gray-300">{indiaTime}</span>
               {/* gray-400: gray-500 measures 4.01:1 on the page background, under the
                   4.5 needed at 11px. */}
-              <span className="hidden text-[11px] text-gray-400 lg:inline">IST</span>
+              <span className="hidden text-[11px] text-gray-400 min-[1200px]:inline">IST</span>
             </div>
+
+            <ThemeToggle />
 
             <button
               type="button"

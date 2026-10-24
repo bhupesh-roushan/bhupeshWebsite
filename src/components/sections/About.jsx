@@ -5,6 +5,7 @@ import { Modal } from "../ui/Modal";
 import { journey } from "../../data/portfolio";
 import { LuArrowUpRight } from "react-icons/lu";
 import { skillGroups } from "../../data/skills";
+import { accentText } from "../../lib/accent";
 // Below the fold and self-contained, so it has no claim on the first download.
 const JdMatcher = lazy(() =>
   import("../JdMatcher").then((m) => ({ default: m.JdMatcher }))
@@ -50,25 +51,22 @@ export const About = () => {
           <h2 className="mb-10 text-center text-3xl font-bold text-white">About Me</h2>
 
           {/* ── Journey ───────────────────────────────────────────
-              A stack rather than a grid. Five roles in a bento read as five
-              unrelated tiles; dealt as a deck they read in the order they
-              happened, which is the one thing a career section is for.
-
-              Each card pins 12px lower than the one before, so the deck
-              never fully hides what it covers — the edge of every previous
-              role stays visible above the current one. */}
-          {/* Full width, like the skills grid and every other block in this
-              section. As max-w-3xl the deck sat 176px inside them — centred
-              against the container but out of line with everything above and
-              below it. */}
-          <div className="mb-14">
+              A bento grid, like the skills and projects below it. This was a
+              sticky deck, each role pinned a little lower than the last so the
+              cards piled on top of one another as you scrolled; it read in
+              order, but sliding over each other made the section feel busy and
+              hid the roles you had just passed. Laid out flat, every role stays
+              in view at once — newest first, the two most recent given the
+              wide tiles. */}
+          <BentoGrid className="mb-14">
             {journey.map((item, i) => (
-              <div
-                key={item.id}
-                className="journey-card"
-                style={{ "--i": i, zIndex: i + 1 }}
-              >
               <BentoCard
+                key={item.id}
+                // An odd count leaves the last tile alone in its row at two
+                // columns, so it takes the full width there instead.
+                className={`${item.span ?? ""} ${
+                  i === journey.length - 1 && journey.length % 2 ? "md:col-span-2" : ""
+                }`}
                 accent={item.accent}
                 onClick={() => setActiveId(item.id)}
               >
@@ -77,12 +75,16 @@ export const About = () => {
                       default case, so "Work" was just noise next to a role
                       title that already says as much. */}
                   <div className="mb-4 flex items-start justify-between gap-3">
-                    <img src={item.logo} alt="" className={item.logoClass} />
+                    {/* One fixed-height slot for every logo (the tallest is 56px), so
+                        the titles below start on the same line across a row. */}
+                    <div className="flex h-14 items-center">
+                      <img src={item.logo} alt="" className={item.logoClass} />
+                    </div>
                     {(item.current || item.kind !== "Work") && (
                       <span
                         className="shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider"
                         style={{
-                          color: `rgb(${item.accent})`,
+                          color: accentText(item.accent),
                           borderColor: `rgba(${item.accent},0.35)`,
                           backgroundColor: `rgba(${item.accent},0.1)`,
                         }}
@@ -94,7 +96,7 @@ export const About = () => {
 
                   <h3 className="text-base font-bold text-white">{item.company}</h3>
                   <p className="mt-0.5 text-sm font-medium text-gray-300">{item.role}</p>
-                  <p className="mt-1 text-xs font-medium" style={{ color: `rgb(${item.accent})` }}>
+                  <p className="mt-1 text-xs font-medium" style={{ color: accentText(item.accent) }}>
                     {item.period}
                     {durationLabel(item.start, item.end) && (
                       <span className="text-gray-500">
@@ -104,20 +106,34 @@ export const About = () => {
                     )}
                   </p>
 
-                  <div className="mt-5 flex items-center gap-1 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
+                  <div className="mt-auto flex items-center gap-1 pt-5 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
                     View details
                     <LuArrowUpRight className="h-3.5 w-3.5" />
                   </div>
                 </div>
               </BentoCard>
-              </div>
             ))}
-          </div>
+          </BentoGrid>
 
           {/* ── Technical skills ────────────────────────────────── */}
           <h3 className="mb-6 text-center text-2xl font-bold text-white">
             Technical Skills
           </h3>
+
+          {/* Above the skills, not below them. This used to sit under the grid,
+              as the last thing in the panel — and the last thing in a stacked
+              panel is exactly what the next panel slides over. Typing a job
+              description worked, but the result grew downward into the strip
+              Projects was already covering, so it looked like nothing happened.
+              Content high in a tall panel scrolls normally and is never under
+              the next one. */}
+          <div className="mb-8">
+            {/* Holds the space it will fill, so the grid below doesn't shift
+                when the chunk arrives. */}
+            <Suspense fallback={<div className="h-56" />}>
+              <JdMatcher />
+            </Suspense>
+          </div>
 
           <BentoGrid>
             {skillGroups.map((group) => (
@@ -148,16 +164,6 @@ export const About = () => {
             ))}
           </BentoGrid>
 
-          {/* Directly under the skills it reads from. At the foot of Contact it
-              was a tool with its own subject matter sitting three screens away
-              from the list it matches against. */}
-          <div className="mt-6">
-            {/* Holds the space it will fill, so the skills grid above doesn't
-                shift when the chunk arrives. */}
-            <Suspense fallback={<div className="h-56" />}>
-              <JdMatcher />
-            </Suspense>
-          </div>
         </div>
       </RevealOnScroll>
 
@@ -176,7 +182,7 @@ export const About = () => {
                 <p className="text-sm text-gray-300">
                   {active.role} · {active.location}
                 </p>
-                <p className="mt-0.5 text-xs font-medium" style={{ color: `rgb(${active.accent})` }}>
+                <p className="mt-0.5 text-xs font-medium" style={{ color: accentText(active.accent) }}>
                   {active.period}
                 </p>
               </div>
@@ -188,7 +194,7 @@ export const About = () => {
                   key={tech}
                   className="rounded-lg border px-2.5 py-1 text-xs font-medium"
                   style={{
-                    color: `rgb(${active.accent})`,
+                    color: accentText(active.accent),
                     borderColor: `rgba(${active.accent},0.3)`,
                     backgroundColor: `rgba(${active.accent},0.08)`,
                   }}

@@ -23,6 +23,12 @@ export const hiring = {
 
   experience: "3+ years",
 
+  // One plain sentence on whether and when you are available, shown beside the
+  // location on the hero. Left empty it simply doesn't appear — and it is worded
+  // as a statement ("Available from November 2026"), because the pulsing
+  // "Open to opportunities" pill this replaces read as asking.
+  availability: "",
+
   // Booking link. The button stays hidden while this is empty, so the page
   // never shows a scheduler that goes nowhere.
   //

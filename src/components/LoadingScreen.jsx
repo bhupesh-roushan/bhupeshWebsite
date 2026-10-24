@@ -82,11 +82,11 @@ export const LoadingScreen = ({ onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#08080c] px-6
+      className={`fixed inset-0 z-[200] flex flex-col items-center justify-center bg-deep px-6
         transition-opacity duration-500 ${exiting ? "opacity-0" : "opacity-100"}`}
     >
       <div className="flex w-full max-w-[220px] flex-col items-center">
-        <img src={icon} alt="" className="mb-5 h-12 w-auto" />
+        <img src={icon} alt="" className="invert-on-light mb-5 h-12 w-auto" />
 
         <p className="mb-6 font-mono text-sm font-bold text-white">
           bhupesh<span className="text-indigo-500">.blog</span>

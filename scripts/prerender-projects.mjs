@@ -14,7 +14,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.bhupesh.blog";
@@ -121,24 +121,27 @@ for (const id of entries) {
  * title and description in the markup, so sharing one previews as the
  * write-up rather than as the portfolio it hangs off.
  */
-const studySource = readFileSync(resolve(root, "src/data/caseStudies.js"), "utf8");
-const studies = [...studySource.matchAll(/\n  "([a-z0-9-]+)": \{/g)].map((m) => m[1]);
+// Imported rather than pattern-matched. The data is a plain module with no
+// dependencies, and the regexes this replaces were already one edit away from
+// reading a nested key as a study (see the note on ENTRY_ID above) — and could
+// not see the section text at all, which the feeds and reading time need.
+const { CASE_STUDIES } = await import(
+  pathToFileURL(resolve(root, "src/data/caseStudies.js")).href
+);
+const { readingTime } = await import(
+  pathToFileURL(resolve(root, "src/lib/readingTime.js")).href
+);
+const studies = Object.keys(CASE_STUDIES);
 
 const studyMeta = [];
 
 for (const id of studies) {
-  const at = studySource.indexOf(`"${id}": {`);
-  const slice = studySource.slice(at, at + 2000);
-  const title = slice.match(/title:\s*"([^"]+)"/)?.[1];
-  const dek = slice.match(/dek:\s*\n?\s*"([^"]+)"/)?.[1];
-  const project = slice.match(/project:\s*"([^"]+)"/)?.[1];
-  const published = slice.match(/published:\s*"([\d-]+)"/)?.[1];
-  const tags = (slice.match(/tags:\s*\[([^\]]*)\]/)?.[1] || "")
-    .split(",").map((t) => t.trim().replace(/^"|"$/g, "")).filter(Boolean);
+  const study = CASE_STUDIES[id];
+  const { title, dek, project, published, tags = [] } = study;
   if (!title || !dek || !project || !published) {
     throw new Error(`prerender: could not read title/dek/project/published for study "${id}"`);
   }
-  studyMeta.push({ id, title, dek, project, published, tags });
+  studyMeta.push({ id, title, dek, project, published, tags, study });
 
   const pageTitle = `${title} | ${project} case study — Bhupesh Roushan`;
   const url = `${SITE}/writing/${id}`;
@@ -184,9 +187,7 @@ for (const id of studies) {
 
   html = html.replace(
     "</head>",
-    `    <script type="application/ld+json">\n${JSON.stringify(article, null, 2)}\n    </script>\n` +
-      `    <link rel="alternate" type="application/rss+xml" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.xml" />\n` +
-      `    <link rel="alternate" type="application/feed+json" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.json" />\n  </head>`
+    `    <script type="application/ld+json">\n${JSON.stringify(article, null, 2)}\n    </script>\n  </head>`
   );
 
   const dir = resolve(root, "dist/writing", id);
@@ -206,8 +207,40 @@ for (const id of studies) {
 const feedItems = [...studyMeta].sort((a, b) => b.published.localeCompare(a.published));
 const rfc822 = (ym) => new Date(`${ym}-01T09:00:00Z`).toUTCString();
 
+/**
+ * The whole write-up as HTML, so a reader app shows the article rather than a
+ * one-line teaser and a link out. Built from the same sections the page
+ * renders — paragraphs, the before/after table, bullet lists — so the feed
+ * cannot drift from the page.
+ */
+const htmlEsc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const studyHtml = ({ study }) =>
+  [
+    `<p><em>${htmlEsc(study.dek)}</em></p>`,
+    ...study.sections.flatMap((sec) => [
+      `<h2>${htmlEsc(sec.heading)}</h2>`,
+      ...(sec.body ?? []).map((p) => `<p>${htmlEsc(p)}</p>`),
+      ...(sec.compare
+        ? [
+            `<table><caption>${htmlEsc(sec.compare.caption)}</caption>`,
+            ...sec.compare.rows.map(
+              (r) =>
+                `<tr><th>${htmlEsc(r.label)}</th><td>${htmlEsc(r.score)}</td><td>&ldquo;${htmlEsc(r.quote)}&rdquo;</td></tr>`
+            ),
+            `</table>`,
+          ]
+        : []),
+      ...(sec.list ? [`<ul>${sec.list.map((i) => `<li>${htmlEsc(i)}</li>`).join("")}</ul>`] : []),
+      ...(sec.after ?? []).map((p) => `<p>${htmlEsc(p)}</p>`),
+    ]),
+    study.footnote ? `<hr><p><small>${htmlEsc(study.footnote)}</small></p>` : "",
+  ].join("\n");
+
+/** CDATA can't contain its own terminator; split it if the text ever does. */
+const cdata = (html) => `<![CDATA[${html.replace(/]]>/g, "]]]]><![CDATA[>")}]]>`;
+
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Writing — Bhupesh Roushan</title>
     <link>${SITE}/writing</link>
@@ -221,7 +254,8 @@ ${feedItems
       <link>${SITE}/writing/${s.id}</link>
       <guid isPermaLink="true">${SITE}/writing/${s.id}</guid>
       <pubDate>${rfc822(s.published)}</pubDate>
-      <description>${esc(s.dek)}</description>
+      <description>${esc(s.dek)} (${readingTime(s.study)} read)</description>
+      <content:encoded>${cdata(studyHtml(s))}</content:encoded>
 ${s.tags.map((t) => `      <category>${esc(t)}</category>`).join("\n")}
     </item>`
   )
@@ -230,6 +264,8 @@ ${s.tags.map((t) => `      <category>${esc(t)}</category>`).join("\n")}
 </rss>
 `;
 writeFileSync(resolve(root, "dist/writing/feed.xml"), rss);
+// The address people guess first.
+writeFileSync(resolve(root, "dist/feed.xml"), rss);
 
 const jsonFeed = {
   version: "https://jsonfeed.org/version/1.1",
@@ -243,7 +279,8 @@ const jsonFeed = {
     id: `${SITE}/writing/${s.id}`,
     url: `${SITE}/writing/${s.id}`,
     title: s.title,
-    summary: s.dek,
+    summary: `${s.dek} (${readingTime(s.study)} read)`,
+    content_html: studyHtml(s),
     image: ogImage(`writing-${s.id}`),
     date_published: `${s.published}-01T09:00:00Z`,
     tags: s.tags,

@@ -5,6 +5,8 @@ import { LuArrowLeft, LuCircleAlert, LuCheck, LuArrowUpRight } from "react-icons
 import { CASE_STUDIES } from "../../data/caseStudies";
 import { TiltCard } from "../ui/TiltCard";
 import { ReadingProgress } from "../ReadingProgress";
+import { readingTime } from "../../lib/readingTime";
+import { accentText } from "../../lib/accent";
 
 /**
  * A case study is its own page, not a modal. It is long enough to want a URL
@@ -39,7 +41,7 @@ export const CaseStudy = () => {
     );
   }
 
-  const accent = `rgb(${study.accent})`;
+  const accent = accentText(study.accent);
   // Stable ids so the contents can link to the headings without the data
   // having to carry slugs it would otherwise never need.
   const slug = (h) => h.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -78,7 +80,7 @@ export const CaseStudy = () => {
         </h1>
         <p className="mt-4 text-base leading-relaxed text-gray-300">{study.dek}</p>
         <p className="mt-4 text-xs text-gray-500">
-          {study.project} · {study.date} · {study.readingTime} read
+          {study.project} · {study.date} · {readingTime(study)} read
         </p>
       </header>
 
@@ -140,7 +142,7 @@ export const CaseStudy = () => {
                     <span className="w-32 shrink-0 text-xs text-gray-400">{row.label}</span>
                     <span
                       className="font-mono text-base font-bold"
-                      style={{ color: row.bad ? "#f87171" : accent }}
+                      style={{ color: row.bad ? "var(--color-red-400)" : accent }}
                     >
                       {row.score}
                     </span>
@@ -208,7 +210,7 @@ export const CaseStudy = () => {
                       {other.title}
                     </span>
                     <span className="mt-0.5 block text-xs text-gray-400">
-                      {other.project} · {other.readingTime} read
+                      {other.project} · {readingTime(other)} read
                     </span>
                   </span>
                 </Link>

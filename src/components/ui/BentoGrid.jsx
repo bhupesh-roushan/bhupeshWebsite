@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { useTilt } from "../../hooks/useTilt";
 
@@ -81,7 +81,7 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
   const Tag = onClick ? "button" : "div";
 
   return (
-    <motion.div
+    <m.div
       // Driven by state rather than whileHover, so touch raises the card too.
       animate={{ y: active && !reduceMotion ? -4 : 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
@@ -110,7 +110,7 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
           // look entirely — the blur is the point, not a decoration on top
           // of it. /75 rather than the old /03, so the card still reads as a
           // surface if a browser ever declines the filter.
-          "bg-[#101017]/75 backdrop-blur-xl text-left",
+          "bg-surface/75 backdrop-blur-xl text-left",
           // Transform is written per-frame by the tilt hook, so it must not be
           // in the transition list — animating it would fight the pointer and
           // lag a frame behind it. Colour still eases.
@@ -139,6 +139,6 @@ export const BentoCard = ({ className, children, onClick, accent = "99,102,241" 
           {children}
         </div>
       </Tag>
-    </motion.div>
+    </m.div>
   );
 };

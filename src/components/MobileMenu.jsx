@@ -26,7 +26,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }) => {
     <div
       // z-40 sits under the navbar (z-50) so the toggle button stays clickable.
       className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-2
-        bg-[#0a0a0a]/98 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden
+        bg-page/98 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden
         ${menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
     >
       {LINKS.map((link, i) => (

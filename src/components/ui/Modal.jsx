@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 
 const FOCUSABLE =
@@ -70,55 +70,64 @@ export const Modal = ({ open, onClose, label, children }) => {
   return createPortal(
     <AnimatePresence>
       {open && (
-        <motion.div
-          className="fixed inset-0 z-[100] flex justify-center overflow-y-auto p-4 sm:p-8 [perspective:1200px]"
+        <m.div
+          className="fixed inset-0 z-[100]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
+          {/* The scrim is a sibling of the scroller, not a child of it. The
+              scroller needs `perspective` for the tilt, and perspective makes
+              it the containing block for fixed descendants — so a scrim inside
+              it scrolled away with the panel, and past one screen of scrolling
+              the page behind went sharp again. */}
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
+
           <div
-            className="fixed inset-0 bg-black/90 backdrop-blur-md"
-            onClick={onClose}
-          />
-
-          <motion.div
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label={label}
-            tabIndex={-1}
-            // Comes in tilted and settles flat, so it reads as rising out of
-            // the page rather than growing on top of it. rotateX only — adding
-            // Y makes a full-width panel look like it is swinging on a hinge.
-            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateX: 12, y: 40, scale: 0.97 }}
-            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, rotateX: 0, y: 0, scale: 1 }}
-            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateX: 6, y: 16, scale: 0.98 }}
-            transition={
-              reduceMotion
-                ? { duration: 0.15 }
-                : { type: "spring", stiffness: 260, damping: 26 }
-            }
-            style={{ transformOrigin: "50% 0%" }}
-            // Translucent over its own blur, so the page behind reads as
-            // frosted rather than either sharp or hidden. The blur is what
-            // makes this legible at /80 — without one it would be the
-            // see-through panel this replaced.
-            className="relative z-10 my-auto w-full max-w-3xl rounded-2xl border border-white/15
-              bg-[#0b0b12]/80 backdrop-blur-2xl shadow-[0_0_60px_-12px_rgba(99,102,241,0.5)]"
+            className="absolute inset-0 flex justify-center overflow-y-auto p-4 sm:p-8 [perspective:1200px]"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) onClose();
+            }}
           >
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              className="absolute right-4 top-4 z-20 rounded-full border border-white/10 bg-black/40 p-2
-                text-gray-300 transition-colors hover:border-white/30 hover:text-white cursor-pointer"
+            <m.div
+              ref={panelRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label={label}
+              tabIndex={-1}
+              // Comes in tilted and settles flat, so it reads as rising out of
+              // the page rather than growing on top of it. rotateX only — adding
+              // Y makes a full-width panel look like it is swinging on a hinge.
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateX: 12, y: 40, scale: 0.97 }}
+              animate={reduceMotion ? { opacity: 1 } : { opacity: 1, rotateX: 0, y: 0, scale: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateX: 6, y: 16, scale: 0.98 }}
+              transition={
+                reduceMotion
+                  ? { duration: 0.15 }
+                  : { type: "spring", stiffness: 260, damping: 26 }
+              }
+              style={{ transformOrigin: "50% 0%" }}
+              // Translucent over its own blur, so the page behind reads as
+              // frosted rather than either sharp or hidden. The blur is what
+              // makes this legible at /80 — without one it would be the
+              // see-through panel this replaced.
+              className="relative z-10 my-auto w-full max-w-3xl rounded-2xl border border-white/15
+                bg-panel/80 backdrop-blur-2xl shadow-[0_0_60px_-12px_rgba(99,102,241,0.5)]"
             >
-              <IoClose className="h-5 w-5" />
-            </button>
+              <button
+                onClick={onClose}
+                aria-label="Close"
+                className="absolute right-4 top-4 z-20 rounded-full border border-white/10 bg-black/40 p-2
+                  text-gray-300 transition-colors hover:border-white/30 hover:text-white cursor-pointer"
+              >
+                <IoClose className="h-5 w-5" />
+              </button>
 
-            {children}
-          </motion.div>
-        </motion.div>
+              {children}
+            </m.div>
+          </div>
+        </m.div>
       )}
     </AnimatePresence>,
     document.body
