@@ -16,10 +16,14 @@ import {
   LuCalendarCheck,
   LuGithub,
   LuLinkedin,
+  LuUserSearch,
+  LuEraser,
 } from "react-icons/lu";
 import { projects } from "../data/portfolio";
 import { CASE_STUDIES } from "../data/caseStudies";
 import { hiring, EMAIL } from "../data/hiring";
+import { ROLES } from "../data/roles";
+import { useRole } from "../hooks/useRole";
 import { useTheme } from "../hooks/useTheme";
 import { notify } from "../lib/toast";
 
@@ -52,6 +56,7 @@ export default function CommandPalette({ onClose }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [, toggleTheme] = useTheme();
+  const { role, setRole } = useRole();
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
   const inputRef = useRef(null);
@@ -116,12 +121,24 @@ export default function CommandPalette({ onClose }) {
       ...(hiring.bookingUrl
         ? [{ group: "Actions", label: "Book a call", keywords: "schedule meeting", Icon: LuCalendarCheck, hint: "15 min", run: () => window.open(hiring.bookingUrl, "_blank", "noopener") }]
         : []),
+      // Recruiter mode: the same page, read as one role (see hooks/useRole).
+      ...ROLES.map((r) => ({
+        group: "View as",
+        label: `View as: ${r.label}`,
+        keywords: `role recruiter ${r.slug}`,
+        Icon: LuUserSearch,
+        hint: r.slug === role?.slug ? "Current view" : "Reorder projects",
+        run: () => setRole(r.slug),
+      })),
+      ...(role
+        ? [{ group: "View as", label: "Clear role view", keywords: "role recruiter reset", Icon: LuEraser, hint: role.label, run: () => setRole(null) }]
+        : []),
       { group: "Links", label: "GitHub", Icon: LuGithub, hint: "bhupesh-roushan", run: () => window.open("https://github.com/bhupesh-roushan", "_blank", "noopener") },
       { group: "Links", label: "LinkedIn", Icon: LuLinkedin, hint: "in/roushanb", run: () => window.open("https://www.linkedin.com/in/roushanb", "_blank", "noopener") },
     ];
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, role]);
 
   const results = useMemo(() => items.filter((i) => matches(i, query)), [items, query]);
 

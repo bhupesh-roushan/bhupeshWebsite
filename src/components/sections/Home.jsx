@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   LuArrowRight,
@@ -18,6 +18,8 @@ import { AuroraText } from "../magic/AuroraText";
 import { ShimmerButton } from "../magic/ShimmerButton";
 import { NumberTicker } from "../magic/NumberTicker";
 import { BorderBeam } from "../magic/BorderBeam";
+import { heroRoles } from "../../lib/roleFit";
+import { useRole } from "../../hooks/useRole";
 
 const PILL =
   "inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-medium text-gray-300 sm:text-xs";
@@ -55,14 +57,18 @@ export const Home = () => {
   const lastPush = useLastPush();
   const reduceMotion = useReducedMotion();
   const [roleIndex, setRoleIndex] = useState(0);
+  // In a role view (?role=) that role leads the rotation; otherwise ROLES as is.
+  const { role } = useRole();
+  const roles = useMemo(() => heroRoles(ROLES, role), [role]);
+  useEffect(() => setRoleIndex(0), [role]);
 
   // Role rotator. The one piece of motion kept in the headline: it carries
   // information (four roles in one line) rather than decoration.
   useEffect(() => {
     if (reduceMotion) return;
-    const t = setInterval(() => setRoleIndex((i) => (i + 1) % ROLES.length), 2600);
+    const t = setInterval(() => setRoleIndex((i) => (i + 1) % roles.length), 2600);
     return () => clearInterval(t);
-  }, [reduceMotion]);
+  }, [reduceMotion, roles.length]);
 
   return (
     <section
@@ -131,7 +137,7 @@ export const Home = () => {
                     transition={{ duration: 0.35 }}
                     className="text-base font-semibold text-white sm:text-lg md:text-xl"
                   >
-                    {ROLES[roleIndex]}
+                    {roles[roleIndex % roles.length]}
                   </m.p>
                 </AnimatePresence>
               </div>

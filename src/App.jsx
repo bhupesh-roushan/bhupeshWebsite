@@ -13,6 +13,7 @@ import { collectPageview } from "./lib/collect";
 import { readSrc } from "./lib/visitLog";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ScrollProgress } from "./components/magic/ScrollProgress";
+import { RoleBanner } from "./components/RoleBanner";
 
 // Only the hero is in the entry chunk. Everything below it is fetched as its own
 // chunk straight after first paint (see `prefetch`), so the page that has to be
@@ -200,6 +201,7 @@ function App() {
           {/* Anything else still gets the portfolio rather than a blank screen */}
           <Route path="*" element={<Page />} />
         </Routes>
+        <RoleBanner />
         <Analytics />
         {paletteOpen && (
           <Suspense fallback={null}>

@@ -9,6 +9,8 @@ import { accentText } from "../../lib/accent";
 import { SectionHeader } from "../ui/SectionHeader";
 import { Marquee } from "../magic/Marquee";
 import { BorderBeam } from "../magic/BorderBeam";
+import { skillFits } from "../../lib/roleFit";
+import { useRole } from "../../hooks/useRole";
 // Below the fold and self-contained, so it has no claim on the first download.
 const JdMatcher = lazy(() =>
   import("../JdMatcher").then((m) => ({ default: m.JdMatcher }))
@@ -34,10 +36,16 @@ function durationLabel(start, end) {
   return parts.join(" ");
 }
 
-const Chip = ({ children }) => (
+// `fit` is only set in a role view: true lights the chip, false eases it back.
+// Never hidden — a skill the role doesn't list is still a skill — and only to
+// 70%, which keeps its text above the contrast the rest of the page holds.
+const Chip = ({ children, fit }) => (
   <span
-    className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5
-      px-2.5 py-1.5 text-xs font-medium text-gray-200 transition-colors hover:border-white/25 hover:bg-white/10"
+    className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium text-gray-200 transition-colors ${
+      fit === true
+        ? "border-indigo-400/60 bg-indigo-500/20 text-white hover:bg-indigo-500/30"
+        : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10"
+    } ${fit === false ? "opacity-70" : ""}`}
   >
     {children}
   </span>
@@ -54,6 +62,7 @@ const tickerRows = [
 export const About = () => {
   const [activeId, setActiveId] = useState(null);
   const active = journey.find((item) => item.id === activeId) ?? null;
+  const { role } = useRole();
 
   return (
     <section id="about" className="py-20 sm:py-28">
@@ -173,6 +182,12 @@ export const About = () => {
             </Suspense>
           </div>
 
+          {role && (
+            <p className="mb-4 text-center text-xs text-gray-400">
+              Highlighted: skills that appear in the {role.label} view.
+            </p>
+          )}
+
           <BentoGrid>
             {skillGroups.map((group) => (
               <BentoCard key={group.title} className={group.span} accent={group.accent}>
@@ -188,7 +203,7 @@ export const About = () => {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {group.items.map((item) => (
-                      <Chip key={item.name}>
+                      <Chip key={item.name} fit={role ? skillFits(item.name, role) : undefined}>
                         <item.Icon
                           className="text-lg shrink-0"
                           style={{ color: item.color }}

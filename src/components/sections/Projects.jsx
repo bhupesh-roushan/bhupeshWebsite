@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useMemo, lazy, Suspense } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { track } from "@vercel/analytics";
 import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
@@ -21,6 +21,8 @@ import {
 } from "react-icons/lu";
 import { DIAGRAMS } from "../../data/diagrams";
 import { accentText } from "../../lib/accent";
+import { rankProjects, describeMatch } from "../../lib/roleFit";
+import { useRole } from "../../hooks/useRole";
 import { SectionHeader } from "../ui/SectionHeader";
 import { BrowserFrame } from "../magic/BrowserFrame";
 import { BorderBeam } from "../magic/BorderBeam";
@@ -57,11 +59,18 @@ export const Projects = () => {
   const navigate = useNavigate();
   const active = projects.find((p) => p.id === projectId) ?? null;
 
-  // Neighbours, wrapping at both ends. Seven projects is few enough that
-  // running off the end and stopping feels like a fault rather than a limit.
-  const index = projects.findIndex((p) => p.id === projectId);
-  const prev = index >= 0 ? projects[(index - 1 + projects.length) % projects.length] : null;
-  const next = index >= 0 ? projects[(index + 1) % projects.length] : null;
+  // Recruiter mode (?role=). With no role this is `projects` as written, in
+  // order, with nothing marked; with one, the same cards re-flowed by relevance.
+  const { role } = useRole();
+  const fit = useMemo(() => rankProjects(projects, role), [role]);
+  const shown = useMemo(() => fit.entries.map((e) => e.project), [fit]);
+
+  // Neighbours, wrapping at both ends, in the order the grid shows. Seven
+  // projects is few enough that running off the end and stopping feels like a
+  // fault rather than a limit.
+  const index = shown.findIndex((p) => p.id === projectId);
+  const prev = index >= 0 ? shown[(index - 1 + shown.length) % shown.length] : null;
+  const next = index >= 0 ? shown[(index + 1) % shown.length] : null;
 
   // Which projects actually get opened is the one thing the page can tell you
   // that a CV can't. Vercel Analytics is cookieless and stores no identifiers,
@@ -114,7 +123,7 @@ export const Projects = () => {
           </SectionHeader>
 
           <BentoGrid>
-            {projects.map((project, index) => (
+            {fit.entries.map(({ project, matched, strong }, index) => (
               <BentoCard
                 key={project.id}
                 className={project.span}
@@ -208,6 +217,20 @@ export const Projects = () => {
                           Private
                         </span>
                       )}
+                      {/* Only in a role view, and only where the stack backs it:
+                          the line below names the technologies it counted. */}
+                      {strong && (
+                        <span
+                          className="inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                          style={{
+                            color: accentText(project.accent),
+                            borderColor: `rgba(${project.accent},0.45)`,
+                            backgroundColor: `rgba(${project.accent},0.12)`,
+                          }}
+                        >
+                          Strong match
+                        </span>
+                      )}
                     </div>
                     <p
                       className="mb-3 text-xs font-semibold"
@@ -224,15 +247,35 @@ export const Projects = () => {
                       </p>
                     )}
 
+                    {strong && (
+                      <p className="mb-2 text-[11px] font-medium text-gray-300">
+                        {describeMatch(matched)}
+                      </p>
+                    )}
+
                     <div className="flex flex-wrap items-center gap-1.5">
-                      {project.stack.map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-gray-300"
-                        >
-                          {tech}
-                        </span>
-                      ))}
+                      {project.stack.map((tech) =>
+                        matched.includes(tech) ? (
+                          <span
+                            key={tech}
+                            className="rounded-md border px-2 py-0.5 text-[11px] font-semibold"
+                            style={{
+                              color: accentText(project.accent),
+                              borderColor: `rgba(${project.accent},0.45)`,
+                              backgroundColor: `rgba(${project.accent},0.12)`,
+                            }}
+                          >
+                            {tech}
+                          </span>
+                        ) : (
+                          <span
+                            key={tech}
+                            className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-gray-300"
+                          >
+                            {tech}
+                          </span>
+                        )
+                      )}
                     </div>
 
                     <div className="mt-auto flex items-center gap-1 pt-4 text-xs font-medium text-gray-500 transition-colors group-hover:text-white">
