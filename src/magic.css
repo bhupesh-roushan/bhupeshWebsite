@@ -170,38 +170,6 @@
   }
 }
 
-/* ── Ripple ─────────────────────────────────────────────────────────────
-   Rings that swell outward from behind an element and fade, one after another. */
-@keyframes ripple-out {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.45;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.9);
-    opacity: 0;
-  }
-}
-
-.ripple-ring {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border-radius: 9999px;
-  border: 1px solid rgb(129 140 248 / 0.55);
-  background: radial-gradient(circle, transparent 62%, rgb(99 102 241 / 0.12));
-  pointer-events: none;
-  animation: ripple-out 5.4s ease-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ripple-ring {
-    animation: none;
-    opacity: 0.18;
-    transform: translate(-50%, -50%) scale(1.35);
-  }
-}
-
 /* ── Dot pattern ────────────────────────────────────────────────────────
    A field of faint dots behind a section, fading out toward the bottom so it
    reads as texture at the top edge and never competes with content. It is a
@@ -275,7 +243,6 @@
 
 @media print {
   .scroll-progress,
-  .ripple-ring,
   .border-beam {
     display: none !important;
   }

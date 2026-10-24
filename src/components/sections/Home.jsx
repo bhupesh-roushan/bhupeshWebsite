@@ -14,7 +14,6 @@ import bhupesh from "../../assets/bhupesh.webp";
 import { hiring } from "../../data/hiring";
 import { ago, useLastPush } from "../../lib/liveStatus";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
-import { Ripple } from "../magic/Ripple";
 import { AuroraText } from "../magic/AuroraText";
 import { ShimmerButton } from "../magic/ShimmerButton";
 import { NumberTicker } from "../magic/NumberTicker";
@@ -89,12 +88,16 @@ export const Home = () => {
           what. Everything in them is read from data already on the site. */}
       <BentoGrid className="relative z-10 mx-auto w-full max-w-6xl">
         {/* ── Headline ──────────────────────────────────────────── */}
-        <m.div {...rise(0)} className="lg:col-span-4">
+        <m.div {...rise(0)} className="lg:col-span-6">
           <BentoCard className="h-full" accent="99,102,241">
             {/* The lead tile wears the comet, like the cards that matter most
                 further down. */}
             <BorderBeam accent="99,102,241" duration={12} />
-            <div className="flex h-full flex-col justify-center p-6 sm:p-9">
+            {/* Words on the left, the portrait on the right: one tile, not two. On a
+                phone the portrait comes first and small, so it does not cost a
+                screen of scrolling. */}
+            <div className="grid h-full items-center gap-6 p-6 sm:p-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 lg:px-12">
+              <div className="relative z-10 flex flex-col justify-center">
               <div className="mb-5 flex flex-wrap items-center gap-2">
                 <span className={PILL}>
                   <LuMapPin className="h-3.5 w-3.5 text-indigo-400" />
@@ -163,37 +166,22 @@ export const Home = () => {
                   Contact
                 </a>
               </div>
-            </div>
-          </BentoCard>
-        </m.div>
+              </div>
 
-        {/* ── Photo ─────────────────────────────────────────────── */}
-        <m.div {...rise(1)} className="lg:col-span-2">
-          <BentoCard className="h-full" accent="56,189,248">
-            {/* A row on a phone — a small portrait beside the name, so the photo
-                does not cost a whole screen of scrolling — and the large centred
-                portrait with its rings from lg up. */}
-            <div className="flex h-full flex-row items-center gap-4 p-4 lg:min-h-[15rem] lg:flex-col lg:justify-center lg:p-6">
-              <div className="relative shrink-0">
-                <div className="hidden lg:block">
-                  {/* Rings swelling out from behind the photo — the one slow,
-                      ambient movement on the hero. */}
-                  <Ripple size={150} rings={3} gap={56} />
-                </div>
+              <div className="relative order-first shrink-0 lg:order-last">
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-blue-500 to-sky-400 opacity-70 blur-[6px]" />
                 <img
                   src={bhupesh}
                   alt="Bhupesh Roushan"
-                  className="relative h-16 w-16 rounded-full object-cover ring-2 ring-white/20 sm:h-20 sm:w-20 lg:h-36 lg:w-36"
+                  className="relative h-20 w-20 rounded-full object-cover ring-2 ring-white/20 sm:h-24 sm:w-24 lg:h-60 lg:w-60"
                 />
               </div>
-              <p className="text-sm font-semibold text-white lg:text-center">{NAME}</p>
             </div>
           </BentoCard>
         </m.div>
 
         {/* ── How long ──────────────────────────────────────────── */}
-        <m.div {...rise(2)} className="lg:col-span-2">
+        <m.div {...rise(1)} className="lg:col-span-2">
           <BentoCard className="h-full" accent="168,85,247">
             <div className="flex h-full flex-col p-5">
               <p className="eyebrow mb-4">By the numbers</p>
@@ -217,7 +205,7 @@ export const Home = () => {
         </m.div>
 
         {/* ── Right now ─────────────────────────────────────────── */}
-        <m.div {...rise(3)} className="lg:col-span-2">
+        <m.div {...rise(2)} className="lg:col-span-2">
           <BentoCard className="h-full" accent="45,212,191">
             <div className="flex h-full flex-col p-5">
               <p className="eyebrow mb-4">Right now</p>
@@ -248,7 +236,7 @@ export const Home = () => {
         </m.div>
 
         {/* ── Open to ───────────────────────────────────────────── */}
-        <m.div {...rise(4)} className="md:col-span-2 lg:col-span-2">
+        <m.div {...rise(3)} className="md:col-span-2 lg:col-span-2">
           <BentoCard className="h-full" accent="236,72,153">
             <div className="flex h-full flex-col p-5">
               <p className="eyebrow mb-4">Open to</p>

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import icon from "../assets/logo.svg";
 import bhupesh from "../assets/bhupesh.webp";
 import masai from "../assets/masai.png";
 import adda from "../assets/adda.png";
@@ -12,7 +11,7 @@ import bms from "../assets/bms.png";
 // sit below the fold and stream in on their own, so gating the intro on them
 // just makes people stare at a progress bar. Measured on a cold, throttled
 // cache, including them held the loader up for 7s.
-const ASSETS = [icon, bhupesh, masai, adda, hudl, varcons, bms];
+const ASSETS = [bhupesh, masai, adda, hudl, varcons, bms];
 
 const MIN_VISIBLE_MS = 1100; // don't let the intro flash on a warm cache
 const FAILSAFE_MS = 4000; // never trap someone behind the loader
@@ -86,12 +85,6 @@ export const LoadingScreen = ({ onComplete }) => {
         transition-opacity duration-500 ${exiting ? "opacity-0" : "opacity-100"}`}
     >
       <div className="flex w-full max-w-[220px] flex-col items-center">
-        <img src={icon} alt="" className="invert-on-light mb-5 h-12 w-auto" />
-
-        <p className="mb-6 font-mono text-sm font-bold text-white">
-          bhupesh<span className="text-indigo-500">.blog</span>
-        </p>
-
         <div
           className="h-px w-full overflow-hidden bg-white/15"
           role="progressbar"

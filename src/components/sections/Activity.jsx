@@ -79,6 +79,57 @@ async function fetchContributions(signal) {
   return { data: await res.json(), includesPrivate: false };
 }
 
+/**
+ * Public repo count, language mix and last push.
+ *
+ * Our own function first (api/github-activity.js): it calls GitHub with a token,
+ * which is 5,000 requests an hour and cached at the edge. The direct browser
+ * calls below it are the fallback, and they are what used to be the only path —
+ * anonymous, so capped at 60 an hour per IP address, which a shared office or
+ * campus network exhausts almost at once. When that happened the tiles read
+ * "0 public repos" and "Last push —" and the language bar was empty.
+ *
+ * Returns nulls rather than zeros when nothing answered, so an unknown number
+ * is shown as unknown and never as a confident "0".
+ */
+async function fetchProfile(signal) {
+  try {
+    const res = await fetch("/api/github-activity", { signal });
+    const type = res.headers.get("content-type") ?? "";
+    if (res.ok && type.includes("application/json")) {
+      const d = await res.json();
+      return { repoCount: d.publicRepos ?? null, languages: d.languages ?? [], lastPush: d.lastPush?.at ?? null, ok: true };
+    }
+  } catch (err) {
+    if (err.name === "AbortError") throw err;
+  }
+
+  const [userRes, reposRes] = await Promise.all([
+    fetch(USER_URL, { signal }),
+    fetch(REPOS_URL, { signal }),
+  ]);
+  const user = userRes.ok ? await userRes.json() : null;
+  const reposRaw = reposRes.ok ? await reposRes.json() : null;
+  const repos = Array.isArray(reposRaw) ? reposRaw : [];
+
+  const langCounts = {};
+  repos.forEach((r) => {
+    if (r.language) langCounts[r.language] = (langCounts[r.language] || 0) + 1;
+  });
+  const langTotal = Object.values(langCounts).reduce((a, b) => a + b, 0);
+  const languages = Object.entries(langCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count]) => ({ name, count, pct: langTotal ? Math.round((count / langTotal) * 100) : 0 }));
+
+  return {
+    repoCount: user?.public_repos ?? (reposRaw ? repos.length : null),
+    languages,
+    lastPush: repos.map((r) => r.pushed_at).filter(Boolean).sort().slice(-1)[0] ?? null,
+    // Both anonymous calls failed: this is rate-limiting, not an empty profile.
+    ok: Boolean(user || reposRaw),
+  };
+}
+
 /** Compact relative age, e.g. "Today", "6d ago", "3mo ago". */
 function sinceLabel(iso) {
   if (!iso) return "—";
@@ -109,10 +160,9 @@ export const Activity = () => {
       }
 
       try {
-        const [contribResult, userRes, reposRes] = await Promise.all([
+        const [contribResult, profile] = await Promise.all([
           fetchContributions(controller.signal),
-          fetch(USER_URL, { signal: controller.signal }),
-          fetch(REPOS_URL, { signal: controller.signal }),
+          fetchProfile(controller.signal),
         ]);
 
         const contrib = contribResult.data;
@@ -124,41 +174,20 @@ export const Activity = () => {
           (d) => parseDay(d.date) <= today
         );
 
-        // api.github.com is rate limited and may 403; the heatmap should still
-        // render if it does.
-        const user = userRes.ok ? await userRes.json() : null;
-        const reposRaw = reposRes.ok ? await reposRes.json() : [];
-        const repos = Array.isArray(reposRaw) ? reposRaw : [];
-
-        const langCounts = {};
-        repos.forEach((r) => {
-          if (r.language) langCounts[r.language] = (langCounts[r.language] || 0) + 1;
-        });
-        const langTotal = Object.values(langCounts).reduce((a, b) => a + b, 0);
-        const languages = Object.entries(langCounts)
-          .sort((a, b) => b[1] - a[1])
-          .map(([name, count]) => ({
-            name,
-            count,
-            pct: langTotal ? Math.round((count / langTotal) * 100) : 0,
-          }));
-
-        const lastPush = repos
-          .map((r) => r.pushed_at)
-          .filter(Boolean)
-          .sort()
-          .slice(-1)[0];
-
         const payload = {
           days,
           total: contrib.total?.lastYear ?? days.reduce((s, d) => s + d.count, 0),
-          repoCount: user?.public_repos ?? repos.length,
-          lastPush,
-          languages,
+          repoCount: profile.repoCount,
+          lastPush: profile.lastPush,
+          languages: profile.languages,
           includesPrivate,
         };
 
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), payload }));
+        // Don't remember an answer that was really a rate-limit: it would keep
+        // the blanks on screen for the whole cache window after GitHub recovers.
+        if (profile.ok) {
+          sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), payload }));
+        }
         setData({ status: "ready", ...payload });
       } catch (err) {
         if (err.name !== "AbortError") setData({ status: "error" });
@@ -271,8 +300,12 @@ export const Activity = () => {
                 <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
                   Languages
                 </h3>
-                {loading || !data.languages?.length ? (
+                {loading ? (
                   <div className="h-24 animate-pulse rounded-lg bg-white/5" />
+                ) : !data.languages?.length ? (
+                  // Said plainly. A pulsing placeholder that never resolves reads
+                  // as a page that is still loading, indefinitely.
+                  <p className="text-xs text-gray-400">Language breakdown unavailable right now.</p>
                 ) : (
                   <>
                     <div className="mb-4 flex h-2 overflow-hidden rounded-full bg-white/10">

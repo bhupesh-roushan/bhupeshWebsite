@@ -15,6 +15,7 @@ export default defineConfig({
     proxy: {
       "/api/contributions": { target: "https://www.bhupesh.blog", changeOrigin: true },
       "/api/stats": { target: "https://www.bhupesh.blog", changeOrigin: true },
+      "/api/github-activity": { target: "https://www.bhupesh.blog", changeOrigin: true },
     },
   },
   build: {

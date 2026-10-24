@@ -64,10 +64,27 @@ export function useLastPush() {
     const ctrl = new AbortController();
     (async () => {
       try {
-        const r = await fetch(URL, { signal: ctrl.signal });
-        if (!r.ok) return;
-        const [repo] = await r.json();
-        const value = repo?.pushed_at ? { repo: repo.name, at: repo.pushed_at } : null;
+        // Our own function first — token-backed and edge-cached — because the
+        // anonymous call below is capped at 60 an hour per IP, and a shared
+        // network spends that before a visitor arrives.
+        let value = undefined;
+        try {
+          const own = await fetch("/api/github-activity", { signal: ctrl.signal });
+          if (own.ok && (own.headers.get("content-type") ?? "").includes("application/json")) {
+            const d = await own.json();
+            value = d.lastPush ? { repo: d.lastPush.repo, at: d.lastPush.at } : null;
+          }
+        } catch (err) {
+          if (err.name === "AbortError") return;
+        }
+
+        if (value === undefined) {
+          const r = await fetch(URL, { signal: ctrl.signal });
+          if (!r.ok) return;
+          const [repo] = await r.json();
+          value = repo?.pushed_at ? { repo: repo.name, at: repo.pushed_at } : null;
+        }
+
         write(value);
         setPush(value);
       } catch {

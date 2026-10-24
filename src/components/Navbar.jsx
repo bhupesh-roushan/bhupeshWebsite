@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { m } from "framer-motion";
-import icon from "../assets/logo.svg";
 import { LuLinkedin, LuMenu, LuX, LuCalendarCheck, LuSearch } from "react-icons/lu";
 import { hiring } from "../data/hiring";
 import { FaGithub, FaInstagram } from "react-icons/fa";
@@ -130,27 +129,19 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Flex on mobile, grid from md. The links container is display:none
-            below md, which drops it out of grid flow entirely — as a grid the
-            actions would fall into the middle column and leave a dead 1fr on
-            the right. From md up, 1fr/auto/1fr keeps the links optically
-            centred however wide the brand or actions get. */}
-        <div className="flex h-16 items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr]">
-          {/* Brand */}
-          {/* A route, not an anchor. As href="#home" this resolved against the
-              current page, so on /writing the logo pointed at /writing#home —
-              a link to nowhere, on the one element everyone expects to be a
-              way home. */}
-          <Link to="/" className="flex w-fit items-center gap-2 justify-self-start">
-            {/* w-auto, not a square box — the mark is 32x48 and would squash */}
-            {/* Dimensions declared so the row cannot reflow once the logo loads. */}
-            <img src={icon} alt="" width="32" height="32" className="invert-on-light h-7 w-auto sm:h-8" />
-            <span className="font-mono text-sm font-bold text-white sm:text-base">
-              bhupesh<span className="text-indigo-500">.blog</span>
-            </span>
-          </Link>
-
+      {/* Exactly the sections' content width: they are max-w-6xl (72rem) inside
+          their own px-4, so this is 72rem + that padding (74rem) with the same px-4
+          inside it. The bar's edges then land on the content's edges. */}
+      <div className="mx-auto max-w-[74rem] px-4">
+        {/* Links on the left, actions on the right, a plain flex row.
+            This was a 1fr / auto / 1fr grid that centred the links between a logo
+            and the actions. With the logo gone there is nothing to balance, and the
+            grid was worse than useless: the actions are wider than a third of the
+            bar, so the right track grew to fit them, squeezed the left one, and
+            pushed the "centred" links well off centre — an obvious tilt once the
+            logo was no longer there to hide it. Below md the links are not shown
+            and `ml-auto` keeps the actions on the right. */}
+        <div className="flex h-16 items-center justify-between gap-3">
           {/* Links */}
           <div className="hidden items-center gap-0.5 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm md:flex lg:gap-1">
             {LINKS.map((link) => {
@@ -185,7 +176,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3 justify-self-end lg:gap-4">
+          <div className="ml-auto flex items-center gap-3 lg:gap-4">
             <div className="hidden items-center gap-4 min-[1200px]:flex">
               {SOCIALS.map(({ href, Icon, label }) => (
                 <a

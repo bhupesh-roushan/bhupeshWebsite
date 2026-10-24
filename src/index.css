@@ -128,12 +128,9 @@
   --diagram-hover: #eef0ff;
 }
 
-/* Artwork drawn for a dark page. A white mark inverts to black; a wordmark that
-   mixes colours (an orange icon beside white lettering) can't be inverted
-   without turning the orange blue, so it sits on a dark chip instead. */
-:root[data-theme="light"] .invert-on-light {
-  filter: invert(1);
-}
+/* Artwork drawn for a dark page. A wordmark that mixes colours (an orange icon
+   beside white lettering) can't be inverted without turning the orange blue, so
+   it sits on a dark chip instead. */
 :root[data-theme="light"] .logo-chip {
   background: #0b0b12;
   padding: 6px 10px;
