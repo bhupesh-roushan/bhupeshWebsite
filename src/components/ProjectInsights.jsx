@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { LuBookOpen, LuArrowUpRight } from "react-icons/lu";
 import { BentoCard } from "./ui/BentoGrid";
 import { accentText } from "../lib/accent";
+import { NumberTicker } from "./magic/NumberTicker";
+import { BorderBeam } from "./magic/BorderBeam";
 
 // Stacks are typed per project, so the same thing is spelled several ways —
 // "Express" and "Express.js", "React.js" and "React 19", "Next.js 15" and "16".
@@ -66,7 +68,7 @@ export const ProjectInsights = ({ projects, onOpenStudy }) => {
             {figures.map((f) => (
               <div key={f.label}>
                 <dd className="text-4xl font-bold leading-none tracking-tight text-white tabular-nums sm:text-5xl">
-                  {f.value}
+                  <NumberTicker value={f.value} />
                 </dd>
                 <dt className="mt-1.5 text-xs text-gray-400">{f.label}</dt>
               </div>
@@ -107,6 +109,7 @@ export const ProjectInsights = ({ projects, onOpenStudy }) => {
           accent={lead.accent}
           onClick={() => onOpenStudy(study.id)}
         >
+          <BorderBeam accent={lead.accent} duration={12} delay={-3} />
           <div className="flex h-full flex-col p-5">
             <p className="eyebrow mb-4 flex items-center gap-1.5">
               <LuBookOpen className="h-3 w-3" />

@@ -15,6 +15,7 @@ import {
   LuCheck,
 } from "react-icons/lu";
 import { SectionHeader } from "../ui/SectionHeader";
+import { ShimmerButton } from "../magic/ShimmerButton";
 
 const PHONE = "+91 7992302851";
 
@@ -85,6 +86,9 @@ export const Contact = () => {
         import.meta.env.VITE_PUBLIC_KEY
       );
       notify("success", "Message Sent Successfully!");
+      // A small celebration, loaded only now: it is the one moment this site
+      // can fairly say "it worked", and nobody who doesn't write pays for it.
+      import("../magic/confetti").then((m) => m.fireConfetti({ y: 0.75 }));
       logVisitEvent("contact_sent");
       setFormData({
         name: "",
@@ -309,15 +313,7 @@ export const Contact = () => {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all ${
-                    loading
-                      ? "cursor-not-allowed bg-white/10 text-gray-400"
-                      : "cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-600 text-white shadow-lg shadow-indigo-500/25 hover:scale-[1.02]"
-                  }`}
-                >
+                <ShimmerButton type="submit" disabled={loading} className="w-full rounded-lg!">
                   {loading ? (
                     "Sending..."
                   ) : (
@@ -326,7 +322,7 @@ export const Contact = () => {
                       Send Message
                     </>
                   )}
-                </button>
+                </ShimmerButton>
               </form>
             </div>
           </div>

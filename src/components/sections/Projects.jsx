@@ -22,6 +22,8 @@ import {
 import { DIAGRAMS } from "../../data/diagrams";
 import { accentText } from "../../lib/accent";
 import { SectionHeader } from "../ui/SectionHeader";
+import { BrowserFrame } from "../magic/BrowserFrame";
+import { BorderBeam } from "../magic/BorderBeam";
 
 // Only reachable once a project modal is open, so it has no business being in
 // the first download. DIAGRAMS itself stays eager — it's plain data, and the
@@ -109,7 +111,7 @@ export const Projects = () => {
           </SectionHeader>
 
           <BentoGrid>
-            {projects.map((project) => (
+            {projects.map((project, index) => (
               <BentoCard
                 key={project.id}
                 className={project.span}
@@ -140,6 +142,12 @@ export const Projects = () => {
                   )
                 }
               >
+                {/* The featured projects — Atlas and CloudWatch — wear a comet of light
+                    on the border, on top of the cursor spotlight every card has.
+                    Offset so the two never travel in step. */}
+                {project.featured && (
+                  <BorderBeam accent={project.accent} duration={10} delay={-index * 4.5} />
+                )}
                 {/* Preview on top, copy below — the label used to sit over the
                     screenshot, which capped how many chips could fit before
                     they collided with the image. */}
@@ -256,9 +264,17 @@ export const Projects = () => {
         {active && (
           <div>
             {active.image && (
-              <div className="relative overflow-hidden rounded-t-2xl">
-                <img src={active.image} alt="" className="max-h-72 w-full object-cover object-top" />
-                <div className="absolute inset-0 bg-gradient-to-t from-panel to-transparent" />
+              // Browser chrome around the screenshot, so it reads as a site
+              // rather than a loose picture. The address bar shows the real
+              // host; Atlas has none (internal tool), and says so instead of
+              // wearing an invented one. pt-14 clears the close button.
+              <div className="px-6 pt-14 sm:px-8">
+                <BrowserFrame
+                  url={active.href ? new URL(active.href).host : undefined}
+                  label="Private — internal tool"
+                >
+                  <img src={active.image} alt="" className="max-h-72 w-full object-cover object-top" />
+                </BrowserFrame>
               </div>
             )}
 

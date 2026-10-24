@@ -1,0 +1,282 @@
+/* Magic UI, as plain CSS.
+   Each block is the effect behind a component in src/components/magic/, written
+   against this site's tokens (--color-*, --series-1, the light-theme overrides)
+   rather than copied with its own palette. Imported once from index.css. */
+
+/* ── Marquee ────────────────────────────────────────────────────────────
+   The track holds its content twice, and slides left by exactly half its own
+   width — so when the first copy has gone, the second is where it started and
+   the loop has no seam. Pauses under the pointer, so a chip can be read. */
+@keyframes marquee-x {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  --marquee-duration: 40s;
+  overflow: hidden;
+  /* Fade the ends instead of cutting them. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: var(--marquee-gap, 0.75rem);
+  animation: marquee-x var(--marquee-duration) linear infinite;
+}
+
+.marquee--reverse .marquee__track {
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track {
+  animation-play-state: paused;
+}
+
+/* Someone who asked for less motion gets a row they can scroll themselves. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .marquee__track {
+    animation: none;
+  }
+  .marquee__dup {
+    display: none;
+  }
+}
+
+/* ── Shimmer button ─────────────────────────────────────────────────────
+   A highlight that sweeps across the button on a loop. The sweep is a skewed
+   gradient bar translated across a clipped box — cheap, compositor-only. */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-130%) skewX(-18deg);
+  }
+  55%,
+  100% {
+    transform: translateX(260%) skewX(-18deg);
+  }
+}
+
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.shimmer-btn::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 40%;
+  z-index: -1;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.38), transparent);
+  animation: shimmer-sweep 3.2s ease-in-out infinite;
+}
+
+.shimmer-btn:hover::before {
+  animation-duration: 1.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-btn::before {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ── Border beam ────────────────────────────────────────────────────────
+   A short comet of light that travels the card's border. The ring is a
+   transparent border masked down to that border alone (mask-composite:
+   intersect against a padding-box layer); the comet is a square carried round
+   the box on a motion path. Browsers without offset-path rect() simply don't
+   draw it — the card is complete without. */
+@keyframes border-beam {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+.border-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: var(--beam-width, 1.5px) solid transparent;
+  -webkit-mask-clip: padding-box, border-box;
+  mask-clip: padding-box, border-box;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(transparent, transparent), linear-gradient(#000, #000);
+  mask-image: linear-gradient(transparent, transparent), linear-gradient(#000, #000);
+}
+
+.border-beam::after {
+  content: "";
+  position: absolute;
+  width: var(--beam-size, 64px);
+  aspect-ratio: 1;
+  background: linear-gradient(to left, var(--beam-from, #818cf8), var(--beam-to, #38bdf8), transparent);
+  offset-anchor: 90% 50%;
+  offset-path: rect(0 auto auto 0 round var(--beam-radius, 16px));
+  animation: border-beam var(--beam-duration, 9s) linear infinite;
+  animation-delay: var(--beam-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .border-beam::after {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ── Aurora text ────────────────────────────────────────────────────────
+   Gradient lettering whose colours drift slowly. The gradient is twice as wide
+   as the text and repeats, so sliding it by one full width loops invisibly. */
+@keyframes aurora-text {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.aurora-text {
+  background-image: linear-gradient(
+    90deg,
+    #6366f1,
+    #38bdf8,
+    #a78bfa,
+    #22d3ee,
+    #6366f1
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: aurora-text 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-text {
+    animation: none;
+  }
+}
+
+/* ── Ripple ─────────────────────────────────────────────────────────────
+   Rings that swell outward from behind an element and fade, one after another. */
+@keyframes ripple-out {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.9);
+    opacity: 0;
+  }
+}
+
+.ripple-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 9999px;
+  border: 1px solid rgb(129 140 248 / 0.55);
+  background: radial-gradient(circle, transparent 62%, rgb(99 102 241 / 0.12));
+  pointer-events: none;
+  animation: ripple-out 5.4s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ripple-ring {
+    animation: none;
+    opacity: 0.18;
+    transform: translate(-50%, -50%) scale(1.35);
+  }
+}
+
+/* ── Dot pattern ────────────────────────────────────────────────────────
+   A field of faint dots behind a section, fading out toward the bottom so it
+   reads as texture at the top edge and never competes with content. It is a
+   pseudo-element, so the mask fades the dots and not the section's own text. */
+.dot-pattern {
+  position: relative;
+  /* A stacking context of its own, so the dots (z-index: -1) sit above this
+     element's background but below its content, instead of over the text. */
+  isolation: isolate;
+}
+
+.dot-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-white) 16%, transparent) 1px,
+    transparent 1.2px
+  );
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 0%, transparent 75%);
+}
+
+/* ── Browser frame ──────────────────────────────────────────────────────
+   Chrome around a screenshot, so a project's picture reads as a site you could
+   visit rather than as a loose rectangle. Theme-aware: the bar is a tint of ink. */
+.browser-frame {
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent);
+  background: color-mix(in srgb, var(--color-white) 4%, var(--color-panel));
+  box-shadow: 0 18px 40px -22px rgb(0 0 0 / 0.55);
+}
+
+.browser-frame__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-white) 10%, transparent);
+  background: color-mix(in srgb, var(--color-white) 5%, transparent);
+}
+
+/* ── Scroll progress ────────────────────────────────────────────────────
+   A hairline along the top of the viewport that fills as the page scrolls. */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 2px;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, #6366f1, #38bdf8, #a78bfa);
+  pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  @keyframes scroll-progress-grow {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .scroll-progress {
+    animation: scroll-progress-grow linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@media print {
+  .scroll-progress,
+  .ripple-ring,
+  .border-beam {
+    display: none !important;
+  }
+}

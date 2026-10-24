@@ -6,6 +6,7 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuArrowUpRight, LuBook, LuGitBranch, LuHistory } from "react-icons/lu";
 import { accentText } from "../../lib/accent";
 import { SectionHeader } from "../ui/SectionHeader";
+import { NumberTicker } from "../magic/NumberTicker";
 
 const USER = "bhupesh-roushan";
 
@@ -214,6 +215,8 @@ export const Activity = () => {
                       role="status"
                       aria-label="Loading"
                     />
+                  ) : typeof value === "number" ? (
+                    <NumberTicker value={value} />
                   ) : (
                     value ?? "—"
                   )}

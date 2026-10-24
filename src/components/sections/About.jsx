@@ -4,9 +4,11 @@ import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
 import { journey } from "../../data/portfolio";
 import { LuArrowUpRight } from "react-icons/lu";
-import { skillGroups } from "../../data/skills";
+import { skillGroups, allSkills } from "../../data/skills";
 import { accentText } from "../../lib/accent";
 import { SectionHeader } from "../ui/SectionHeader";
+import { Marquee } from "../magic/Marquee";
+import { BorderBeam } from "../magic/BorderBeam";
 // Below the fold and self-contained, so it has no claim on the first download.
 const JdMatcher = lazy(() =>
   import("../JdMatcher").then((m) => ({ default: m.JdMatcher }))
@@ -41,6 +43,14 @@ const Chip = ({ children }) => (
   </span>
 );
 
+// Every skill once (a few icons are shared across groups), dealt into two rows
+// so the ribbon's halves differ in content, not just in direction.
+const uniqueSkills = allSkills.filter((s, i, all) => all.findIndex((x) => x.name === s.name) === i);
+const tickerRows = [
+  uniqueSkills.filter((_, i) => i % 2 === 0),
+  uniqueSkills.filter((_, i) => i % 2 === 1),
+];
+
 export const About = () => {
   const [activeId, setActiveId] = useState(null);
   const active = journey.find((item) => item.id === activeId) ?? null;
@@ -73,6 +83,9 @@ export const About = () => {
                 accent={item.accent}
                 onClick={() => setActiveId(item.id)}
               >
+                {/* The current role — Masai — wears the comet, as the featured
+                    projects do: it is the card that matters most here. */}
+                {item.current && <BorderBeam accent={item.accent} duration={11} />}
                 <div className="flex h-full flex-col p-5">
                   {/* Badge only where it tells you something. A job is the
                       default case, so "Work" was just noise next to a role
@@ -122,6 +135,28 @@ export const About = () => {
           <h3 className="mb-6 text-center text-2xl font-bold text-white">
             Technical Skills
           </h3>
+
+          {/* A drifting ribbon of everything on the list, before the detail. It is
+              the same data as the grid below, shown as texture: the point is the
+              breadth at a glance, and the cards underneath carry the grouping. */}
+          <div className="mb-8 space-y-3" aria-hidden="true">
+            <Marquee duration={70}>
+              {tickerRows[0].map((s) => (
+                <Chip key={s.name}>
+                  <s.Icon className="text-lg shrink-0" style={{ color: s.color }} />
+                  {s.name}
+                </Chip>
+              ))}
+            </Marquee>
+            <Marquee duration={80} reverse>
+              {tickerRows[1].map((s) => (
+                <Chip key={s.name}>
+                  <s.Icon className="text-lg shrink-0" style={{ color: s.color }} />
+                  {s.name}
+                </Chip>
+              ))}
+            </Marquee>
+          </div>
 
           {/* Above the skills, not below them. This used to sit under the grid,
               as the last thing in the panel — and the last thing in a stacked

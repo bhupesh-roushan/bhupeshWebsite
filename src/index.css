@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./magic.css";
 
 /* ── Fonts ──────────────────────────────────────────────────────────────
    Self-hosted. These came from Google Fonts, where the stylesheet request

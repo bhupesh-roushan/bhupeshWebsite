@@ -20,22 +20,25 @@ export const BentoGrid = ({ className, children }) => {
 };
 
 /**
- * Bento tile with a cursor-tracking spotlight and a hover glow border.
- * Renders as a <button> when `onClick` is supplied so keyboard users get it free.
+ * Bento tile. Renders as a <button> when `onClick` is supplied so keyboard users
+ * get it free.
+ *
+ * Every tile has the cursor spotlight — Magic UI's Magic Card effect: a soft
+ * pool of the card's own accent colour that follows the pointer (or a finger)
+ * across the surface. The lead cards add Magic UI's Border Beam — a comet
+ * circling the edge — as a child (see Projects and ProjectInsights); it marks
+ * importance, not interactivity. A glowing border that chased the cursor was
+ * tried and dropped: it said the same thing as the spotlight, less well.
  *
  * `action` is a slot for a link that must live *beside* the tile, not inside it:
  * a clickable tile is a <button>, and an anchor nested in a button is invalid
  * and unreliable to click. It is positioned over the tile's bottom-right corner.
- *
- * The 3D tilt that used to run on every tile is gone. The spotlight, the edge
- * light and a four-pixel lift already say "this is interactive"; the tilt added
- * a fourth signal and a per-frame transform on a dozen backdrop-blurred layers.
  */
 export const BentoCard = ({ className, children, onClick, action, accent = "99,102,241" }) => {
   const reduceMotion = useReducedMotion();
   const ref = useRef(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
-  // "active" rather than "hovered" — it's now driven by touch as well.
+  // "active" rather than "hovered" — it's driven by touch as well.
   const [active, setActive] = useState(false);
 
   const moveTo = (clientX, clientY) => {
@@ -66,9 +69,9 @@ export const BentoCard = ({ className, children, onClick, action, accent = "99,1
   };
 
   // Touch equivalents. Every effect here was hover-driven, so on a phone the
-  // cards sat completely inert — no spotlight, no edge glow, no lift. Native
-  // touch events keep firing through a drag, where pointermove goes quiet as
-  // soon as the browser claims the gesture for scrolling.
+  // cards sat completely inert. Native touch events keep firing through a drag,
+  // where pointermove goes quiet as soon as the browser claims the gesture for
+  // scrolling.
   const handleTouch = (e) => {
     const t = e.touches[0];
     if (!t) return;
@@ -115,14 +118,6 @@ export const BentoCard = ({ className, children, onClick, action, accent = "99,1
           style={{
             opacity: active ? 1 : 0,
             background: `radial-gradient(340px circle at ${pos.x}px ${pos.y}px, rgba(${accent},0.16), transparent 70%)`,
-          }}
-        />
-        {/* top edge highlight */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-px transition-opacity duration-300"
-          style={{
-            opacity: active ? 1 : 0,
-            background: `linear-gradient(90deg, transparent, rgba(${accent},0.9), transparent)`,
           }}
         />
         <div className="relative h-full">{children}</div>

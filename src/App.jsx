@@ -12,6 +12,7 @@ import { useVisitAlert } from "./hooks/useVisitAlert";
 import { collectPageview } from "./lib/collect";
 import { readSrc } from "./lib/visitLog";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { ScrollProgress } from "./components/magic/ScrollProgress";
 
 // Only the hero is in the entry chunk. Everything below it is fetched as its own
 // chunk straight after first paint (see `prefetch`), so the page that has to be
@@ -102,7 +103,7 @@ function Page() {
               (see .page-section in index.css). */}
           <div
             className={`page-section ${i === 0 ? "page-section--base" : ""} ${
-              i % 2 ? "page-section--alt" : ""
+              i % 2 ? "page-section--alt dot-pattern" : ""
             }`}
           >
             <Suspense fallback={<SectionFallback name={name} />}>
@@ -143,6 +144,7 @@ function App() {
   return (
     <LazyMotion features={() => import("./lib/motionFeatures").then((m) => m.default)} strict>
       {!isLoaded && <LoadingScreen onComplete={() => setIsLoaded(true)} />}{" "}
+      <ScrollProgress />
       <div
         className={`min-h-screen transition-opacity duration-700 ${
           isLoaded ? "opacity-100" : "opacity-0"

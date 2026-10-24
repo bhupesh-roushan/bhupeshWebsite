@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { LuArrowLeft, LuShieldCheck, LuDatabase } from "react-icons/lu";
+import { NumberTicker } from "../magic/NumberTicker";
 
 const RANGES = [7, 30, 90];
 const nf = new Intl.NumberFormat("en");
@@ -29,7 +30,9 @@ const dayLabel = (iso, opts = { month: "short", day: "numeric" }) =>
 const Stat = ({ label, value, hint }) => (
   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
     <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">{label}</p>
-    <p className="mt-1.5 text-3xl font-bold tabular-nums text-white">{nf.format(value)}</p>
+    <p className="mt-1.5 text-3xl font-bold tabular-nums text-white">
+      <NumberTicker value={value} />
+    </p>
     {hint && <p className="mt-1 text-[11px] leading-snug text-gray-400">{hint}</p>}
   </div>
 );
