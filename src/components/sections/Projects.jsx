@@ -32,6 +32,9 @@ const ArchitectureDiagram = lazy(() =>
   import("../ArchitectureDiagram").then((m) => ({ default: m.ArchitectureDiagram }))
 );
 
+// Same reasoning: a simulation nobody sees until the Hourglass modal opens.
+const HourglassDemo = lazy(() => import("../demos/HourglassDemo"));
+
 // Hover previews. Pointer-only and motion-respecting: a touch screen has no
 // hover to start one, and someone who asked for less motion gets the still.
 function playPreview(media, src) {
@@ -391,6 +394,18 @@ export const Projects = () => {
                       jump when the chunk lands. */}
                   <Suspense fallback={<div className="h-64" />}>
                     <ArchitectureDiagram id={active.id} />
+                  </Suspense>
+                </div>
+              )}
+
+              {active.id === "hourglass" && (
+                <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-300">
+                    <LuNetwork className="h-3.5 w-3.5" />
+                    Try the message flow
+                  </div>
+                  <Suspense fallback={<div className="h-96" />}>
+                    <HourglassDemo />
                   </Suspense>
                 </div>
               )}
