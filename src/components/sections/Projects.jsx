@@ -5,6 +5,7 @@ import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { BentoGrid, BentoCard } from "../ui/BentoGrid";
 import { Modal } from "../ui/Modal";
+import { ProjectInsights } from "../ProjectInsights";
 import { projects } from "../../data/portfolio";
 import {
   LuArrowUpRight,
@@ -20,6 +21,7 @@ import {
 } from "react-icons/lu";
 import { DIAGRAMS } from "../../data/diagrams";
 import { accentText } from "../../lib/accent";
+import { SectionHeader } from "../ui/SectionHeader";
 
 // Only reachable once a project modal is open, so it has no business being in
 // the first download. DIAGRAMS itself stays eager — it's plain data, and the
@@ -27,6 +29,20 @@ import { accentText } from "../../lib/accent";
 const ArchitectureDiagram = lazy(() =>
   import("../ArchitectureDiagram").then((m) => ({ default: m.ArchitectureDiagram }))
 );
+
+// Hover previews. Pointer-only and motion-respecting: a touch screen has no
+// hover to start one, and someone who asked for less motion gets the still.
+function playPreview(media, src) {
+  const video = media.querySelector("video");
+  if (!video || !src || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!video.getAttribute("src")) video.src = src;
+  video.play().catch(() => {});
+}
+
+function stopPreview(media) {
+  const video = media.querySelector("video");
+  if (video) video.pause();
+}
 
 export const Projects = () => {
   // The open project lives in the URL, not in state, so /projects/cloudwatch
@@ -85,12 +101,12 @@ export const Projects = () => {
   }, [active, next, prev, navigate]);
 
   return (
-    <section id="projects" className="min-h-screen py-20">
+    <section id="projects" className="py-20 sm:py-28">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-10 text-center text-3xl font-bold text-white">
-            Featured Projects
-          </h2>
+          <SectionHeader index="02" label="Projects" title="Featured Projects">
+            Things I&apos;ve built. Open one for the architecture, the numbers and the write-ups.
+          </SectionHeader>
 
           <BentoGrid>
             {projects.map((project) => (
@@ -99,6 +115,30 @@ export const Projects = () => {
                 className={project.span}
                 accent={project.accent}
                 onClick={() => open(project.id)}
+                // The thing a visitor most wants from a project card, one click
+                // from the grid: the running product. It sits beside the tile
+                // rather than in it (see BentoCard's `action`).
+                action={
+                  project.href && (
+                    <a
+                      href={project.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.title} — live demo (opens in a new tab)`}
+                      onClick={() => {
+                        track("live_demo_click", { project: project.id });
+                      }}
+                      className="inline-flex h-8 items-center gap-1 rounded-full border px-3 text-[11px] font-semibold text-white transition-transform hover:scale-105"
+                      style={{
+                        backgroundColor: `rgba(${project.accent},0.18)`,
+                        borderColor: `rgba(${project.accent},0.45)`,
+                      }}
+                    >
+                      Live demo
+                      <LuArrowUpRight className="h-3 w-3" />
+                    </a>
+                  )
+                }
               >
                 {/* Preview on top, copy below — the label used to sit over the
                     screenshot, which capped how many chips could fit before
@@ -108,7 +148,11 @@ export const Projects = () => {
                       and inventing one would be a picture of a product nobody
                       can open. Those cards start at the title instead. */}
                   {project.image && (
-                    <div className="relative h-36 shrink-0 overflow-hidden sm:h-40">
+                    <div
+                      className="relative h-36 shrink-0 overflow-hidden sm:h-40"
+                      onPointerEnter={(e) => playPreview(e.currentTarget, project.video)}
+                      onPointerLeave={(e) => stopPreview(e.currentTarget)}
+                    >
                       <img
                         src={project.image}
                         alt=""
@@ -116,6 +160,19 @@ export const Projects = () => {
                         decoding="async"
                         className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                       />
+                      {/* A short muted loop, where one has been recorded. Its src is
+                          set on first hover rather than in the markup, so a grid
+                          of them downloads nothing until someone points at one. */}
+                      {project.video && (
+                        <video
+                          muted
+                          loop
+                          playsInline
+                          preload="none"
+                          aria-hidden="true"
+                          className="absolute inset-0 h-full w-full object-cover object-top opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                        />
+                      )}
                       <div
                         className="absolute inset-0"
                         style={{
@@ -175,6 +232,17 @@ export const Projects = () => {
                 </div>
               </BentoCard>
             ))}
+
+            {/* Three tiles that are not projects: the numbers, the stack, a
+                write-up to start with. All read from the data above. */}
+            <ProjectInsights
+              projects={projects}
+              onOpenStudy={(id) => {
+                track("case_study_open", { study: id });
+                logVisitEvent("case_study_open", id);
+                navigate(`/writing/${id}`, { viewTransition: true });
+              }}
+            />
           </BentoGrid>
         </div>
       </RevealOnScroll>

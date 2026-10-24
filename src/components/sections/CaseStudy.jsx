@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { logVisitEvent, logVisitPath } from "../../lib/visitLog";
 import { LuArrowLeft, LuCircleAlert, LuCheck, LuArrowUpRight } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
-import { TiltCard } from "../ui/TiltCard";
 import { ReadingProgress } from "../ReadingProgress";
 import { readingTime } from "../../lib/readingTime";
 import { accentText } from "../../lib/accent";
@@ -31,7 +30,7 @@ export const CaseStudy = () => {
     return (
       <section className="mx-auto max-w-3xl px-4 py-32 text-center">
         <p className="text-sm text-gray-400">That write-up doesn&rsquo;t exist.</p>
-        <Link
+        <Link viewTransition
           to="/"
           className="mt-4 inline-flex items-center gap-2 text-sm text-white underline underline-offset-4"
         >
@@ -50,7 +49,7 @@ export const CaseStudy = () => {
   return (
     <article ref={article} className="mx-auto max-w-3xl px-4 pb-24 pt-28 sm:pt-32">
       <ReadingProgress targetRef={article} />
-      <Link
+      <Link viewTransition
         to={`/projects/${study.projectId}`}
         className="mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
       >
@@ -75,7 +74,7 @@ export const CaseStudy = () => {
           ))}
         </div>
 
-        <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl">
+        <h1 className="title text-white">
           {study.title}
         </h1>
         <p className="mt-4 text-base leading-relaxed text-gray-300">{study.dek}</p>
@@ -196,8 +195,7 @@ export const CaseStudy = () => {
           <ul className="space-y-2.5">
             {others.map(([id, other]) => (
               <li key={id}>
-                <TiltCard>
-                <Link
+                <Link viewTransition
                   to={`/writing/${id}`}
                   className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors hover:border-white/25 hover:bg-white/[0.05]"
                 >
@@ -214,11 +212,10 @@ export const CaseStudy = () => {
                     </span>
                   </span>
                 </Link>
-                </TiltCard>
               </li>
             ))}
           </ul>
-          <Link
+          <Link viewTransition
             to="/writing"
             className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-white"
           >

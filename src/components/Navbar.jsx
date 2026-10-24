@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { m } from "framer-motion";
 import icon from "../assets/logo.svg";
-import { LuLinkedin, LuMenu, LuX, LuCalendarCheck } from "react-icons/lu";
+import { LuLinkedin, LuMenu, LuX, LuCalendarCheck, LuSearch } from "react-icons/lu";
 import { hiring } from "../data/hiring";
 import { FaGithub, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -173,7 +173,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
                 </>
               );
               return link.to ? (
-                <Link key={link.to} to={link.to} className={cls}>
+                <Link key={link.to} to={link.to} viewTransition className={cls}>
                   {inner}
                 </Link>
               ) : (
@@ -238,6 +238,19 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               <span className="hidden text-[11px] text-gray-400 min-[1200px]:inline">IST</span>
             </div>
 
+            {/* Search / ⌘K. Wide screens only — below 1200px the bar has no
+                room for it, and the shortcut still works there. */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("open-palette"))}
+              aria-label="Search the site (Command K)"
+              title="Search (⌘K)"
+              className="hidden h-9 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-gray-300 transition-colors hover:border-white/30 hover:text-white min-[1200px]:inline-flex"
+            >
+              <LuSearch className="h-3.5 w-3.5" />
+              <kbd className="font-sans text-[10px] text-gray-400">⌘K</kbd>
+            </button>
+
             <ThemeToggle />
 
             <button
@@ -245,7 +258,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
-              className="cursor-pointer rounded-md p-1.5 text-white transition-colors hover:bg-white/10 md:hidden"
+              className="cursor-pointer rounded-md p-2.5 text-white transition-colors hover:bg-white/10 md:hidden"
             >
               {menuOpen ? <LuX className="h-6 w-6" /> : <LuMenu className="h-6 w-6" />}
             </button>

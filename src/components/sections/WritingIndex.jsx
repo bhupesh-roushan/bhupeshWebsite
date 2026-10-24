@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { LuArrowUpRight, LuArrowLeft, LuRss } from "react-icons/lu";
+import { LuArrowUpRight, LuArrowLeft } from "react-icons/lu";
 import { CASE_STUDIES } from "../../data/caseStudies";
-import { TiltCard } from "../ui/TiltCard";
 import { readingTime } from "../../lib/readingTime";
 import { accentText } from "../../lib/accent";
 
@@ -18,7 +17,7 @@ export const WritingIndex = () => {
 
   return (
     <section className="mx-auto max-w-3xl px-4 pb-24 pt-28 sm:pt-32">
-      <Link
+      <Link viewTransition
         to="/"
         className="mb-10 inline-flex items-center gap-2 text-xs font-medium text-gray-400 transition-colors hover:text-white"
       >
@@ -26,35 +25,16 @@ export const WritingIndex = () => {
         Back to the site
       </Link>
 
-      <h1 className="text-3xl font-bold text-white sm:text-4xl">Writing</h1>
+      <h1 className="title text-white">Writing</h1>
       <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-300">
         Decisions that were harder than they looked, written up from the commits
         that record them. Each one names what was measured and what was rejected.
       </p>
 
-      {/* The feed existed but nothing on the site pointed at it, so the only
-          people who could subscribe were the ones who already knew the URL. */}
-      <div className="mt-5 flex flex-wrap items-center gap-2.5">
-        <a
-          href="/writing/feed.xml"
-          className="inline-flex h-9 items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3.5 text-xs font-semibold text-gray-200 transition-colors hover:border-white/30 hover:text-white"
-        >
-          <LuRss className="h-3.5 w-3.5 text-orange-400" />
-          Subscribe via RSS
-        </a>
-        <a
-          href="/writing/feed.json"
-          className="text-xs text-gray-400 underline-offset-4 transition-colors hover:text-white hover:underline"
-        >
-          JSON Feed
-        </a>
-      </div>
-
       <ul className="mt-12 space-y-4">
         {studies.map(([id, study]) => (
           <li key={id}>
-            <TiltCard>
-            <Link
+            <Link viewTransition
               to={`/writing/${id}`}
               className="group block rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-colors hover:border-white/25 hover:bg-white/[0.05]"
             >
@@ -80,7 +60,6 @@ export const WritingIndex = () => {
               </h2>
               <p className="mt-1.5 text-sm leading-relaxed text-gray-400">{study.dek}</p>
             </Link>
-            </TiltCard>
           </li>
         ))}
       </ul>

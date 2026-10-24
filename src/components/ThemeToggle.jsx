@@ -18,7 +18,7 @@ export const ThemeToggle = ({ className = "" }) => {
       onClick={toggle}
       aria-label={`Switch to ${next} theme`}
       title={`Switch to ${next} theme`}
-      className={`inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-300 transition-colors hover:border-white/30 hover:text-white ${className}`}
+      className={`inline-flex h-11 w-11 shrink-0 md:h-9 md:w-9 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-300 transition-colors hover:border-white/30 hover:text-white ${className}`}
     >
       {theme === "light" ? <LuMoon className="h-4 w-4" /> : <LuSun className="h-4 w-4" />}
     </button>

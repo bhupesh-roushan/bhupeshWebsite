@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { RevealOnScroll } from "../RevealOnScroll";
 import { HiringFacts } from "../HiringFacts";
 import { logVisitEvent } from "../../lib/visitLog";
-import { MAIL_SUBJECT } from "../../data/hiring";
+import { MAIL_SUBJECT, EMAIL } from "../../data/hiring";
 import { notify } from "../../lib/toast";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -15,8 +14,8 @@ import {
   LuCopy,
   LuCheck,
 } from "react-icons/lu";
+import { SectionHeader } from "../ui/SectionHeader";
 
-const EMAIL = "roushan.bhupesh@gmail.com";
 const PHONE = "+91 7992302851";
 
 const SOCIALS = [
@@ -104,15 +103,12 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20">
+    <section id="contact" className="py-20 sm:py-28">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-bold text-white">
-            Get In Touch
-          </h2>
-          <p className="mb-10 text-center text-sm text-gray-400">
+          <SectionHeader index="04" label="Contact" title="Get In Touch">
             Have a role, a project, or a question?
-          </p>
+          </SectionHeader>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             {/* ── Reach me directly ─────────────────────────── */}
@@ -366,17 +362,8 @@ export const Contact = () => {
         <div className="mx-auto mt-5 max-w-6xl px-4">
           {/* gray-400: gray-500 measures 4.10:1 here, under the 4.5 AA needs
               at 11px. Third time this exact swap has been necessary. */}
-          <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[11px] text-gray-400 sm:justify-start sm:text-left">
-            <span>Visits are logged. No cookies.</span>
-            <Link to="/insights" className="underline-offset-4 transition-colors hover:text-white hover:underline">
-              Public stats
-            </Link>
-            <Link to="/writing" className="underline-offset-4 transition-colors hover:text-white hover:underline">
-              Writing
-            </Link>
-            <a href="/writing/feed.xml" className="underline-offset-4 transition-colors hover:text-white hover:underline">
-              RSS
-            </a>
+          <p className="text-center text-[11px] text-gray-400 sm:text-left">
+            Visits are logged. No cookies.
           </p>
         </div>
       </footer>

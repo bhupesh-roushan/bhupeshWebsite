@@ -38,5 +38,8 @@ export const hiring = {
   bookingUrl: "https://cal.com/bhupesh-roushan/15min",
 };
 
+/** The contact address — one copy, used by the contact form and the command palette. */
+export const EMAIL = "roushan.bhupesh@gmail.com";
+
 /** Prefilled subject line so writing to you takes one less decision. */
 export const MAIL_SUBJECT = "Role opportunity — ";

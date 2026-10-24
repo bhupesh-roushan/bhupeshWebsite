@@ -187,7 +187,9 @@ for (const id of studies) {
 
   html = html.replace(
     "</head>",
-    `    <script type="application/ld+json">\n${JSON.stringify(article, null, 2)}\n    </script>\n  </head>`
+    `    <script type="application/ld+json">\n${JSON.stringify(article, null, 2)}\n    </script>\n` +
+      `    <link rel="alternate" type="application/rss+xml" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.xml" />\n` +
+      `    <link rel="alternate" type="application/feed+json" title="Writing — Bhupesh Roushan" href="${SITE}/writing/feed.json" />\n  </head>`
   );
 
   const dir = resolve(root, "dist/writing", id);

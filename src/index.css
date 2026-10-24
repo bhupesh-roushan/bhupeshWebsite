@@ -46,6 +46,11 @@
   --color-panel: #0b0b12;   /* modals, popovers */
   --color-surface: #101017; /* cards */
   --color-deep: #08080c;    /* the loading screen */
+
+  /* Cards separate from a dark page by their border and glass alone. On white
+     that is not enough — a hairline and a tint read as flat — so the light theme
+     gives them a soft two-layer shadow. Dark: none. */
+  --shadow-card: 0 0 #0000;
 }
 
 /* ── Light theme ─────────────────────────────────────────────────────────
@@ -69,6 +74,8 @@
   --color-panel: #ffffff;
   --color-surface: #ffffff;
   --color-deep: #eef0f6;
+
+  --shadow-card: 0 1px 2px rgb(12 18 34 / 0.05), 0 12px 28px -14px rgb(12 18 34 / 0.2);
 
   --color-white: #0c1222; /* ink */
   --color-black: #f6f7fb; /* the page, for scrims and fades */
@@ -179,6 +186,34 @@
 }
 
 
+/* ── Type scale ─────────────────────────────────────────────────────────
+   Three named sizes, fluid between a phone and a wide desktop, in place of
+   a size picked per component (text-3xl here, sm:text-4xl there, lg:text-7xl
+   on the hero). Large type is set tighter than body text — the negative
+   tracking is what stops a 60px headline from looking loosely spaced.
+   ---------------------------------------------------------------------- */
+.display {
+  font-size: clamp(2.4rem, 1.2rem + 4.9vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.title {
+  font-size: clamp(1.9rem, 1.3rem + 2.5vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.028em;
+  font-weight: 700;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-gray-400);
+}
+
 html,
 body {
   margin: 0;
@@ -238,6 +273,45 @@ html.theme-fade *::after {
   transform: translateY(0);
 }
 
+/* The same fade-up, driven by the scroll position itself instead of an
+   IntersectionObserver. It runs on the compositor, needs no JavaScript, and
+   scrubs with the scroll rather than firing once. The range is a fixed 280px
+   rather than a percentage: these wrappers are whole sections, thousands of
+   pixels tall, and a percentage of that would leave the top of a section
+   half-transparent for most of a screen.
+
+   Ends on `transform: none`, not translateY(0) — any transform at all makes the
+   element the containing block for position:fixed descendants, which is the
+   thing the modal's portal exists to avoid. */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .reveal-sd {
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0px entry 280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-sd {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* ── Print ──────────────────────────────────────────────────────────────────
    Recruiters do print portfolios, or save them to PDF. On screen this is a
    dark page built out of video, glow and glass; none of that survives paper.
@@ -265,6 +339,7 @@ html.theme-fade *::after {
      also writes inline opacity while animating, so a heading caught
      mid-transition would otherwise print half-faded. */
   .reveal,
+  .reveal-sd,
   [style*="opacity"] {
     opacity: 1 !important;
     transform: none !important;
@@ -403,72 +478,28 @@ html.theme-fade *::after {
   .aurora__layer::after { animation: none; }
 }
 
-/* ── Stacked sections ───────────────────────────────────────────────────
-   Each panel sticks to the top of the viewport and the next scrolls over
-   it, so the page reads as a deck being dealt rather than one long scroll.
+/* ── Page sections ──────────────────────────────────────────────────────
+   Plain flow. These used to be sticky panels with rounded tops, each sliding
+   over the one before — a deck being dealt. It was a good trick in 2022 and
+   now reads as one: every section arrives on top of the last, the page
+   measures itself with a ResizeObserver to stop panels pinning over unread
+   content, and a phone gets none of it. Sections now simply follow one another.
 
-   The opaque background is load-bearing, not decoration: a sticky panel
-   with a transparent background shows the panel beneath sliding through
-   it, which looks like a rendering fault rather than an effect.
-
-   `position: sticky` is defeated by `overflow: hidden` on any ancestor and
-   positions against the nearest ancestor with a transform, so nothing
-   between these and the scroll container may have either.
+   Rhythm comes from two things instead: a hairline between sections, and
+   every second one sitting on a faint tint of the ink colour, so the page
+   alternates quietly rather than repeating one flat block.
    ---------------------------------------------------------------------- */
-.stack-panel {
-  position: sticky;
-  top: 0;
+.page-section {
   background: var(--color-page);
-  border-top: 1px solid color-mix(in srgb, var(--color-white) 8%, transparent);
-  border-top-left-radius: 28px;
-  border-top-right-radius: 28px;
-  /* Cast upward, so a panel visibly sits on top of the one it is covering. */
-  box-shadow: 0 -30px 70px -20px var(--stack-shadow, rgba(0, 0, 0, 0.9));
+  border-top: 1px solid color-mix(in srgb, var(--color-white) 7%, transparent);
 }
 
-:root[data-theme="light"] .stack-panel {
-  --stack-shadow: rgba(12, 18, 34, 0.28);
+.page-section--alt {
+  background: color-mix(in srgb, var(--color-white) 2.5%, var(--color-page));
 }
 
-/* The base of the deck. Nothing covers it, so it needs no lip and no
-   shadow — and it begins at the top of the document, where a rounded
-   corner would be rounding against the edge of the page. */
-.stack-panel--base {
+.page-section--base {
   border-top: 0;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  box-shadow: none;
-}
-
-/* The corner radius needs something to bite on at the very top edge. */
-.stack-panel > section {
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
-}
-
-/* Stacking depends on scroll position, and someone who asked for less
-   motion still has to be able to read the page — but a flat stack is just
-   normal flow, which is exactly what they should get. */
-@media (prefers-reduced-motion: reduce) {
-  .stack-panel {
-    position: static;
-  }
-}
-
-/* Off on touch, where it is nearly all cost and almost no effect.
-   The deck reads as a deck when a panel is close to the height of the
-   window. On a phone About is 3065px against 844 — it pins at -2222px,
-   which means it scrolls almost the whole way and is then immediately
-   covered, so you perceive very little of it. What you do get is five
-   full-page sticky layers held in compositor memory on the device least
-   able to spare it. */
-@media (hover: none), (pointer: coarse) {
-  .stack-panel {
-    position: static;
-    border-top: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
 }
 
 /* ── Touch devices ──────────────────────────────────────────────────────

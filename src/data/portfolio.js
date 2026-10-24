@@ -173,6 +173,10 @@ export const journey = [
 /**
  * Featured projects, newest first.
  * `featured` tiles get the large treatment in the bento grid.
+ * Optional `video`: a short muted loop (a few seconds, under ~1.5MB) played on
+ * hover over the card's screenshot. Put the file in /public/previews and point
+ * at it, e.g. video: "/previews/cloudwatch.mp4". None have been recorded yet, so
+ * no card shows one.
  */
 export const projects = [
   {

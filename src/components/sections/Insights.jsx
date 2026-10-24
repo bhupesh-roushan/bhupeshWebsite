@@ -206,10 +206,10 @@ export const Insights = () => {
 
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white sm:text-4xl">Insights</h1>
+          <h1 className="title text-white">Insights</h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-300">
             What visitors actually do on this site — which projects get opened, what gets read, where
-            people arrive from. Totals only, public, and live.
+            people arrive from. Totals only, and live.
           </p>
         </div>
 

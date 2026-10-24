@@ -8,8 +8,6 @@ import {
   LuMapPin,
   LuCalendarCheck,
 } from "react-icons/lu";
-import { useRef, useCallback } from "react";
-import { TechBackdrop } from "../TechBackdrop";
 import bhupesh from "../../assets/bhupesh.webp";
 import { hiring } from "../../data/hiring";
 import { ago, useLastPush } from "../../lib/liveStatus";
@@ -37,105 +35,37 @@ const STATS = [
 export const Home = () => {
   const lastPush = useLastPush();
   const reduceMotion = useReducedMotion();
-  const [typed, setTyped] = useState(reduceMotion ? NAME : "");
   const [roleIndex, setRoleIndex] = useState(0);
 
-  // Typewriter for the name — quick enough that it never delays the first read.
+  // Role rotator. The one piece of motion kept in the headline: it carries
+  // information (four roles in one line) rather than decoration.
   useEffect(() => {
-    if (reduceMotion) {
-      setTyped(NAME);
-      return;
-    }
-    if (typed.length >= NAME.length) return;
-    const t = setTimeout(() => setTyped(NAME.slice(0, typed.length + 1)), 65);
-    return () => clearTimeout(t);
-  }, [typed, reduceMotion]);
-
-  // Role rotator
-  useEffect(() => {
+    if (reduceMotion) return;
     const t = setInterval(() => setRoleIndex((i) => (i + 1) % ROLES.length), 2600);
     return () => clearInterval(t);
-  }, []);
-
-  const typingDone = typed.length >= NAME.length;
-
-  /**
-   * Parallax. The aurora, the grid and the copy each move a different distance
-   * with the pointer, which is the whole trick — depth is read from relative
-   * motion, not from any one layer moving.
-   *
-   * Refs and one rAF rather than state: this fires on every pointer move, and
-   * re-rendering the hero (typewriter, rotator, stats, avatar) sixty times a
-   * second to nudge a background would cost far more than the effect is worth.
-   */
-  const auroraRef = useRef(null);
-  const gridRef = useRef(null);
-  const copyRef = useRef(null);
-  const frame = useRef(0);
-
-  const onPointer = useCallback(
-    (e) => {
-      // Mouse only. On a phone this fires mid-scroll-drag, scheduling a frame
-      // that moves three full-screen layers — work that buys nothing, since
-      // there is no cursor for the parallax to track.
-      if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-      cancelAnimationFrame(frame.current);
-      frame.current = requestAnimationFrame(() => {
-        const x = e.clientX / window.innerWidth - 0.5;
-        const y = e.clientY / window.innerHeight - 0.5;
-        // Furthest layer moves least, nearest most — the opposite reads as the
-        // background sliding over the text.
-        if (auroraRef.current)
-          auroraRef.current.style.transform = `translate3d(${x * 14}px, ${y * 10}px, 0)`;
-        if (gridRef.current)
-          gridRef.current.style.transform = `translate3d(${x * -26}px, ${y * -18}px, 0)`;
-        if (copyRef.current)
-          copyRef.current.style.transform =
-            `perspective(1200px) rotateX(${(-y * 2.2).toFixed(2)}deg) rotateY(${(x * 2.2).toFixed(2)}deg)`;
-      });
-    },
-    [reduceMotion]
-  );
-
-  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+  }, [reduceMotion]);
 
   return (
     <section
       id="home"
-      onPointerMove={onPointer}
-      className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:py-28 [perspective:1200px]"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-28"
     >
       {/* Aceternity's Aurora Background. It replaced a 3.9MB looping video —
           the page now paints this on the first frame instead of after a
-          multi-megabyte download, and a phone gets the same backdrop as
-          fibre rather than a flat gradient. */}
-      <div ref={auroraRef} className="aurora z-0 will-change-transform" aria-hidden="true">
+          multi-megabyte download. It is the hero's one background: the dotted
+          grid, the cursor-lit logo field, the pointer parallax and the
+          typewriter that used to sit on top of it are gone. Each was fine alone;
+          together they made the first screen compete with its own headline. */}
+      <div className="aurora z-0" aria-hidden="true">
         <div className="aurora__layer" />
       </div>
 
-      {/* Only 40% at the top now. The aurora's mask puts its brightest bands
-          along the top edge, which is exactly where this gradient was darkest
-          — the two were cancelling each other out. The headline sits in the
-          middle third, where this is transparent anyway, so nothing is lost
-          for legibility; the bottom still fades to the page colour so the
-          section joins the next one cleanly. */}
+      {/* Only 40% at the top. The aurora's mask puts its brightest bands along
+          the top edge, which is exactly where this gradient was darkest; the
+          bottom fades to the page colour so the hero joins the next section. */}
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 via-transparent to-page" />
-      <div
-        ref={gridRef}
-        className="absolute inset-0 z-0 opacity-[0.18] will-change-transform"
-        style={{
-          backgroundImage:
-            "linear-gradient(color-mix(in srgb, var(--color-white) 35%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-white) 35%, transparent) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage: "radial-gradient(ellipse at center, black 10%, transparent 72%)",
-          WebkitMaskImage: "radial-gradient(ellipse at center, black 10%, transparent 72%)",
-        }}
-      />
 
-      {/* Tech logos behind the copy, lit up around the cursor */}
-      <TechBackdrop />
-
-      <div ref={copyRef} className="relative z-10 mx-auto w-full max-w-4xl text-center will-change-transform">
+      <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
         {/* Avatar */}
         <m.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -195,14 +125,12 @@ export const Home = () => {
         </m.div>
 
         {/* Name */}
-        <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+        <h1 className="display mb-5 font-bold">
           <span className="text-gray-300">Hi, I&apos;m </span>
-          {/* Indigo to blue, the same run as the CTA and the nav pill. It used
-              to end in pink, which matched nothing else on the page. */}
+          {/* Indigo to blue, the same run as the CTA and the nav pill. */}
           <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-sky-300 bg-clip-text text-transparent">
-            {typed}
+            {NAME}
           </span>
-          {!typingDone && <span className="animate-pulse text-indigo-400">|</span>}
         </h1>
 
         {/* Rotating role */}
@@ -283,16 +211,15 @@ export const Home = () => {
 
       </div>
 
-      {/* Scroll cue */}
-      <m.a
+      {/* Scroll cue — still, now. It used to bounce forever, which is movement
+          at the edge of the eye on the one screen meant to be read. */}
+      <a
         href="#about"
         aria-label="Scroll to About"
-        animate={reduceMotion ? {} : { y: [0, 8, 0] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 text-gray-400 transition-colors hover:text-white sm:block"
       >
         <LuChevronDown className="h-6 w-6" />
-      </m.a>
+      </a>
     </section>
   );
 };

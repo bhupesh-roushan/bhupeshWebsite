@@ -86,9 +86,14 @@ export default async function handler(req, res) {
     );
 
     // Matches the shape the client already consumes from the public proxy.
+    // Five minutes at the edge, not an hour with a day of grace. The graph is
+    // the one number on the site people check right after pushing, and a day of
+    // stale-while-revalidate meant the first visit after a quiet spell was served
+    // yesterday's total. GitHub's GraphQL is cheap enough for one call per
+    // five minutes, however many people are looking.
     res.setHeader(
       "Cache-Control",
-      "public, s-maxage=3600, stale-while-revalidate=86400"
+      "public, s-maxage=300, stale-while-revalidate=900"
     );
     res.status(200).json({
       total: { lastYear: calendar.totalContributions },

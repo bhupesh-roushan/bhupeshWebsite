@@ -6,6 +6,7 @@ import { journey } from "../../data/portfolio";
 import { LuArrowUpRight } from "react-icons/lu";
 import { skillGroups } from "../../data/skills";
 import { accentText } from "../../lib/accent";
+import { SectionHeader } from "../ui/SectionHeader";
 // Below the fold and self-contained, so it has no claim on the first download.
 const JdMatcher = lazy(() =>
   import("../JdMatcher").then((m) => ({ default: m.JdMatcher }))
@@ -45,10 +46,12 @@ export const About = () => {
   const active = journey.find((item) => item.id === activeId) ?? null;
 
   return (
-    <section id="about" className="min-h-screen py-20">
+    <section id="about" className="py-20 sm:py-28">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-10 text-center text-3xl font-bold text-white">About Me</h2>
+          <SectionHeader index="01" label="About" title="About Me">
+            Where I&apos;ve worked and studied, and the tools I build with.
+          </SectionHeader>
 
           {/* ── Journey ───────────────────────────────────────────
               A bento grid, like the skills and projects below it. This was a

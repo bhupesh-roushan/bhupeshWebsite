@@ -5,6 +5,7 @@ import { GithubHeatmap } from "../GithubHeatmap";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuArrowUpRight, LuBook, LuGitBranch, LuHistory } from "react-icons/lu";
 import { accentText } from "../../lib/accent";
+import { SectionHeader } from "../ui/SectionHeader";
 
 const USER = "bhupesh-roushan";
 
@@ -34,11 +35,15 @@ const PUBLIC_CONTRIB_URL = `https://github-contributions-api.jogruber.de/v4/${US
 const USER_URL = `https://api.github.com/users/${USER}`;
 const REPOS_URL = `https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`;
 
-// Unauthenticated api.github.com allows 60 requests/hour per IP, so cache the
-// answer for the session rather than refetching on every mount.
-// Bump when the payload shape changes, or a session holding the old shape
-// renders undefined fields.
-const CACHE_KEY = "gh-activity-v4";
+// Unauthenticated api.github.com allows 60 requests/hour per IP, so the answer
+// is cached rather than refetched on every mount — but only for ten minutes.
+// It used to be kept for the whole tab session, so a tab opened before a push
+// kept showing the old total and "2mo ago" until it was closed, however long
+// that was. The stored value carries its own timestamp for exactly that reason.
+// Bump the key when the payload shape changes, or a session holding the old
+// shape renders undefined fields.
+const CACHE_KEY = "gh-activity-v5";
+const CACHE_TTL_MS = 10 * 60 * 1000;
 
 const LANG_COLORS = {
   JavaScript: "#f1e05a",
@@ -92,14 +97,14 @@ export const Activity = () => {
     const controller = new AbortController();
 
     (async () => {
-      const cached = sessionStorage.getItem(CACHE_KEY);
-      if (cached) {
-        try {
-          setData({ status: "ready", ...JSON.parse(cached) });
+      try {
+        const hit = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
+        if (hit && Date.now() - hit.at < CACHE_TTL_MS) {
+          setData({ status: "ready", ...hit.payload });
           return;
-        } catch {
-          sessionStorage.removeItem(CACHE_KEY);
         }
+      } catch {
+        sessionStorage.removeItem(CACHE_KEY);
       }
 
       try {
@@ -152,7 +157,7 @@ export const Activity = () => {
           includesPrivate,
         };
 
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), payload }));
         setData({ status: "ready", ...payload });
       } catch (err) {
         if (err.name !== "AbortError") setData({ status: "error" });
@@ -184,12 +189,12 @@ export const Activity = () => {
   ];
 
   return (
-    <section id="activity" className="py-20">
+    <section id="activity" className="py-16 sm:py-20">
       <RevealOnScroll>
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="mb-10 text-center text-3xl font-bold text-white">
-            Profiles &amp; Activity
-          </h2>
+          <SectionHeader index="03" label="Activity" title="Profiles & Activity">
+            Public GitHub activity and where else to find me.
+          </SectionHeader>
 
           {/* Stats */}
           <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -200,7 +205,18 @@ export const Activity = () => {
               >
                 <Icon className="mb-2 h-4 w-4" style={{ color: accentText(accent) }} />
                 <div className="text-xl font-bold text-white sm:text-2xl">
-                  {loading ? "—" : value ?? "—"}
+                  {/* A shaped placeholder, not a dash: a dash reads as "no data",
+                      a pulsing block reads as "on its way". The same height as the
+                      number, so nothing moves when it arrives. */}
+                  {loading ? (
+                    <span
+                      className="inline-block h-[1.4em] w-16 animate-pulse rounded-md bg-white/10 align-middle"
+                      role="status"
+                      aria-label="Loading"
+                    />
+                  ) : (
+                    value ?? "—"
+                  )}
                 </div>
                 <div className="text-[11px] text-gray-400">{label}</div>
               </div>

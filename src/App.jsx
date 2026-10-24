@@ -12,7 +12,6 @@ import { useVisitAlert } from "./hooks/useVisitAlert";
 import { collectPageview } from "./lib/collect";
 import { readSrc } from "./lib/visitLog";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { useStackOffsets } from "./hooks/useStackOffsets";
 
 // Only the hero is in the entry chunk. Everything below it is fetched as its own
 // chunk straight after first paint (see `prefetch`), so the page that has to be
@@ -33,6 +32,9 @@ const CaseStudy = lazy(() =>
 const WritingIndex = lazy(() =>
   import("./components/sections/WritingIndex").then((m) => ({ default: m.WritingIndex }))
 );
+// Only fetched the first time it is asked for (⌘K, or the navbar button).
+const CommandPalette = lazy(() => import("./components/CommandPalette"));
+
 const Insights = lazy(() =>
   import("./components/sections/Insights").then((m) => ({ default: m.Insights }))
 );
@@ -87,7 +89,6 @@ const RouteFallback = () => <div className="min-h-screen" aria-busy="true" />;
  */
 function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
-  useStackOffsets();
   usePrefetch();
   return (
     <>
@@ -97,17 +98,12 @@ function Page() {
           throws should cost you that section, not the whole page. */}
       {SECTIONS.map(({ name, Component }, i) => (
         <ErrorBoundary key={name} name={name}>
-          {/* Every section stacks, the hero included. It sits at the bottom of
-              the deck — pinned, with About sliding up over it — rather than
-              scrolling away and leaving nothing behind the first panel.
-
-              It skips the rounded top and the shadow the others carry: those
-              exist to show a panel sitting on the one it covers, and the base
-              of a deck is covering nothing. Its corners would also be rounding
-              against the very top of the page. */}
+          {/* Sections follow one another; every second one carries a faint tint
+              (see .page-section in index.css). */}
           <div
-            className={i === 0 ? "stack-panel stack-panel--base" : "stack-panel"}
-            style={{ zIndex: i }}
+            className={`page-section ${i === 0 ? "page-section--base" : ""} ${
+              i % 2 ? "page-section--alt" : ""
+            }`}
           >
             <Suspense fallback={<SectionFallback name={name} />}>
               <Component />
@@ -122,8 +118,27 @@ function Page() {
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   useVisitAlert();
   usePageviews();
+
+  // ⌘K / Ctrl+K from anywhere, and a window event so the navbar button can open
+  // it without the palette's state being threaded through three components.
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((o) => !o);
+      }
+    };
+    const open = () => setPaletteOpen(true);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("open-palette", open);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("open-palette", open);
+    };
+  }, []);
 
   return (
     <LazyMotion features={() => import("./lib/motionFeatures").then((m) => m.default)} strict>
@@ -184,6 +199,11 @@ function App() {
           <Route path="*" element={<Page />} />
         </Routes>
         <Analytics />
+        {paletteOpen && (
+          <Suspense fallback={null}>
+            <CommandPalette onClose={() => setPaletteOpen(false)} />
+          </Suspense>
+        )}
       </div>
     </LazyMotion>
   );
