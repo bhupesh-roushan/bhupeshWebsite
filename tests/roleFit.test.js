@@ -14,8 +14,24 @@ import {
   STRONG_AT,
 } from "../src/lib/roleFit.js";
 
+/** @typedef {import("../src/data/types").Role} Role */
+/** @typedef {import("../src/data/types").Project} Project */
+
+/** @param {string} slug */
 const ids = (slug) => rankProjects(projects, slug).entries.map((e) => e.project.id);
 const original = projects.map((p) => p.id);
+
+/**
+ * A role that has to exist: roleBySlug answers null for an unknown slug, which
+ * would fail later and less clearly inside the test that wanted the role.
+ * @param {string} slug
+ * @returns {Role}
+ */
+const roleNamed = (slug) => {
+  const role = roleBySlug(slug);
+  if (!role) throw new Error(`no role "${slug}" in roles.js`);
+  return role;
+};
 
 describe("techKey", () => {
   it("folds the spellings the data actually uses", () => {
@@ -78,6 +94,7 @@ describe("rankProjects on the real portfolio", () => {
   });
 
   it("explains each position: the leaders are there for named technologies", () => {
+    /** @param {string} slug */
     const byId = (slug) =>
       Object.fromEntries(rankProjects(projects, slug).entries.map((e) => [e.project.id, e]));
     expect(byId("backend").atlas.matched).toEqual(["Node.js", "BullMQ", "Redis", "MongoDB", "Docker"]);
@@ -125,8 +142,13 @@ describe("rankProjects with no usable role", () => {
 });
 
 describe("ties and empty stacks", () => {
+  /**
+   * @param {string} id
+   * @param {string[]} stack
+   * @param {string} [span]
+   */
   const tile = (id, stack, span = "lg:col-span-2") => ({ id, stack, span });
-  const backend = roleBySlug("backend");
+  const backend = roleNamed("backend");
 
   it("keeps the original order between equal scores", () => {
     const list = [
@@ -154,7 +176,7 @@ describe("ties and empty stacks", () => {
   });
 
   it("gives a breadth role a point per group reached", () => {
-    const sde = roleBySlug("sde");
+    const sde = roleNamed("sde");
     const narrow = scoreProject({ stack: ["React", "Next.js"] }, sde); // 2 matches, 1 group
     const wide = scoreProject({ stack: ["React", "MongoDB"] }, sde); // 2 matches, 2 groups
     expect(wide.score).toBeGreaterThan(narrow.score);
@@ -162,13 +184,17 @@ describe("ties and empty stacks", () => {
 });
 
 describe("packRows", () => {
+  /** @param {number} n */
   const span = (n) => `lg:col-span-${n}`;
+  /** @param {{ project: Project }[]} entries */
   const rowsOf = (entries) => {
+    /** @type {string[][]} */
     const rows = [];
     let room = 6;
+    /** @type {string[]} */
     let row = [];
     for (const e of entries) {
-      const n = Number(/col-span-(\d)/.exec(e.project.span)[1]);
+      const n = Number(/col-span-(\d)/.exec(e.project.span)?.[1]);
       row.push(e.project.id);
       room -= n;
       if (room === 0) {
@@ -192,9 +218,10 @@ describe("packRows", () => {
   it("keeps the original layout when nothing is ranked", () => {
     const { rows } = rowsOf(rankProjects(projects, "backend").entries);
     // Same tiling as the data: the multiset of row shapes is unchanged
+    /** @param {string[][]} list */
     const shape = (list) =>
       list
-        .map((r) => r.map((id) => projects.find((p) => p.id === id).span).join("|"))
+        .map((r) => r.map((id) => projects.find((p) => p.id === id)?.span).join("|"))
         .sort();
     expect(shape(rows)).toEqual(
       shape(rowsOf(rankProjects(projects, null).entries).rows)

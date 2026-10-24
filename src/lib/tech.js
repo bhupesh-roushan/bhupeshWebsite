@@ -5,6 +5,7 @@
 // lower-case key and the keys are compared instead.
 
 // Spellings the rules below can't fold on their own.
+/** @type {Record<string, string>} */
 const ALIASES = {
   "google gemini": "gemini",
   "shadcn ui": "shadcn",
@@ -15,7 +16,10 @@ const ALIASES = {
   "object oriented programming": "oops",
 };
 
-/** A stable comparison key for a technology name. */
+/**
+ * A stable comparison key for a technology name.
+ * @param {unknown} name  hand-typed, so it may be missing
+ */
 export function techKey(name) {
   let key = String(name ?? "")
     .toLowerCase()

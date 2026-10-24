@@ -10,6 +10,10 @@ import {
 } from "../src/lib/hourglassSim.js";
 
 const both = () => connect(connect(createSim(), "alice").state, "bob").state;
+/** @typedef {import("../src/lib/hourglassSim.js").Step} Step */
+/** @typedef {import("../src/lib/hourglassSim.js").StoredMessage} StoredMessage */
+
+/** @param {Step[]} steps */
 const texts = (steps) => steps.map((s) => s.text);
 
 describe("registry", () => {
@@ -167,6 +171,7 @@ describe("ordering", () => {
     s = send(s, "bob", "alice", "2").state;
     s = send(s, "alice", "bob", "3").state;
 
+    /** @param {StoredMessage[]} list */
     const order = (list) => list.map((m) => m.message);
     expect(order(s.views.alice)).toEqual(["1", "2", "3"]);
     expect(order(s.views.bob)).toEqual(["1", "2", "3"]);

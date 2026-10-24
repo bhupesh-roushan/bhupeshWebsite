@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 /**
  * Checks the built site rather than the generators: every JSON-LD block in
- * dist/**\/*.html must parse, and carry @context and @type.
+ * dist/**\/*.html must parse, and carry `@context` and `@type`.
  *
  * Skipped when dist/ doesn't exist, so a plain `npm test` on a fresh checkout
  * (as CI runs it) stays green. After `npm run build` it runs for real:
@@ -15,6 +15,10 @@ import { fileURLToPath } from "node:url";
 const dist = resolve(dirname(fileURLToPath(import.meta.url)), "..", "dist");
 const built = existsSync(resolve(dist, "index.html"));
 
+/**
+ * @param {string} dir
+ * @returns {string[]}
+ */
 function htmlFiles(dir) {
   return readdirSync(dir).flatMap((name) => {
     const full = resolve(dir, name);
@@ -22,6 +26,18 @@ function htmlFiles(dir) {
     return name.endsWith(".html") ? [full] : [];
   });
 }
+
+/**
+ * The fields of a built block this file reads. Parsed from the page, so every
+ * one may be missing: that is what the tests are there to find out.
+ * @typedef {{ "@context"?: unknown, "@type"?: string, url?: string, mainEntityOfPage?: { "@id"?: string } }} BuiltBlock
+ */
+
+/**
+ * @param {string} text  the contents of one JSON-LD script element
+ * @returns {BuiltBlock}
+ */
+const parse = (text) => JSON.parse(text);
 
 const SCRIPT = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g;
 
@@ -44,7 +60,7 @@ describe.skipIf(!built)("JSON-LD in dist/", () => {
       it("has at least one block, and every block is valid JSON with @context and @type", () => {
         expect(raw.length).toBeGreaterThan(0);
         for (const text of raw) {
-          const block = JSON.parse(text);
+          const block = parse(text);
           expect(block["@context"]).toBe("https://schema.org");
           expect(typeof block["@type"]).toBe("string");
         }
@@ -57,25 +73,26 @@ describe.skipIf(!built)("JSON-LD in dist/", () => {
       it("describes the same URL the page declares as canonical", () => {
         const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
         expect(canonical).toBeTruthy();
-        const blocks = raw.map((t) => JSON.parse(t));
+        const blocks = raw.map(parse);
         // The main block of each page type, and where it says which page it is.
+        /** @type {Record<string, (b: BuiltBlock) => string | undefined>} */
         const urlOf = {
           ProfilePage: (b) => b.url,
           CollectionPage: (b) => b.url,
           TechArticle: (b) => b.url,
-          SoftwareApplication: (b) => b.mainEntityOfPage["@id"],
-          WebApplication: (b) => b.mainEntityOfPage["@id"],
+          SoftwareApplication: (b) => b.mainEntityOfPage?.["@id"],
+          WebApplication: (b) => b.mainEntityOfPage?.["@id"],
         };
-        const main = blocks.find((b) => urlOf[b["@type"]]);
+        const main = blocks.find((b) => b["@type"] !== undefined && urlOf[b["@type"]]);
         expect(main, "a main block").toBeTruthy();
-        expect(urlOf[main["@type"]](main)).toBe(canonical);
+        expect(main?.["@type"] && urlOf[main["@type"]]?.(main)).toBe(canonical);
       });
     });
   }
 
   it("defines the Person once, on the home page, and nowhere else", () => {
     const withPerson = pages
-      .filter((p) => p.raw.some((t) => JSON.parse(t)["@type"] === "Person"))
+      .filter((p) => p.raw.some((t) => parse(t)["@type"] === "Person"))
       .map((p) => p.name);
     expect(withPerson).toEqual(["index.html"]);
   });

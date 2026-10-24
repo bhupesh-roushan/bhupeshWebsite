@@ -30,25 +30,87 @@
  * "reconnect, then fetch" the only way to catch up.
  */
 
+/** @typedef {"alice" | "bob"} UserId */
+
+/**
+ * One line of the trace the demo shows. `path` is which half of the handler ran
+ * (the REST call or the socket emit); `miss` marks the step where something
+ * did not happen — no socket, nothing to send — as opposed to the normal case.
+ * @typedef {object} Step
+ * @property {"rest" | "socket"} path
+ * @property {string} text
+ * @property {"ok" | "miss"} tone
+ */
+
+/**
+ * A stored Message document, as far as the model needs one.
+ * @typedef {object} StoredMessage
+ * @property {string} _id
+ * @property {UserId} senderId
+ * @property {UserId} receiverId
+ * @property {string} message
+ */
+
+/**
+ * A Conversation document: who is in it and its messages, by id.
+ * @typedef {object} Conversation
+ * @property {UserId[]} participants
+ * @property {string[]} messages
+ */
+
+/**
+ * Everything the simulation holds, server and clients together.
+ * @typedef {object} SimState
+ * @property {Partial<Record<UserId, string>>} registry  userSocketMap: user to socket id, present only while connected
+ * @property {Conversation[]} conversations
+ * @property {StoredMessage[]} messages
+ * @property {Record<UserId, StoredMessage[]>} views  what each client is showing
+ * @property {Record<UserId, UserId[]>} onlineLists  the last `getOnlineUsers` payload each client got
+ * @property {{ socket: number, message: number }} counters  next socket and message numbers
+ */
+
+/**
+ * What every transition returns: the new state (the same object when nothing
+ * changed) and the trace of what happened.
+ * @typedef {{ state: SimState, steps: Step[] }} SimResult
+ */
+
+/** @type {readonly [UserId, UserId]} */
 export const USERS = ["alice", "bob"];
 
+/** @type {Record<UserId, string>} */
 export const NAMES = { alice: "Alice", bob: "Bob" };
 
+/** @param {UserId} id */
 const peerOf = (id) => (id === USERS[0] ? USERS[1] : USERS[0]);
 
 // Socket ids from a counter, so runs are repeatable (and testable), but still a
 // fresh, unrelated-looking id on every connect — which is the point of the
 // registry: the same user is a different socket each time.
+/** @param {number} n */
 const socketIdFor = (n) =>
   (Math.imul(n + 7919, 2654435761) >>> 0).toString(36).padStart(7, "0").slice(0, 7);
 
+/** @param {number} n */
 const messageIdFor = (n) => `m${n}`;
 
+/**
+ * @param {Step["path"]} path
+ * @param {string} text
+ * @param {Step["tone"]} [tone]
+ * @returns {Step}
+ */
 const step = (path, text, tone = "ok") => ({ path, text, tone });
 
+/**
+ * @param {Conversation} conv
+ * @param {UserId} a
+ * @param {UserId} b
+ */
 const sameConversation = (conv, a, b) =>
   conv.participants.includes(a) && conv.participants.includes(b);
 
+/** @returns {SimState} */
 export const createSim = () => ({
   // userSocketMap
   registry: {},
@@ -63,15 +125,25 @@ export const createSim = () => ({
   counters: { socket: 0, message: 0 },
 });
 
+/**
+ * @param {SimState} state
+ * @param {UserId} user
+ */
 export const isOnline = (state, user) => Boolean(state.registry[user]);
 
+/**
+ * @param {SimState} state
+ * @param {UserId} user
+ * @returns {SimResult}
+ */
 export const connect = (state, user) => {
   if (isOnline(state, user)) {
     return { state, steps: [step("socket", `${NAMES[user]} already has a socket — nothing to do`, "miss")] };
   }
   const socketId = socketIdFor(state.counters.socket);
   const registry = { ...state.registry, [user]: socketId };
-  const online = Object.keys(registry);
+  // The registry is only ever keyed by UserId, but Object.keys says string.
+  const online = /** @type {UserId[]} */ (Object.keys(registry));
 
   // io.emit reaches every connected socket, including the one that just joined.
   const onlineLists = { ...state.onlineLists };
@@ -94,12 +166,17 @@ export const connect = (state, user) => {
   };
 };
 
+/**
+ * @param {SimState} state
+ * @param {UserId} user
+ * @returns {SimResult}
+ */
 export const disconnect = (state, user) => {
   if (!isOnline(state, user)) {
     return { state, steps: [step("socket", `${NAMES[user]} has no socket — nothing to close`, "miss")] };
   }
   const { [user]: gone, ...registry } = state.registry;
-  const online = Object.keys(registry);
+  const online = /** @type {UserId[]} */ (Object.keys(registry));
 
   // The closed client loses its list and its in-memory chat; everyone still
   // connected hears the new roster.
@@ -123,6 +200,13 @@ export const disconnect = (state, user) => {
   };
 };
 
+/**
+ * @param {SimState} state
+ * @param {UserId} from
+ * @param {UserId} to
+ * @param {string | null | undefined} text  blank or missing text is refused, not sent
+ * @returns {SimResult}
+ */
 export const send = (state, from, to, text) => {
   const body = String(text ?? "").trim();
   if (!isOnline(state, from)) {
@@ -149,6 +233,7 @@ export const send = (state, from, to, text) => {
     steps.push(step("rest", "Conversation.findOne: found"));
   }
 
+  /** @type {StoredMessage} */
   const message = {
     _id: messageIdFor(state.counters.message + 1),
     senderId: from,
@@ -194,12 +279,26 @@ export const send = (state, from, to, text) => {
 
 // What GET /message/all/:id returns for a pair: the populated messages of the
 // conversation, in the order they were pushed, or [] when none exists.
+/**
+ * @param {SimState} state
+ * @param {UserId} a
+ * @param {UserId} b
+ * @returns {StoredMessage[]}
+ */
 export const storedMessages = (state, a, b) => {
   const conv = state.conversations.find((c) => sameConversation(c, a, b));
   if (!conv) return [];
-  return conv.messages.map((id) => state.messages.find((m) => m._id === id));
+  // send() creates the message and pushes its id in the same step, so an id in
+  // a conversation always has a message to go with it.
+  return conv.messages.map((id) => /** @type {StoredMessage} */ (state.messages.find((m) => m._id === id)));
 };
 
+/**
+ * @param {SimState} state
+ * @param {UserId} user
+ * @param {UserId} [peer]  the other participant by default
+ * @returns {SimResult}
+ */
 export const fetchConversation = (state, user, peer = peerOf(user)) => {
   if (!isOnline(state, user)) {
     return {

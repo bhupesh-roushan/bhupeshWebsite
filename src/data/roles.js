@@ -15,6 +15,7 @@
 // long stack of one kind (six frontend libraries) would outrank a project that
 // actually spans the role.
 
+/** @type {import("./types").Role[]} */
 export const ROLES = [
   {
     slug: "sde",
@@ -77,7 +78,10 @@ export const ROLES = [
   },
 ];
 
-/** The role for a `?role=` value, or null — unknown values are ignored, never an error. */
+/**
+ * The role for a `?role=` value, or null — unknown values are ignored, never an error.
+ * @param {unknown} value  whatever the URL or storage held, including nothing
+ */
 export function roleBySlug(value) {
   const slug = String(value ?? "").trim().toLowerCase();
   return ROLES.find((r) => r.slug === slug) ?? null;

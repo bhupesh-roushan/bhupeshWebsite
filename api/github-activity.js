@@ -15,6 +15,14 @@
 // here: without it this still works, unauthenticated, from Vercel's shared
 // addresses, which is no worse than before.
 
+/** @typedef {import("../types/api").ApiRequest} ApiRequest */
+/** @typedef {import("../types/api").ApiResponse} ApiResponse */
+
+/**
+ * The fields of a GitHub repository this file reads.
+ * @typedef {{ name: string, language?: string | null, pushed_at?: string | null, fork?: boolean }} Repo
+ */
+
 const LOGIN = process.env.GITHUB_LOGIN || "bhupesh-roushan";
 
 /**
@@ -22,7 +30,7 @@ const LOGIN = process.env.GITHUB_LOGIN || "bhupesh-roushan";
  * without a network.
  *
  * @param {{ public_repos?: number } | null} user
- * @param {Array<{ name: string, language?: string | null, pushed_at?: string | null, fork?: boolean }>} repos
+ * @param {Repo[] | undefined} repos  not an array when GitHub answers with an error object
  */
 export function summarise(user, repos) {
   const list = Array.isArray(repos) ? repos : [];
@@ -31,6 +39,7 @@ export function summarise(user, repos) {
   // refreshed by "sync" would otherwise read as activity of mine.
   const own = list.filter((r) => !r.fork);
 
+  /** @type {Record<string, number>} */
   const counts = {};
   own.forEach((r) => {
     if (r.language) counts[r.language] = (counts[r.language] || 0) + 1;
@@ -51,6 +60,10 @@ export function summarise(user, repos) {
   };
 }
 
+/**
+ * @param {ApiRequest} req
+ * @param {ApiResponse} res
+ */
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");

@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { summarise } from "../api/github-activity.js";
 
+/**
+ * @param {string} name
+ * @param {string | null} language
+ * @param {string | null} pushed_at
+ * @param {{ fork?: boolean }} [extra]
+ */
 const repo = (name, language, pushed_at, extra = {}) => ({ name, language, pushed_at, ...extra });
 
 describe("summarise", () => {

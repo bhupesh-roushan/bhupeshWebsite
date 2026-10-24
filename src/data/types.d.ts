@@ -205,3 +205,22 @@ export interface DiagramSpec {
   /** What the arrows carry, which boxes alone cannot say. */
   note: string;
 }
+
+// ── roles.js ────────────────────────────────────────────────────────────────
+
+/** One named list of technologies inside a role ("Languages", "Data"…). */
+export interface RoleGroup {
+  name: string;
+  keywords: string[];
+}
+
+/** A job the page can be read as (`?role=`), described by the technologies it asks for. */
+export interface Role {
+  /** What `?role=` carries. */
+  slug: string;
+  /** Exactly one of `hiring.openTo`. */
+  label: string;
+  /** A project reaching several groups earns a point per group (see roleFit.js). */
+  breadth?: boolean;
+  groups: RoleGroup[];
+}

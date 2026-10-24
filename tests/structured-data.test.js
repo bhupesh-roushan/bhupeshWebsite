@@ -24,12 +24,39 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const data = await loadSiteData();
 const { projects, caseStudies } = data;
 
+/** @typedef {import("../src/data/types").Project} Project */
+/** @typedef {import("../scripts/structured-data.mjs").JsonLdBlock} JsonLdBlock */
+/** @typedef {ReturnType<typeof projectBlocks>[number]} ProjectBlock */
+
+/** @param {string} name */
 const ogImage = (name) => `${SITE}/og/${name}.png`;
+/** @param {Project} project */
 const blocksFor = (project) =>
   projectBlocks(project, { image: ogImage(`project-${project.id}`), studies: caseStudies });
-const ofType = (blocks, type) => blocks.find((b) => b["@type"] === type);
 
-/** Every object in a block, however deeply nested. */
+/**
+ * The block of one type on a project page. Typed per call: find() cannot carry
+ * the narrowing from the `@type` it compared, so the cast says it for it.
+ * @template {ProjectBlock["@type"]} T
+ * @param {ProjectBlock[]} blocks
+ * @param {T} type
+ * @returns {Extract<ProjectBlock, { "@type": T }> | undefined}
+ */
+const ofType = (blocks, type) =>
+  /** @type {Extract<ProjectBlock, { "@type": T }> | undefined} */ (blocks.find((b) => b["@type"] === type));
+
+/**
+ * @param {unknown} v
+ * @returns {v is Record<string, unknown>}
+ */
+const isObject = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * Every object in a block, however deeply nested.
+ * @param {unknown} value
+ * @param {string} [path]
+ * @returns {Generator<[string, unknown]>}
+ */
 function* walk(value, path = "") {
   yield [path, value];
   if (Array.isArray(value)) for (let i = 0; i < value.length; i++) yield* walk(value[i], `${path}[${i}]`);
@@ -37,13 +64,19 @@ function* walk(value, path = "") {
     for (const [k, v] of Object.entries(value)) yield* walk(v, `${path}.${k}`);
 }
 
-/** Every block the generators emit, labelled by page, for the checks that apply to all of them. */
+/**
+ * Every block the generators emit, labelled by page, for the checks that apply to all of them.
+ * @returns {[string, JsonLdBlock[]][]}
+ */
 function allPages() {
   const studies = Object.entries(caseStudies);
   return [
     ["home", homeBlocks(data)],
-    ...projects.map((p) => [`project:${p.id}`, blocksFor(p)]),
-    ...studies.map(([id, s]) => [`writing:${id}`, writingBlocks(id, s, { image: ogImage(`writing-${id}`) })]),
+    ...projects.map((p) => /** @type {[string, JsonLdBlock[]]} */ ([`project:${p.id}`, blocksFor(p)])),
+    ...studies.map(
+      ([id, s]) =>
+        /** @type {[string, JsonLdBlock[]]} */ ([`writing:${id}`, writingBlocks(id, s, { image: ogImage(`writing-${id}`) })])
+    ),
     ["writing-index", writingIndexBlocks(caseStudies, { description: "d", image: ogImage("writing") })],
   ];
 }
@@ -77,7 +110,7 @@ describe("every generated block", () => {
       it("keeps @id, item and image on this site, as absolute https URLs", () => {
         for (const b of blocks) {
           for (const [path, v] of walk(b)) {
-            const key = path.split(".").pop();
+            const key = path.split(".").pop() ?? "";
             if (["@id", "item", "image"].includes(key) && typeof v === "string") {
               expect(v, path).toMatch(new RegExp(`^${SITE.replace(/\./g, "\\.")}/`));
             }
@@ -102,7 +135,7 @@ describe("every generated block", () => {
         const hasFullPerson = blocks.some((b) => b["@id"] === PERSON_ID);
         for (const b of blocks) {
           for (const [path, v] of walk(b)) {
-            if (v && typeof v === "object" && v["@id"] === PERSON_ID && path !== "") {
+            if (isObject(v) && v["@id"] === PERSON_ID && path !== "") {
               expect(v["@type"], path).toBe("Person");
               if ("name" in v) {
                 expect(v.name, path).toBe("Bhupesh Roushan");
@@ -217,8 +250,8 @@ describe("project pages", () => {
 
       it("has a code repository block only because it has a repo", () => {
         if (project.repo) {
-          expect(source.codeRepository).toBe(project.repo);
-          expect(source.targetProduct["@id"]).toBe(app["@id"]);
+          expect(source?.codeRepository).toBe(project.repo);
+          expect(source?.targetProduct["@id"]).toBe(app["@id"]);
         } else {
           expect(source).toBeUndefined();
         }
@@ -264,14 +297,14 @@ describe("project pages", () => {
 
   it("links to the project's write-ups, and only to ones that exist", () => {
     const app = blocksFor(byId.atlas)[0];
-    const listed = byId.atlas.caseStudies.map((c) => `${SITE}/writing/${c.id}`);
-    expect(app.subjectOf.map((s) => s.url)).toEqual(listed);
+    const listed = (byId.atlas.caseStudies ?? []).map((c) => `${SITE}/writing/${c.id}`);
+    expect(app.subjectOf?.map((s) => s.url)).toEqual(listed);
     expect(() => projectBlocks(byId.atlas, { image: "x", studies: {} })).toThrow(/unknown case study/);
   });
 
   it("orders the breadcrumbs Home, Projects, project, with positions from 1", () => {
     for (const project of projects) {
-      const crumbs = ofType(blocksFor(project), "BreadcrumbList").itemListElement;
+      const crumbs = ofType(blocksFor(project), "BreadcrumbList")?.itemListElement ?? [];
       expect(crumbs.map((c) => c.position)).toEqual([1, 2, 3]);
       expect(crumbs.map((c) => c.name)).toEqual(["Home", "Projects", project.title]);
       expect(crumbs[0].item).toBe(`${SITE}/`);
@@ -332,8 +365,8 @@ describe("write-up pages", () => {
         expect(article.articleSection).toBe(study.project);
         const project = projects.find((p) => p.id === study.projectId);
         expect(project?.title).toBe(study.project);
-        expect(article.about["@id"]).toBe(`${SITE}/projects/${study.projectId}#project`);
-        expect(article.about.url).toBe(`${SITE}/projects/${study.projectId}`);
+        expect(article.about?.["@id"]).toBe(`${SITE}/projects/${study.projectId}#project`);
+        expect(article.about?.url).toBe(`${SITE}/projects/${study.projectId}`);
       });
 
       it("belongs to the blog and is by and published by the one person", () => {
@@ -381,7 +414,7 @@ describe("writing index", () => {
       Object.keys(caseStudies).map((id) => `${SITE}/writing/${id}`).sort()
     );
     const dates = list.itemListElement.map((i) => {
-      const id = i.url.split("/").pop();
+      const id = i.url.split("/").pop() ?? "";
       return caseStudies[id].published;
     });
     expect(dates).toEqual([...dates].sort().reverse());

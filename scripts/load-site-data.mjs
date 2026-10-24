@@ -18,11 +18,15 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-/** Default imports (images) become their path; named imports (icons) become null. */
+/**
+ * Default imports (images) become their path; named imports (icons) become null.
+ * @param {string} code  a data module's source
+ * @param {string} file  its path, for the error message
+ */
 function stubImports(code, file) {
   const out = code
     .replace(/^import\s+(\w+)\s+from\s+"([^"]+)";?[ \t]*$/gm, (_, name, from) => `const ${name} = ${JSON.stringify(from)};`)
-    .replace(/^import\s*\{([^}]*)\}\s*from\s+"[^"]+";?[ \t]*$/gm, (_, names) =>
+    .replace(/^import\s*\{([^}]*)\}\s*from\s+"[^"]+";?[ \t]*$/gm, (_, /** @type {string} */ names) =>
       names
         .split(",")
         .map((n) => n.trim())
@@ -36,6 +40,12 @@ function stubImports(code, file) {
   return out;
 }
 
+/**
+ * Evaluate a data module with its imports stubbed. An import from a data: URL
+ * is untyped, so the caller says what the module is (see `loadSiteData`).
+ * @param {string} relPath  relative to the repository root
+ * @returns {Promise<unknown>}
+ */
 async function loadModule(relPath) {
   const code = stubImports(readFileSync(resolve(root, relPath), "utf8"), relPath);
   // A data: URL, so nothing is written to disk and the module can't resolve
@@ -43,14 +53,19 @@ async function loadModule(relPath) {
   return import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 }
 
+/** @typedef {typeof import("../src/data/portfolio.js")} PortfolioModule */
+/** @typedef {typeof import("../src/data/skills.js")} SkillsModule */
+/** @typedef {typeof import("../src/data/hiring.js")} HiringModule */
+/** @typedef {typeof import("../src/data/caseStudies.js")} CaseStudiesModule */
+
 export async function loadSiteData() {
-  const [portfolio, skills, hiring, caseStudies] = await Promise.all([
+  const [portfolio, skills, hiring, caseStudies] = /** @type {[PortfolioModule, SkillsModule, HiringModule, CaseStudiesModule]} */ (await Promise.all([
     loadModule("src/data/portfolio.js"),
     loadModule("src/data/skills.js"),
     loadModule("src/data/hiring.js"),
     // Dependency-free, so a normal import is enough and keeps the stack traces useful.
     import(pathToFileURL(resolve(root, "src/data/caseStudies.js")).href),
-  ]);
+  ]));
   return {
     projects: portfolio.projects,
     journey: portfolio.journey,

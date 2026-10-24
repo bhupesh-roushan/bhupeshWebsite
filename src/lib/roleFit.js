@@ -11,26 +11,56 @@
 import { roleBySlug } from "../data/roles";
 import { techKey } from "./tech";
 
+/** @typedef {import("../data/types").Role} Role */
+
+/**
+ * The parts of a project this file reads. Everything is optional because the
+ * tests (and any caller) may hand it a bare `{ stack }` or `{ span }`, and a
+ * project with no stack is scored as zero rather than refused. A real
+ * `Project` satisfies it.
+ * @typedef {Partial<Pick<import("../data/types").Project, "id" | "stack" | "span">>} Rankable
+ */
+
+/**
+ * One project against one role: see scoreProject.
+ * @typedef {{ matched: string[], groups: number, score: number }} Fit
+ */
+
+/**
+ * A project in a ranked list, with why it is where it is.
+ * @template {Rankable} P
+ * @typedef {{ project: P, index: number, matched: string[], score: number, strong: boolean }} RankedEntry
+ */
+
 const ROW = 6; // the bento grid's column count at lg
 
-/** keyword key -> the groups it belongs to, for one role. */
+/**
+ * keyword key -> the groups it belongs to, for one role.
+ * @param {Role} role
+ * @returns {Map<string, Set<number>>}
+ */
 function indexRole(role) {
+  /** @type {Map<string, Set<number>>} */
   const byKey = new Map();
   role.groups.forEach((group, g) => {
     for (const kw of group.keywords) {
       const key = techKey(kw);
-      if (!byKey.has(key)) byKey.set(key, new Set());
-      byKey.get(key).add(g);
+      let groups = byKey.get(key);
+      if (!groups) byKey.set(key, (groups = new Set()));
+      groups.add(g);
     }
   });
   return byKey;
 }
 
 // Roles are static, so each is indexed once.
+/** @type {WeakMap<Role, Map<string, Set<number>>>} */
 const indexes = new WeakMap();
+/** @param {Role} role */
 const indexFor = (role) => {
-  if (!indexes.has(role)) indexes.set(role, indexRole(role));
-  return indexes.get(role);
+  let index = indexes.get(role);
+  if (!index) indexes.set(role, (index = indexRole(role)));
+  return index;
 };
 
 /**
@@ -40,18 +70,25 @@ const indexFor = (role) => {
  * the keyword "Claude") that are on the role's list, once per technology.
  * `score` is the count of those, plus — for roles marked `breadth` — one point
  * for every keyword group the stack reaches (`groups` says how many).
+ *
+ * @param {Rankable} project
+ * @param {Role} role
+ * @returns {Fit}
  */
 export function scoreProject(project, role) {
   const index = indexFor(role);
+  /** @type {Set<string>} */
   const seen = new Set();
+  /** @type {string[]} */
   const matched = [];
+  /** @type {Set<number>} */
   const groups = new Set();
   for (const tech of project.stack ?? []) {
     const key = techKey(tech);
     if (seen.has(key) || !index.has(key)) continue;
     seen.add(key);
     matched.push(tech);
-    index.get(key).forEach((g) => groups.add(g));
+    index.get(key)?.forEach((g) => groups.add(g));
   }
   return { matched, groups: groups.size, score: matched.length + (role.breadth ? groups.size : 0) };
 }
@@ -62,10 +99,17 @@ export function scoreProject(project, role) {
  * what stops a three-library frontend counting as "full stack".
  */
 export const STRONG_AT = 3;
+/**
+ * @param {Role} role
+ * @param {Pick<Fit, "matched" | "groups">} fit
+ */
 export const isStrong = (role, { matched, groups }) =>
   matched.length >= STRONG_AT && (!role.breadth || groups >= 2);
 
-/** "lg:col-span-3" -> 3. Null when a tile declares no desktop span. */
+/**
+ * "lg:col-span-3" -> 3. Null when a tile declares no desktop span.
+ * @param {Rankable} project
+ */
 const spanOf = (project) => {
   const m = /(?:^|\s)lg:col-span-(\d+)/.exec(project.span ?? "");
   return m ? Number(m[1]) : null;
@@ -83,16 +127,25 @@ const spanOf = (project) => {
  *
  * If the spans can't tile (or the search is cut off) the original order is
  * returned: that is always the layout the data was written to fit.
+ *
+ * @template {{ project: Rankable, index: number }} E
+ * @param {E[]} ranked  best first
+ * @returns {E[]}
  */
 export function packRows(ranked) {
-  const spans = ranked.map((e) => spanOf(e.project));
-  if (spans.some((s) => s === null || s > ROW)) return ranked;
+  const declared = ranked.map((e) => spanOf(e.project));
+  if (declared.some((s) => s === null || s > ROW)) return ranked;
+  // The check above returned if any span was null, which the type can't follow.
+  const spans = /** @type {number[]} */ (declared);
 
   const n = ranked.length;
+  /** @type {boolean[]} */
   const used = new Array(n).fill(false);
+  /** @type {number[]} */
   const order = [];
   let budget = 50_000;
 
+  /** @param {number} room  columns left in the row being filled */
   const place = (room) => {
     if (order.length === n) return room === ROW;
     if (--budget < 0) return false;
@@ -118,7 +171,10 @@ export function packRows(ranked) {
  * With no role, or one that isn't recognised, the list comes back exactly as
  * given — same order, nothing marked — so callers need no special case.
  *
- * @returns {{ entries: Array<{ project, index, matched: string[], score: number, strong: boolean }>, matchCount: number, role: object|null }}
+ * @template {Rankable} P
+ * @param {P[]} projects
+ * @param {Role | string | null | undefined} roleOrSlug  a role, or the `?role=` value
+ * @returns {{ entries: RankedEntry<P>[], matchCount: number, role: Role | null }}
  */
 export function rankProjects(projects, roleOrSlug) {
   const role = typeof roleOrSlug === "string" ? roleBySlug(roleOrSlug) : roleOrSlug ?? null;
@@ -140,13 +196,21 @@ export function rankProjects(projects, roleOrSlug) {
   };
 }
 
-/** Whether a skill from the skills grid is one the role's list names. */
+/**
+ * Whether a skill from the skills grid is one the role's list names.
+ * @param {string} skillName
+ * @param {Role | string | null | undefined} roleOrSlug
+ */
 export function skillFits(skillName, roleOrSlug) {
   const role = typeof roleOrSlug === "string" ? roleBySlug(roleOrSlug) : roleOrSlug;
-  return Boolean(role) && indexFor(role).has(techKey(skillName));
+  return Boolean(role && indexFor(role).has(techKey(skillName)));
 }
 
-/** "Uses Node.js, MongoDB, Redis and 2 more" — the evidence behind a marker. */
+/**
+ * "Uses Node.js, MongoDB, Redis and 2 more" — the evidence behind a marker.
+ * @param {string[]} matched
+ * @param {number} [max]
+ */
 export function describeMatch(matched, max = 4) {
   if (!matched.length) return "";
   const shown = matched.slice(0, max).join(", ");
@@ -158,6 +222,9 @@ export function describeMatch(matched, max = 4) {
  * The hero's rotating roles with the chosen one first. Entries the role's label
  * already says ("Full Stack Developer" inside itself, "AI Automation Engineer"
  * inside "GenAI / AI Automation Engineer") are dropped, so it isn't shown twice.
+ *
+ * @param {string[]} list
+ * @param {Role | null | undefined} role
  */
 export function heroRoles(list, role) {
   if (!role) return list;

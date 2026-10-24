@@ -17,6 +17,7 @@ const read = () => {
     return null;
   }
 };
+/** @param {string | null} slug */
 const write = (slug) => {
   try {
     if (slug) sessionStorage.setItem(KEY, slug);
@@ -40,6 +41,7 @@ export function useRole() {
 
   // Storage first, so the render the URL change triggers already agrees with it.
   const setRole = useCallback(
+    /** @param {string | null | undefined} slug */
     (slug) => {
       write(slug ?? null);
       setParams(

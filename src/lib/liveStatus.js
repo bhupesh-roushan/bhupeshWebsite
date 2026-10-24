@@ -91,7 +91,7 @@ export function useLastPush() {
             value = d.lastPush ? { repo: d.lastPush.repo, at: d.lastPush.at } : null;
           }
         } catch (err) {
-          if (err.name === "AbortError") return;
+          if (err instanceof Error && err.name === "AbortError") return;
         }
 
         if (value === undefined) {
