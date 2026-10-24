@@ -3,12 +3,16 @@
  *
  * Every claim is traceable to a commit or to shipped code — the Atlas pieces
  * to commits f2e961c and 3df3201, the CloudWatch one to its auth commit trail
- * and to client/next.config.ts as it stands. Nothing here is illustrative, and
- * nothing is written that the repository cannot back up.
+ * and to client/next.config.ts as it stands, the Frequencii one to the byte
+ * counts in the diff stats of bc7f6bf, ee94533, f16ad55 and 302b8b5. Nothing
+ * here is illustrative, and nothing is written that the repository cannot
+ * back up.
  *
- * Which is also why there are three and not seven: the other projects have no
- * decision record to draw on. A case study invented to fill a slot is worse
- * than an empty slot, because someone will ask about it.
+ * Which is also why there are five and not seven: Hourglass, Cubekit and
+ * PictelAI have no decision record to draw on — their histories are four to
+ * eleven commits of building and tidying, with no failure found and fixed and
+ * no approach tried and rejected. A case study invented to fill a slot is
+ * worse than an empty slot, because someone will ask about it.
  */
 export const CASE_STUDIES = {
   "atlas-false-failures": {
@@ -268,5 +272,82 @@ export const CASE_STUDIES = {
 
     footnote:
       "Measurements and reasoning are from commit f2e961c in the Atlas repository. The repo is private — it is internal tooling built at Masai — so the numbers here are quoted rather than linked.",
+  },
+
+  "frequencii-image-weight": {
+    project: "Frequencii",
+    projectId: "frequencii",
+    accent: "249,115,22",
+    title: "The empty-cart screen was a 28 MB image",
+    dek: "Three passes over the same photos in one day, and the format change that made the hero banners 63% heavier.",
+    date: "October 2024",
+    published: "2024-10",
+    tags: ["Image weight", "Asset pipeline", "Measure first"],
+
+    sections: [
+      {
+        heading: "What the first push carried",
+        body: [
+          "Frequencii is a storefront, which makes it mostly photographs: five hero banners, category tiles, product shots. They went into the first push (bc7f6bf) at whatever size they had on disk.",
+          "`emptyCart.jpg` — the picture the Cart page renders under \"Your Cart Is Empty\" — was 28,418,876 bytes. `product1.jpg` was 17,426,632. A 7,829,367-byte photo of a retro alarm clock was in there as well, and was dropped in the first pass. The 33 images that pass touched came to 180,845,156 bytes between them.",
+          "The first push was at 01:53 on 22 October 2024. Every image commit that day, up to 23:01, is some response to those numbers.",
+        ],
+      },
+      {
+        heading: "Three passes",
+        body: [
+          "The first recompression went in at 03:02 under the message \"vercel file added\", which describes the previous commit rather than this one. It touched 32 images and removed the alarm clock. A second pass at 15:16 and a third at 21:41 followed, all on 22 October 2024 (times as committed, IST).",
+          "The picture that makes the case on its own is the empty-cart image, because it moved the furthest:",
+        ],
+        compare: {
+          caption: "emptyCart.jpg, in bytes, after each commit",
+          rows: [
+            { label: "First push", score: "28,418,876", quote: "bc7f6bf", bad: true },
+            { label: "03:02", score: "1,375,020", quote: "ee94533" },
+            { label: "15:16", score: "94,330", quote: "f16ad55" },
+            { label: "21:41", score: "80,429", quote: "302b8b5" },
+          ],
+        },
+        after: [
+          "Across the 32 images that were recompressed the totals run 173,015,789, then 15,231,431, then 3,944,003, then 2,669,058 bytes. Not every step was a clean win, though, and the one that was not is the interesting one.",
+        ],
+      },
+      {
+        heading: "The WebP detour went the wrong way",
+        body: [
+          "The 15:16 commit converted the five hero banners from `.jpg` to `.webp`, which is the move you reach for when you want a smaller file. Every one of them came out larger than the JPEG it replaced. `hero1` went from 260,288 bytes to 375,948. The five together went from 1,253,939 to 2,048,914 — 794,975 bytes, or 63%, heavier — while the same commit took the other 27 images from 13,977,492 bytes down to 1,895,089.",
+          "The 21:41 commit put the `.jpg` imports back in `Home.jsx` and re-exported the heroes, which now came to 363,398 bytes for all five: less than either version before it.",
+        ],
+        compare: {
+          caption: "The five hero banners, combined",
+          rows: [
+            { label: "JPEG, after pass one", score: "1,253,939", quote: "ee94533" },
+            { label: "WebP", score: "2,048,914", quote: "f16ad55 — the format change", bad: true },
+            { label: "JPEG, re-exported", score: "363,398", quote: "302b8b5" },
+          ],
+        },
+        after: [
+          "The commit messages do not say why the WebP files were larger, and I am not going to supply a reason after the fact. What they do record, in the byte counts, is that changing the format did not shrink the heroes; the sizes only came down when they were JPEGs again.",
+          "The same 21:41 commit re-encoded the other 27 images and they came back bigger, 1,895,089 bytes to 2,305,660. That is also in the diff and also unexplained there. The set ended at 2,669,058 bytes, against 3,944,003 one commit earlier.",
+        ],
+      },
+      {
+        heading: "A preload that could not have done anything",
+        body: [
+          "At 22:58 I added `rel=\"preload\"` to six `<img>` elements: five in `CategoryCard.jsx` and the carousel in `Home.jsx`. At 23:01, under three minutes later, a second commit removed every one of them. Both are titled \"images Updated\", and neither says why.",
+          "`rel` is not an attribute of `<img>`. Preloading is a `rel` value on a `<link>` element, so those six attributes were inert from the moment they were written. It is the same shape as the WebP step in miniature: a change meant to make images faster, made without looking at whether it did.",
+        ],
+      },
+      {
+        heading: "What I take from it",
+        body: [
+          "A format is not a compression ratio. The only step in this sequence that made the files bigger was the one where I changed the format instead of looking at the output, and it was only visible as a number. The stat line that `git show` prints for a binary file, old size to new size, is all it takes to catch that, and a size check after each step costs nothing.",
+          "The other lesson is about what \"fixed\" means. The original files are gone from the working tree and are still in the history at bc7f6bf — the 28 MB `emptyCart.jpg` included — so anyone cloning the repository still downloads them, and history was not rewritten to drop them. Making the site's images light and making the repository light are two different jobs, and only one of them was done.",
+        ],
+      },
+    ],
+
+    footnote:
+      "Every byte count is from the diff stats of bc7f6bf, ee94533, f16ad55 and 302b8b5 in bhupesh-roushan/frequencii; the preload attempt and its removal are 739e8d0 and 15c717a. All six commits are dated 22 October 2024. The commit messages do not explain these choices, so where this page says why, it is read from the numbers. The repository is public: github.com/bhupesh-roushan/frequencii.",
   },
 };

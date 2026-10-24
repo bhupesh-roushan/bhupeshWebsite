@@ -465,6 +465,14 @@ export const projects = [
       { label: "Cart slice", href: "https://github.com/bhupesh-roushan/frequencii/blob/master/src/redux/CartSlice.jsx" },
       { label: "Store setup", href: "https://github.com/bhupesh-roushan/frequencii/blob/master/src/redux/Store.jsx" },
     ],
+    caseStudies: [
+      {
+        id: "frequencii-image-weight",
+        label: "The empty-cart screen was a 28 MB image",
+        blurb:
+          "Three passes over the same photos in one day, and the format change that made the hero banners 63% heavier.",
+      },
+    ],
     repo: "https://github.com/bhupesh-roushan/frequencii",
     role: "Solo build — frontend, backend and deployment",
     title: "Frequencii",
