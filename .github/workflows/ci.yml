@@ -1,0 +1,53 @@
+name: CI
+
+# The checks a change has to pass before it merges: lint, types, tests and a
+# production build. Lighthouse runs separately (lighthouse.yml) because it is
+# slower and measures the built site rather than the code.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Read-only is all any step needs: nothing here pushes, comments or deploys.
+permissions:
+  contents: read
+
+# A new push to the same branch or PR makes the run in flight pointless, so
+# stop it rather than queue behind it.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # The whole sequence takes about a minute; this only stops a hung install
+    # or build from holding a runner for the default six hours.
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # package.json sets no "engines", so there is nothing to read the version
+      # from. 22 is within the supported range of Vite 6 and Vitest 3 (18, 20
+      # or 22 and up) and is a long-term-support release.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # `ci`, not `install`: it fails if package-lock.json and package.json
+      # disagree, which is exactly what should not reach main.
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Test
+        run: npx vitest run
+
+      - name: Build
+        run: npm run build
