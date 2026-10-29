@@ -183,6 +183,7 @@ export interface HiringConfig {
   /** Empty string hides the line on the hero. */
   availability: string;
   /** Empty string hides the booking button. */
+  resumeUrl: string;
   bookingUrl: string;
 }
 

@@ -53,14 +53,14 @@ export const HiringFacts = () => {
 
       <div className="mt-4 flex flex-wrap gap-2">
         <a
-          href="/Bhupesh-Roushan-Resume.pdf"
+          href={hiring.resumeUrl}
           onClick={() => { track("resume_download", { format: "pdf" }); logVisitEvent("resume_download", "PDF"); }}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-[11px] font-medium text-gray-300 transition-colors hover:border-white/30 hover:text-white"
         >
           <LuFileText className="h-3.5 w-3.5" />
-          Résumé (PDF)
+          Résumé
         </a>
         {/* Plain text as well — plenty of applicant tracking systems mangle
             PDF layouts, and a .txt always parses. */}

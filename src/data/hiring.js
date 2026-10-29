@@ -30,6 +30,13 @@ export const hiring = {
   // "Open to opportunities" pill this replaces read as asking.
   availability: "",
 
+  // The current résumé, a Google Drive link. One address, used by the hero, the
+  // recruiter card, the command palette and the old /Bhupesh-Roushan-Resume.pdf
+  // redirect in vercel.json — so replacing the résumé means changing this line
+  // (or the file behind it in Drive, if the link's sharing stays "anyone with
+  // the link") and nothing else.
+  resumeUrl: "https://drive.google.com/file/d/144OmNQH2--j5Fcu-wSf9i4D9aGTtuJTh/view?usp=drive_link",
+
   // Booking link. The button stays hidden while this is empty, so the page
   // never shows a scheduler that goes nowhere.
   //

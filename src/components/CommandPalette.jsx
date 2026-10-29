@@ -104,7 +104,7 @@ export default function CommandPalette({ onClose }) {
         run: () => navigate(`/writing/${id}`, { viewTransition: true }),
       })),
       { group: "Actions", label: "Switch theme", keywords: "light dark mode", Icon: LuSunMoon, hint: "Light / dark", run: toggleTheme },
-      { group: "Actions", label: "Open résumé", keywords: "cv pdf download", Icon: LuDownload, hint: "PDF", run: () => window.open("/Bhupesh-Roushan-Resume.pdf", "_blank", "noopener") },
+      { group: "Actions", label: "Open résumé", keywords: "cv pdf download", Icon: LuDownload, hint: "Google Drive", run: () => window.open(hiring.resumeUrl, "_blank", "noopener") },
       {
         group: "Actions",
         label: "Copy email address",

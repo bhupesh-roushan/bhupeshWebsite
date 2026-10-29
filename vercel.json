@@ -34,5 +34,12 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/Bhupesh-Roushan-Resume.pdf",
+      "destination": "https://drive.google.com/file/d/144OmNQH2--j5Fcu-wSf9i4D9aGTtuJTh/view?usp=drive_link",
+      "permanent": false
+    }
   ]
 }
