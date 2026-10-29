@@ -46,14 +46,32 @@ const REPOS_URL = `https://api.github.com/users/${USER}/repos?per_page=100&sort=
 const CACHE_KEY = "gh-activity-v5";
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
+// GitHub's own language colours. A language not listed falls back to a neutral
+// grey, so a new one still appears — it just isn't coloured until it is added.
 const LANG_COLORS = {
   JavaScript: "#f1e05a",
   TypeScript: "#3178c6",
   HTML: "#e34c26",
   CSS: "#563d7c",
+  SCSS: "#c6538c",
   Python: "#3572A5",
   Java: "#b07219",
+  C: "#555555",
+  "C++": "#f34b7d",
+  "C#": "#178600",
+  Go: "#00ADD8",
+  Rust: "#dea584",
+  PHP: "#4F5D95",
+  Ruby: "#701516",
+  Kotlin: "#A97BFF",
+  Swift: "#F05138",
   Shell: "#89e051",
+  Dockerfile: "#384d54",
+  EJS: "#a91e50",
+  Vue: "#41b883",
+  Svelte: "#ff3e00",
+  "Jupyter Notebook": "#DA5B0B",
+  Makefile: "#427819",
 };
 
 const parseDay = (iso) => new Date(`${iso}T00:00:00`);
@@ -335,7 +353,10 @@ export const Activity = () => {
                         <div
                           key={l.name}
                           style={{
+                            // A sliver for a language that is a fraction of a
+                            // percent, so it is still there to be hovered.
                             width: `${l.pct}%`,
+                            minWidth: 2,
                             backgroundColor: LANG_COLORS[l.name] ?? "#8b949e",
                           }}
                           title={`${l.name} ${l.pct}%`}
