@@ -56,20 +56,29 @@ export const GithubHeatmap = ({ days }) => {
         role="img"
         aria-label={`Contribution calendar for the last year: ${total} contributions.`}
       >
-        <div className="inline-flex flex-col gap-1">
-          <div className="flex gap-[3px]">
+        {/* The squares share the card's width instead of being a fixed 11px, so
+            the calendar fills its card the way GitHub's own does — at 11px a
+            full year was 740px wide and left the right third of a wide card
+            empty. Capped at 19px a column (cell plus gap) so it never balloons,
+            and floored at 14px so a phone scrolls sideways rather than
+            squeezing the squares into dots. */}
+        <div
+          className="flex flex-col gap-1"
+          style={{ "--cols": weeks.length, minWidth: `calc(${weeks.length} * 14px)`, maxWidth: `calc(${weeks.length} * 19px)` }}
+        >
+          <div className="grid gap-[3px]" style={{ gridTemplateColumns: "repeat(var(--cols), minmax(0, 1fr))" }}>
             {monthLabels.map((label, i) => (
-              <div key={i} className="w-[11px] shrink-0">
+              <div key={i} className="min-w-0">
                 {label && (
-                  <span className="text-[9px] leading-none text-gray-500">{label}</span>
+                  <span className="whitespace-nowrap text-[9px] leading-none text-gray-500">{label}</span>
                 )}
               </div>
             ))}
           </div>
 
-          <div className="flex gap-[3px]">
+          <div className="grid gap-[3px]" style={{ gridTemplateColumns: "repeat(var(--cols), minmax(0, 1fr))" }}>
             {weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-col gap-[3px]">
+              <div key={wi} className="flex min-w-0 flex-col gap-[3px]">
                 {week.map((day, di) => (
                   <div
                     key={di}
@@ -78,7 +87,7 @@ export const GithubHeatmap = ({ days }) => {
                         ? `${day.count} contribution${day.count === 1 ? "" : "s"} on ${day.date}`
                         : undefined
                     }
-                    className="h-[11px] w-[11px] rounded-[2px]"
+                    className="aspect-square w-full rounded-[2px]"
                     style={{
                       backgroundColor: day
                         ? LEVEL_COLORS[day.level] ?? LEVEL_COLORS[0]

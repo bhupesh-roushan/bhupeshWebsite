@@ -142,6 +142,22 @@ function sinceLabel(iso) {
   return `${Math.floor(months / 12)}y ago`;
 }
 
+/**
+ * "Today", "3d ago" for a calendar day ("2026-10-30"), counted in the visitor's
+ * own calendar days — not 24-hour blocks from UTC midnight, which called a
+ * commit made this morning "1d ago" for anyone east of Greenwich.
+ */
+function activeLabel(dateStr) {
+  if (!dateStr) return "—";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Math.round((today.getTime() - parseDay(dateStr).getTime()) / 86400000);
+  if (days <= 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 30) return `${days}d ago`;
+  return sinceLabel(`${dateStr}T00:00:00`);
+}
+
 export const Activity = () => {
   const [data, setData] = useState({ status: "loading" });
 
@@ -202,6 +218,12 @@ export const Activity = () => {
 
   const loading = data.status === "loading";
 
+  // The last day with any contribution, from the same calendar the graph below is
+  // drawn from — private work included. This tile used to read "Last push" from
+  // the public repositories alone, and since most of the work is in private repos
+  // it said "4d ago" beside a graph with squares filled in for every day since.
+  const lastActive = data.days?.length ? [...data.days].reverse().find((d) => d.count > 0)?.date : undefined;
+
   const stats = [
     { icon: LuBook, label: "Public repos", value: data.repoCount, accent: "99,102,241" },
     {
@@ -212,8 +234,8 @@ export const Activity = () => {
     },
     {
       icon: LuHistory,
-      label: "Last push",
-      value: loading ? "—" : sinceLabel(data.lastPush),
+      label: "Last active",
+      value: loading ? "—" : lastActive ? activeLabel(lastActive) : sinceLabel(data.lastPush),
       accent: "56,189,248",
     },
   ];
