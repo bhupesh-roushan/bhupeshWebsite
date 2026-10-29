@@ -1,3 +1,5 @@
+import { useLayoutEffect, useRef } from "react";
+
 // Theme tokens, so the greens step the right way on each background: darker is
 // "more" on a light page and lighter is "more" on a dark one.
 const LEVEL_COLORS = [
@@ -32,6 +34,18 @@ function toWeeks(days) {
 /** Presentational only — the section above owns fetching. */
 export const GithubHeatmap = ({ days }) => {
   const weeks = toWeeks(days);
+
+  // Start scrolled to the right edge. On a phone the year is wider than the card
+  // and scrolls sideways, and it opened on the oldest weeks (November to April),
+  // so the part anyone wants — this month — was a swipe away. GitHub's own
+  // calendar anchors to today for the same reason. A layout effect, so the first
+  // paint is already there rather than visibly jumping; a no-op where nothing
+  // overflows.
+  const scroller = useRef(/** @type {HTMLDivElement | null} */ (null));
+  useLayoutEffect(() => {
+    const el = scroller.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, [days]);
   const total = days.reduce((n, d) => n + d.count, 0);
 
   // Label a column when its month differs from the column before it.
@@ -48,6 +62,7 @@ export const GithubHeatmap = ({ days }) => {
     <>
       {/* 53 columns never fit a phone — scroll the grid, not the page. */}
       <div
+        ref={scroller}
         className="-mx-1 overflow-x-auto px-1 pb-1"
         // A grid of 371 unlabelled squares means nothing to a screen reader, and
         // the per-day `title`s are mouse-only. The total says what it shows.
