@@ -174,7 +174,11 @@ export const Home = () => {
               </div>
               </div>
 
-              <div className="relative order-first shrink-0 lg:order-last">
+              {/* w-fit and justify-self-start: a grid item stretches to its whole column, and
+                the glow behind the portrait is positioned against this box — so on a
+                phone, where the column is the full tile, it painted a wide blurred bar
+                across the tile instead of a halo around a 80px circle. */}
+              <div className="relative order-first w-fit shrink-0 justify-self-start lg:order-last">
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-blue-500 to-sky-400 opacity-70 blur-[6px]" />
                 <img
                   src={bhupesh}
